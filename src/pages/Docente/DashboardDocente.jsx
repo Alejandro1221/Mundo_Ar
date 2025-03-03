@@ -30,7 +30,7 @@ const DashboardDocente = () => {
       cargarJuegos(user.uid);
     });
   
-    return () => unsubscribe(); // Limpiar suscripción al desmontar
+    return () => unsubscribe(); 
   }, [navigate]);
   
 
@@ -54,11 +54,18 @@ const DashboardDocente = () => {
   // Crear un nuevo juego
   const crearJuego = async (e) => {
     e.preventDefault();
+    
+    // ✅ Verifica que el usuario esté definido antes de usar usuario.uid
+    if (!usuario || !usuario.uid) {  
+      alert("Error: No se pudo identificar al usuario. Recarga la página e intenta de nuevo.");
+      return;
+    }
+  
     if (!nombreJuego.trim()) {
       alert("El nombre del juego es obligatorio.");
       return;
     }
-
+  
     try {
       const nuevoJuego = {
         nombre: nombreJuego,
@@ -66,7 +73,7 @@ const DashboardDocente = () => {
         creadoPor: usuario.uid,
         fechaCreacion: new Date(),
       };
-
+  
       await setDoc(doc(db, "juegos", nombreJuego), nuevoJuego);
       alert(`Juego "${nombreJuego}" creado exitosamente.`);
       setNombreJuego(""); // Reset input
@@ -76,7 +83,7 @@ const DashboardDocente = () => {
       alert("Hubo un error al crear el juego.");
     }
   };
-
+  
   // Cerrar sesión
   const handleCerrarSesion = async () => {
     try {
@@ -115,7 +122,7 @@ const DashboardDocente = () => {
           juegos.map((juego) => (
             <div key={juego.id} className="juego-item">
               <span>{juego.nombre}</span>
-              <button onClick={() => navigate(`/configurarCasillas/${juego.id}`)}>Configurar</button>
+              <button onClick={() => navigate(`/docente/configurar-casillas/${juego.id}`)}>Configurar</button>
             </div>
           ))
         )}

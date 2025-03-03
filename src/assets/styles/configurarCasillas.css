@@ -1,0 +1,132 @@
+/* 🔹 Contenedor principal */
+.configurar-casillas-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* 🔹 Título */
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* 🔹 Tablero de casillas */
+  .tablero {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    width: 60%;
+    max-width: 500px;
+    margin: 20px auto;
+  }
+  
+  /* 🔹 Estilo de cada casilla */
+  .casilla {
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .casilla:hover {
+    background-color: #ddd;
+  }
+  
+  /* 🔹 Casillas ya configuradas */
+  .casilla.configurada {
+    background-color: #4CAF50;
+    color: white;
+    border-color: #388E3C;
+  }
+  
+  .casilla small {
+    font-size: 12px;
+    display: block;
+    margin-top: 5px;
+  }
+  
+  /* 🔹 Modal de selección de plantilla */
+  .modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 300px;
+  }
+  
+  .modal h3 {
+    margin-bottom: 15px;
+  }
+  
+  .modal select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .modal-buttons button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+  
+  .modal-buttons button:hover {
+    opacity: 0.8;
+  }
+  
+  .modal-buttons button:first-child {
+    background: #ccc;
+    color: black;
+  }
+  
+  .modal-buttons button:last-child {
+    background: #4CAF50;
+    color: white;
+  }
+  
+  /* 🔹 Botón de volver */
+  .volver-btn {
+    background-color: #FF5722;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .volver-btn:hover {
+    background-color: #E64A19;
+  }
+  
