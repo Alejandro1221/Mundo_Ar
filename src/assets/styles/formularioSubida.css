@@ -1,0 +1,29 @@
+.form-subida {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-subida input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-subida button {
+    background: blue;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .form-subida button:hover {
+    background: darkblue;
+  }
+  

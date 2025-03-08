@@ -17,12 +17,15 @@ export const obtenerCasillas = async (juegoId) => {
   }
 };
 
-// 🔹 Guardar cambios en Firestore
 export const actualizarCasillas = async (juegoId, nuevasCasillas) => {
   try {
     const juegoRef = doc(db, "juegos", juegoId);
-    await updateDoc(juegoRef, { casillas: nuevasCasillas });
+    const juegoSnap = await getDoc(juegoRef);
+    if (juegoSnap.exists()) {
+      await updateDoc(juegoRef, { casillas: nuevasCasillas });
+    }
   } catch (error) {
     console.error("Error al actualizar casillas:", error);
   }
 };
+

@@ -14,23 +14,29 @@ export const useCasillas = (juegoId) => {
     setCasillas(casillasCargadas);
   }, [juegoId]);
 
+    // 📌 Mapeo de rutas según la plantilla seleccionada
+  const rutasPlantillas = {
+    "modelo-sonido": "/docente/plantilla-sonido-modelo",
+  };
+
   const abrirModal = (index, plantillaActual) => {
     if (plantillaActual) {
-    
-      if (plantillaActual === "modelo-sonido") {
+      const ruta = rutasPlantillas[plantillaActual];
+      if (ruta) {
+        sessionStorage.setItem("paginaAnterior", window.location.pathname);
         sessionStorage.setItem("juegoId", juegoId);
         sessionStorage.setItem("casillaId", index);
-        navigate("/plantilla-sonido-modelo");
+        navigate(ruta);  // ✅ Redirigir a la plantilla correspondiente
       } else {
-        alert(`La plantilla "${plantillaActual}" aún no tiene configuración implementada.`);
+        alert(`La plantilla "${plantillaActual}" aún no está implementada.`);
       }
-      return; 
+      return;
     }
-  
 
     setCasillaSeleccionada(index);
     setModalVisible(true);
   };
+
   
 
   const guardarCambios = async () => {

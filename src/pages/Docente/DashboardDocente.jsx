@@ -122,7 +122,13 @@ const DashboardDocente = () => {
           juegos.map((juego) => (
             <div key={juego.id} className="juego-item">
               <span>{juego.nombre}</span>
-              <button onClick={() => navigate(`/docente/configurar-casillas/${juego.id}`)}>Configurar</button>
+              {/*<button onClick={() => navigate(`/docente/configurar-casillas/${juego.id}`)}>Configurar</button>*/}
+              <button onClick={() => {
+                sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                  navigate(`/docente/configurar-casillas/${juego.id}`);
+              }}>
+                Configurar
+              </button>
             </div>
           ))
         )}
@@ -130,7 +136,14 @@ const DashboardDocente = () => {
 
       {/* Botones para ir a los bancos */}
       <div className="opciones-bancos">
-        <button onClick={() => navigate("/docente/banco-modelos")}>Banco de Modelos</button>
+        {/*<button onClick={() => navigate("/docente/banco-modelos")}>Banco de Modelos</button>*/}
+        <button onClick={() => {
+            sessionStorage.setItem("paginaAnterior", "/docente/dashboard"); // ✅ Guardar referencia al Dashboard
+            navigate("/docente/banco-modelos", { state: { desdePlantilla: false } });
+        }}>
+          Banco de Modelos
+        </button>
+
         <button onClick={() => navigate("/banco-sonidos")}>Banco de Sonidos</button>
       </div>
     </div>

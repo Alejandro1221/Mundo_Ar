@@ -1,37 +1,36 @@
-/* src/assets/styles/bancoModelos.css */
-
+/* ✅ Contenedor principal */
 .banco-modelos {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .lista-modelos {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-  }
-  
-  .modelo-item {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .modelo-img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-  }
-  
-  .btn-eliminar {
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* ✅ Título */
+.banco-modelos h1 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* ✅ Selector de categorías */
+.banco-modelos select {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+/* ✅ Lista de modelos en diseño flexible */
+.lista-modelos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Ajusta mejor los modelos */
+  gap: 15px;
+  justify-content: center;
+  margin-top: 15px;
+}
