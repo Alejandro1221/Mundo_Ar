@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDfkayuiS5PKsnI8wsDNO53xxdd5GTbV7c",
   authDomain: "mundoar-146fb.firebaseapp.com",
   projectId: "mundoar-146fb",
-  storageBucket: "mundoar-146fb.appspot.com",
+  storageBucket: "mundoar-146fb.firebasestorage.app",
   messagingSenderId: "734509520863",
   appId: "1:734509520863:web:fbcd80b5cf64d5866f966a",
   measurementId: "G-SJQ4WB9PXN"

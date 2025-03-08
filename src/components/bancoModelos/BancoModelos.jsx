@@ -62,19 +62,23 @@ const BancoModelos = () => {
       </select>
 
       <div className="lista-modelos">
-        {modelos.filter(m => categoriaSeleccionada === "Todos" || m.categoria === categoriaSeleccionada)
-          .map((modelo) => (
-            <ModeloItem 
-              key={modelo.id} 
-              modelo={modelo} 
-              esPlantilla={desdePlantilla}
-              manejarSeleccion={manejarSeleccion} 
-              manejarEliminacion={manejarEliminacion} 
-            />
-        ))}
+        {modelos && Array.isArray(modelos) && modelos.length > 0 ? (
+          modelos
+            .filter((modelo) => modelo && modelo.id) // 🔥 Filtra elementos vacíos o incorrectos
+            .map((modelo) => (
+              <ModeloItem 
+                key={modelo.id} 
+                modelo={modelo} 
+                esPlantilla={desdePlantilla}
+                manejarSeleccion={manejarSeleccion} 
+                manejarEliminacion={manejarEliminacion} 
+              />
+            ))
+        ) : (
+          <p>⚠️ No hay modelos disponibles.</p> 
+        )}
       </div>
 
-      {/* 📌 BOTÓN "VOLVER" QUE DETECTA DESDE DONDE SE ABRIÓ */}
       <button onClick={() => {
         const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
         navigate(paginaAnterior);
