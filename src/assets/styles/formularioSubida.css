@@ -1,41 +1,50 @@
 .form-subida {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 400px; /* Limitar el ancho */
+  gap: 15px; /* Más espacio entre elementos */
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+  max-width: 450px;
   margin: auto;
+  font-family: Arial, sans-serif;
 }
 
-.form-subida input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+/* 🔹 Inputs y Selects */
+.form-subida input,
+.form-subida select {
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
   font-size: 16px;
-  transition: border 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  background: #f8f8f8;
 }
 
-.form-subida input:focus {
-  border-color: blue;
+.form-subida input:focus,
+.form-subida select:focus {
+  border-color: #007bff;
+  background: white;
   outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
 }
 
+/* 🔹 Botones */
 .form-subida button {
-  background: blue;
+  background: #007bff;
   color: white;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
+  font-weight: bold;
 }
 
 .form-subida button:hover {
-  background: darkblue;
+  background: #0056b3;
 }
 
 .form-subida button:disabled {
@@ -43,19 +52,67 @@
   cursor: not-allowed;
 }
 
-/* 🔹 Barra de progreso */
-.progreso {
-  width: 100%;
-  background: #e0e0e0;
-  border-radius: 5px;
-  overflow: hidden;
-  height: 10px;
+/* 🔹 Barra de Progreso */
+.progreso-container {
+  text-align: center;
   margin-top: 10px;
 }
 
 .progreso-barra {
+  width: 100%;
+  height: 12px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 8px;
+  position: relative;
+}
+
+.progreso {
   height: 100%;
-  background: blue;
+  background: linear-gradient(90deg, #007bff, #00bfff);
   width: 0%;
   transition: width 0.3s ease-in-out;
+  border-radius: 6px;
+}
+
+/* 🔹 Nueva categoría mejorada */
+.nueva-categoria-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.nueva-categoria-container input {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.nueva-categoria-container button {
+  background: #28a745;
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.nueva-categoria-container button:hover {
+  background: #218838;
+}
+
+/* 🔹 Inputs de archivos estilizados */
+.form-subida input[type="file"] {
+  padding: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+/* 🔹 Botón de subida con espacio */
+.form-subida button[type="submit"] {
+  margin-top: 12px;
 }
