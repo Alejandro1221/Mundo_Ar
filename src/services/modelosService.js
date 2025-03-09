@@ -27,6 +27,7 @@ const subirArchivo = async (archivo, ruta, setProgreso = () => {}) => {
         );
     });
 };
+
 const obtenerRutaDesdeURL = (url) => {
   const baseUrl = decodeURIComponent(url.split("?")[0]);
   const parts = baseUrl.split("/o/");

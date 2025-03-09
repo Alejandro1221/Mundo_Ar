@@ -41,7 +41,7 @@ const BancoModelos = () => {
   // 🔹 Filtrar modelos según la categoría seleccionada
   const modelosFiltrados = modelos.filter(modelo =>
     categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada
-  );
+);
 
   const manejarSeleccion = (modelo) => {
     setModelosSeleccionados(prev => {
