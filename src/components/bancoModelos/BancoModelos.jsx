@@ -41,14 +41,18 @@ const BancoModelos = () => {
       return yaSeleccionado ? prev.filter(m => m.id !== modelo.id) : [...prev, modelo];
     });
   };
-
   const manejarEliminacion = async (modelo) => {
     if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
-      await eliminarModelo(modelo.id);
-      setModelos(prev => prev.filter(m => m.id !== modelo.id));
+      try {
+        await eliminarModelo(modelo.id, modelo.modelo_url, modelo.miniatura);
+        setModelos(prev => prev.filter(m => m.id !== modelo.id));
+        console.log(`✅ Modelo "${modelo.nombre}" eliminado correctamente.`);
+      } catch (error) {
+        console.error("❌ Error al eliminar modelo:", error);
+        alert("Hubo un error al eliminar el modelo. Inténtalo de nuevo.");
+      }
     }
   };
-
   return (
     <div className="banco-modelos">
       {!desdePlantilla && <FormularioSubida setModelos={setModelos} />}
