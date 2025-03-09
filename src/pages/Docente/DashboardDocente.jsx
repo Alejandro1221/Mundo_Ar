@@ -134,9 +134,8 @@ const DashboardDocente = () => {
         )}
       </div>
 
-      {/* Botones para ir a los bancos */}
+      
       <div className="opciones-bancos">
-        {/*<button onClick={() => navigate("/docente/banco-modelos")}>Banco de Modelos</button>*/}
         <button onClick={() => {
             sessionStorage.setItem("paginaAnterior", "/docente/dashboard"); // ✅ Guardar referencia al Dashboard
             navigate("/docente/banco-modelos", { state: { desdePlantilla: false } });
@@ -144,7 +143,12 @@ const DashboardDocente = () => {
           Banco de Modelos
         </button>
 
-        <button onClick={() => navigate("/banco-sonidos")}>Banco de Sonidos</button>
+        <button onClick={() => {
+          sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
+          navigate("/docente/banco-sonidos", { state: { desdePlantilla: false } });
+        }}>
+          Banco de Sonidos
+        </button>
       </div>
     </div>
   );

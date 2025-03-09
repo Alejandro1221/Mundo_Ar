@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
-import { obtenerCategorias } from "../../services/categoriasService"; // 🔹 Importar categorías
+import { obtenerCategorias } from "../../services/categoriasService"; 
 import ModeloItem from "./ModeloItem";
 import FormularioSubida from "./FormularioSubida";
 import "../../assets/styles/bancoModelos.css";

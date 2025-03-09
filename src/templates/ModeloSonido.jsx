@@ -18,10 +18,7 @@ const ModeloSonido = () => {
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
 
-  console.log("🔎 Verificando sessionStorage en ModeloSonido.jsx:", JSON.parse(sessionStorage.getItem("modelosSeleccionados")));
-
-
-  // ✅ Verificar IDs
+  
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
@@ -29,72 +26,50 @@ const ModeloSonido = () => {
     } else {
       cargarConfiguracionExistente();
     }
-
-    // ✅ Asegurar que la página se agregue correctamente al historial
-    const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
-    if (historial.length === 0 || historial[historial.length - 1] !== location.pathname) {
-      historial.push(location.pathname);
-      sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
-    }
-
   }, [juegoId, casillaId, navigate, location.pathname]);
 
 
   // 🔹 Cargar configuración existente desde Firestore
   const cargarConfiguracionExistente = async () => {
     try {
-        console.log("🔎 Antes de cargar sessionStorage en ModeloSonido.jsx, contenido actual:", JSON.stringify(sessionStorage));
-
-        let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-        
-        if (modelosGuardados) {
-            try {
-                modelosGuardados = JSON.parse(modelosGuardados);
-                if (!Array.isArray(modelosGuardados)) {
-                    console.warn("⚠️ `modelosSeleccionados` no es un array, reinicializando...");
-                    modelosGuardados = [];
-                }
-            } catch (err) {
-                console.error("❌ Error al parsear `modelosSeleccionados`, reiniciando...", err);
-                modelosGuardados = [];
-            }
-        } else {
+      let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+      if (modelosGuardados) {
+        try {
+          modelosGuardados = JSON.parse(modelosGuardados);
+          if (!Array.isArray(modelosGuardados)) {
+            console.warn("⚠️ `modelosSeleccionados` no es un array, reinicializando...");
             modelosGuardados = [];
+          }
+        } catch (err) {
+          console.error("❌ Error al parsear `modelosSeleccionados`, reiniciando...", err);
+          modelosGuardados = [];
         }
+      } else {
+        modelosGuardados = [];
+      }
+      setModelosSeleccionados(modelosGuardados);
 
-        console.log("📌 Modelos obtenidos de sessionStorage después de parsear:", modelosGuardados);
-
-        if (modelosGuardados.length > 0) {
-            setModelosSeleccionados(modelosGuardados);
-        } else {
-            // 🔄 Si no hay modelos en sessionStorage, buscar en Firestore
-            const juegoRef = doc(db, "juegos", juegoId);
-            const juegoSnap = await getDoc(juegoRef);
-
-            if (juegoSnap.exists()) {
-                const casilla = juegoSnap.data().casillas[casillaId];
-
-                if (casilla?.configuracion) {
-                    setModelosSeleccionados(casilla.configuracion.modelos || []);
-                    console.log("✅ Modelos obtenidos de Firestore:", casilla.configuracion.modelos);
-                }
-            }
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+      if (juegoSnap.exists()) {
+        const casilla = juegoSnap.data().casillas[casillaId];
+        if (casilla?.configuracion) {
+          setModelosSeleccionados(casilla.configuracion.modelos || []);
+          setSonidoSeleccionado(casilla.configuracion.sonido || null);
         }
+      }
     } catch (error) {
-        console.error("❌ Error al cargar configuración:", error);
+      console.error("❌ Error al cargar configuración:", error);
     }
-};
-
+  };
 
   // 🔹 Sincronizar modelos con Firestore
   const sincronizarModelos = async () => {
-    console.log("📌 Modelos guardados en Firestore:", modelosSeleccionados);
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
 
     if (juegoSnap.exists()) {
         const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-
         casillasActuales[casillaId] = {
             plantilla: "modelo-sonido",
             configuracion: {
@@ -102,17 +77,13 @@ const ModeloSonido = () => {
                 sonido: sonidoSeleccionado,
             },
         };
-
         await updateDoc(juegoRef, { casillas: casillasActuales });
-        console.log("✅ Firestore actualizado con modelos:", casillasActuales[casillaId].configuracion.modelos);
     }
 };
-
 
 // 🔹 Eliminar modelo solo de la plantilla 
 const eliminarModelo = async (urlModelo) => {
   console.log("📌 Modelos antes de eliminar:", modelosSeleccionados);
-
   const nuevosModelos = modelosSeleccionados.filter((modelo) => modelo.url !== urlModelo);
   
   // 🔄 Actualizar sessionStorage antes de actualizar Firestore
@@ -152,7 +123,6 @@ const eliminarModelo = async (urlModelo) => {
     <div className="modelo-sonido-container">
       <h2>Configurar Modelo-Sonido</h2>
 
-      {/* Modelos seleccionados */}
       <div className="modelos-seleccionados">
         {modelosSeleccionados.length > 0 ? (
           modelosSeleccionados.map((modelo, index) => {
@@ -193,26 +163,29 @@ const eliminarModelo = async (urlModelo) => {
         )}
       </div>
 
-      {/* Sonido seleccionado */}
       <div className="sonido-seleccionado">
-        <p>Sonido: {sonidoSeleccionado || "No se ha seleccionado sonido"}</p>
+        <p>Sonido: {sonidoSeleccionado ? sonidoSeleccionado.nombre : "No se ha seleccionado sonido"}</p>
+        {sonidoSeleccionado && <audio controls src={sonidoSeleccionado.url} />}
       </div>
 
-      {/* Botones */}
+
       <div className="acciones">
-        
-       <button onClick={() => {
+        <button onClick={() => {
+            sessionStorage.setItem("paginaAnterior", window.location.pathname);
+            sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+            navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+          }}>
+            Seleccionar Modelos
+          </button>
+
+        <button onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-          navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+          navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
         }}>
-          Seleccionar Modelos
+          Seleccionar Sonido
         </button>
 
-        <button onClick={() => navigate("/banco-sonidos")}>Seleccionar Sonido</button>
         <button onClick={sincronizarModelos} className="guardar-btn">Guardar Configuración</button>
-
-        {/* 🔥 Botón "Volver" mejorado para regresar correctamente */}
         <button className="volver-btn" onClick={() => {
           const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
           historial.pop(); // Elimina la actual
