@@ -184,7 +184,7 @@ const eliminarModelo = async (urlModelo) => {
 
 
                 <p>{modelo.nombre}</p>
-                <button onClick={() => eliminarModelo(modelo.url)}>❌ Eliminar</button>
+                <button onClick={() => eliminarModelo(modelo.url)}>Eliminar</button>
               </div>
             );
           })

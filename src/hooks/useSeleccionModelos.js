@@ -12,11 +12,9 @@ export const useSeleccionModelos = () => {
         if (Array.isArray(modelos)) {
           setModelosSeleccionados(modelos);
         } else {
-          console.warn("⚠️ `modelosSeleccionados` no es un array, reinicializando...");
           setModelosSeleccionados([]);
         }
       } catch (err) {
-        console.error("❌ Error al parsear `modelosSeleccionados`, reiniciando...", err);
         setModelosSeleccionados([]);
       }
     }

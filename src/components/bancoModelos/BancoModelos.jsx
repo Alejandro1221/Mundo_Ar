@@ -66,17 +66,14 @@ const BancoModelos = () => {
     const modelosConURL = modelosSeleccionados.map(m => ({
         id: m.id,
         nombre: m.nombre,
-        url: m.modelo_url,  // 🔥 Asegurar que `modelo_url` se guarda como `url`
+        url: m.modelo_url,  
         miniatura: m.miniatura,
         categoria: m.categoria,
     }));
 
     sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConURL));
 
-    // 🔥 Verificar si se guardaron correctamente
-    console.log("✅ Después de guardar en sessionStorage:", JSON.parse(sessionStorage.getItem("modelosSeleccionados")));
-
-    navigate(-1); // 🔥 Vuelve a `ModeloSonido.jsx`
+    navigate(-1); 
 };
 
   const manejarEliminacion = async (modelo) => {

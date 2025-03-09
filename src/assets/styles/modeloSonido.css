@@ -71,19 +71,15 @@
   background-color: #ff4d4d;
   color: white;
   border: none;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.3s;
   font-weight: bold;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 5px;
-}
-
-/* 📌 Ícono en el botón Eliminar */
-.modelo-item button::before {
-  content: "❌";
   font-size: 14px;
 }
 

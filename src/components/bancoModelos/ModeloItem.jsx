@@ -8,7 +8,6 @@ const ModeloItem = ({ modelo, esPlantilla, manejarSeleccion, manejarEliminacion,
       <p><strong>{modelo.nombre}</strong></p>
       <p><strong>Categoría:</strong> {modelo.categoria}</p>
 
-      {/* ✅ Checkbox solo aparece en modo plantilla y muestra el estado actual */}
       {esPlantilla ? (
         <input 
           type="checkbox" 
