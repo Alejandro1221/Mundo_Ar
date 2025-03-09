@@ -30,13 +30,22 @@ const BancoModelos = () => {
 
         setCategorias(["Todos", ...categoriasCargadas]); // 🔹 Actualizar categorías
         setModelos(modelosCargados);
+
+        // ✅ Si se abrió desde una plantilla, recuperar modelos seleccionados desde sessionStorage
+        if (desdePlantilla) {
+          const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+          if (modelosGuardados) {
+            setModelosSeleccionados(JSON.parse(modelosGuardados));
+          }
+        }
+
       } catch (error) {
         console.error("❌ Error al cargar modelos:", error);
         setModelos([]);
       }
     };
     cargarDatos();
-  }, []);
+  }, [desdePlantilla]);
 
   // 🔹 Filtrar modelos según la categoría seleccionada
   const modelosFiltrados = modelos.filter(modelo =>
@@ -49,6 +58,26 @@ const BancoModelos = () => {
       return yaSeleccionado ? prev.filter(m => m.id !== modelo.id) : [...prev, modelo];
     });
   };
+
+  // ✅ Confirmar selección y volver a la plantilla
+  const confirmarSeleccion = () => {
+    console.log("📌 Antes de guardar en sessionStorage en BancoModelos.jsx:", modelosSeleccionados);
+
+    const modelosConURL = modelosSeleccionados.map(m => ({
+        id: m.id,
+        nombre: m.nombre,
+        url: m.modelo_url,  // 🔥 Asegurar que `modelo_url` se guarda como `url`
+        miniatura: m.miniatura,
+        categoria: m.categoria,
+    }));
+
+    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConURL));
+
+    // 🔥 Verificar si se guardaron correctamente
+    console.log("✅ Después de guardar en sessionStorage:", JSON.parse(sessionStorage.getItem("modelosSeleccionados")));
+
+    navigate(-1); // 🔥 Vuelve a `ModeloSonido.jsx`
+};
 
   const manejarEliminacion = async (modelo) => {
     if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
@@ -83,14 +112,21 @@ const BancoModelos = () => {
               key={modelo.id} 
               modelo={modelo} 
               esPlantilla={desdePlantilla}
-              manejarSeleccion={manejarSeleccion} 
+              manejarSeleccion={desdePlantilla ? manejarSeleccion : null} 
               manejarEliminacion={manejarEliminacion} 
+              seleccionado={desdePlantilla ? modelosSeleccionados.some((m) => m.id === modelo.id) : false}
             />
           ))
         ) : (
           <p>⚠️ No hay modelos disponibles.</p>
         )}
       </div>
+
+      {/* ✅ Mostrar el botón solo si está en modo selección desde una plantilla */}
+      {desdePlantilla && (
+        <button onClick={confirmarSeleccion}>✅ Confirmar Selección</button>
+      )}
+
 
       <button onClick={() => {
         const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
