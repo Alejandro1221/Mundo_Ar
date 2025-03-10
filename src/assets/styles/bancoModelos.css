@@ -34,3 +34,46 @@
   justify-content: center;
   margin-top: 15px;
 }
+
+/* ✅ Ajuste para que los elementos de sonido sean responsivos y bien alineados */
+.sonido-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.sonido-item p {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+/* ✅ Ajuste para el reproductor de audio */
+.sonido-item audio {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+/* ✅ Botón de acción para eliminar o seleccionar sonido */
+.sonido-item button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.sonido-item button:hover {
+  background-color: #0056b3;
+}

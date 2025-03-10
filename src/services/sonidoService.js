@@ -1,6 +1,7 @@
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { getFirestore, collection, addDoc, getDocs, query, where } from "firebase/firestore";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"; 
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
 import { app } from "./firebaseConfig";
+
 
 const storage = getStorage(app);
 const db = getFirestore(app);
@@ -58,16 +59,17 @@ export const subirSonido = async (archivo, nombre, categoria, setProgreso) => {
   });
 };
 
-// Obtener todos los sonidos guardados en Firestore
 export const obtenerSonidos = async () => {
   try {
     const snapshot = await getDocs(sonidosCollection);
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); 
   } catch (error) {
     console.error("❌ Error al obtener sonidos:", error);
     throw new Error("No se pudieron obtener los sonidos.");
   }
 };
+
+
 // Eliminar un sonido de Firebase Storage y Firestore
 export const eliminarSonido = async (id, url) => {
   if (!id || !url) {

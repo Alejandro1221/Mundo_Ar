@@ -15,7 +15,7 @@ const BancoSonidosSeleccion = ({ onSeleccionar }) => {
   }, []);
 
   return (
-    <div className="banco-sonidos">
+    <div className="banco-sonidos seleccion">
       <h2>Seleccionar Sonido</h2>
       <div className="lista-sonidos">
         {sonidos.length > 0 ? (
