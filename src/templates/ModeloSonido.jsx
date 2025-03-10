@@ -26,42 +26,44 @@ const ModeloSonido = () => {
     } else {
       cargarConfiguracionExistente();
     }
-  }, [juegoId, casillaId, navigate, location.pathname]);
+  }, [juegoId, casillaId, navigate, location.pathname, sessionStorage.getItem("modelosSeleccionados")]);
 
 
-  // 🔹 Cargar configuración existente desde Firestore
   const cargarConfiguracionExistente = async () => {
     try {
       let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+  
       if (modelosGuardados) {
         try {
           modelosGuardados = JSON.parse(modelosGuardados);
-          if (!Array.isArray(modelosGuardados)) {
-            console.warn("⚠️ `modelosSeleccionados` no es un array, reinicializando...");
-            modelosGuardados = [];
+          if (Array.isArray(modelosGuardados) && modelosGuardados.length > 0) {
+            setModelosSeleccionados(modelosGuardados);
+            console.log("✅ Modelos cargados desde sessionStorage:", modelosGuardados);
+            return; // ⚠️ Evita sobrescribir con Firestore
           }
         } catch (err) {
           console.error("❌ Error al parsear `modelosSeleccionados`, reiniciando...", err);
           modelosGuardados = [];
         }
-      } else {
-        modelosGuardados = [];
       }
-      setModelosSeleccionados(modelosGuardados);
-
+  
+      // 🔄 Si no hay modelos en sessionStorage, buscar en Firestore
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
+  
       if (juegoSnap.exists()) {
         const casilla = juegoSnap.data().casillas[casillaId];
         if (casilla?.configuracion) {
           setModelosSeleccionados(casilla.configuracion.modelos || []);
           setSonidoSeleccionado(casilla.configuracion.sonido || null);
+          console.log("📥 Modelos obtenidos de Firestore:", casilla.configuracion.modelos);
         }
       }
     } catch (error) {
       console.error("❌ Error al cargar configuración:", error);
     }
   };
+  
 
   // 🔹 Sincronizar modelos con Firestore
   const sincronizarModelos = async () => {
