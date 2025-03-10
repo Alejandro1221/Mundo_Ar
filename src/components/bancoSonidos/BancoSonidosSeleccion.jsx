@@ -14,7 +14,7 @@ const BancoSonidosSeleccion = ({ onSeleccionar }) => {
     cargarSonidos();
   }, []);
 
-  return (
+return (
     <div className="banco-sonidos seleccion">
       <h2>Seleccionar Sonido</h2>
       <div className="lista-sonidos">
@@ -24,11 +24,34 @@ const BancoSonidosSeleccion = ({ onSeleccionar }) => {
               <p>{sonido.nombre} ({sonido.categoria})</p>
               <audio controls>
                 <source src={sonido.url} type="audio/mp3" />
-                Tu navegador no soporta el elemento de audio.
               </audio>
               <button onClick={() => {
-                  console.log("🎵 Sonido seleccionado:", sonido); 
-                  sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonido));
+                const modeloSeleccionado = JSON.parse(sessionStorage.getItem("modeloSeleccionadoParaSonido"));
+                if (!modeloSeleccionado) {
+                  alert("Error: No se ha seleccionado un modelo.");
+                  return;
+                }
+
+                // Asegurar que el modelo tiene un campo de sonido
+                modeloSeleccionado.sonido = {
+                  id: sonido.id,
+                  nombre: sonido.nombre,
+                  url: sonido.url
+                };
+
+                // Actualizar los modelos en sessionStorage
+                let modelosSeleccionados = JSON.parse(sessionStorage.getItem("modelosSeleccionados")) || [];
+                modelosSeleccionados = modelosSeleccionados.map(m => 
+                  m.url === modeloSeleccionado.url ? modeloSeleccionado : m
+                );
+
+                sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+                
+                // También actualizar el sonido en sessionStorage (para garantizar su persistencia)
+                sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(modeloSeleccionado.sonido));
+                
+                window.history.back();
+              
               }}>
                 🎵 Seleccionar
               </button>

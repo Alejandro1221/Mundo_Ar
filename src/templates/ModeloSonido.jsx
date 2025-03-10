@@ -13,10 +13,10 @@ const ModeloSonido = () => {
   const location = useLocation();
 
   // 🔹 Estados
-  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
-  const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
-  const [juegoId] = useState(sessionStorage.getItem("juegoId"));
-  const [casillaId] = useState(sessionStorage.getItem("casillaId"));
+   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
+   const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
+   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
+   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
 
   
   useEffect(() => {
@@ -26,7 +26,7 @@ const ModeloSonido = () => {
     } else {
       cargarConfiguracionExistente();
     }
-  }, [juegoId, casillaId, navigate, location.pathname, sessionStorage.getItem("modelosSeleccionados")]);
+  }, [juegoId, casillaId, navigate]);
 
 
   const cargarConfiguracionExistente = async () => {
@@ -79,21 +79,31 @@ const ModeloSonido = () => {
 
   // 🔹 Sincronizar modelos con Firestore
   const sincronizarModelos = async () => {
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
-
-    if (juegoSnap.exists()) {
+    try {
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+  
+      if (juegoSnap.exists()) {
         const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+  
         casillasActuales[casillaId] = {
-            plantilla: "modelo-sonido",
-            configuracion: {
-                modelos: modelosSeleccionados, // Asegurarse de no eliminar globalmente
-                sonido: sonidoSeleccionado,
-            },
+          plantilla: "modelo-sonido",
+          configuracion: {
+            modelos: modelosSeleccionados,
+            sonido: sonidoSeleccionado,
+          },
         };
+  
         await updateDoc(juegoRef, { casillas: casillasActuales });
+  
+        // ✅ Mostrar mensaje de confirmación
+        alert("✅ Plantilla guardada correctamente.");
+      }
+    } catch (error) {
+      console.error("❌ Error al guardar en Firestore:", error);
+      alert("❌ Hubo un error al guardar la plantilla. Intenta de nuevo.");
     }
-};
+  };
 
 // 🔹 Eliminar modelo solo de la plantilla 
 const eliminarModelo = async (urlModelo) => {
@@ -135,87 +145,94 @@ const eliminarModelo = async (urlModelo) => {
 
   return (
     <div className="modelo-sonido-container">
-      <h2>Configurar Modelo-Sonido</h2>
+  <h2>Configurar Modelo-Sonido</h2>
 
-      <div className="modelos-seleccionados">
-        {modelosSeleccionados.length > 0 ? (
-          modelosSeleccionados.map((modelo, index) => {
-            console.log("🔍 Modelo cargado:", modelo.url); // ✅ Agregar aquí para ver si la URL es válida
+  <div className="modelos-seleccionados">
+    {modelosSeleccionados.length > 0 ? (
+      modelosSeleccionados.map((modelo, index) => (
+        <div key={index} className="modelo-item">
+          <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
+            <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
+            
+            <Entity
+              gltf-model={modelo.url}
+              position="0 1 -2"
+              scale="1.2 1.2 1.2"
+              rotation="0 45 0"
+              shadow="cast: true"
+              animation="property: rotation; to: 0 405 0; loop: true; dur: 8000"
+            />
 
-            return (
-              <div key={index} className="modelo-item">
-                <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
-                  <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
-                  
-                  <Entity
-                    gltf-model={modelo.url}
-                    position="0 1 -2"  // 🔹 Eleva el modelo
-                    scale="1.2 1.2 1.2"
-                    rotation="0 45 0"
-                    shadow="cast: true"
-                    animation="property: rotation; to: 0 405 0; loop: true; dur: 8000"
-                  />
+            <Entity 
+              geometry="primitive: plane; width: 2; height: 2"
+              material="color: #ddd; opacity: 0.6"
+              position="0 -0.01 -2"
+              rotation="-90 0 0"
+              shadow="receive: true"
+            />
+          </Scene>
 
-                  {/* 🔹 Simulación de suelo con sombra */}
-                  <Entity 
-                    geometry="primitive: plane; width: 2; height: 2"
-                    material="color: #ddd; opacity: 0.6"
-                    position="0 -0.01 -2"
-                    rotation="-90 0 0"
-                    shadow="receive: true"
-                  />
-                </Scene>
+          <p>{modelo.nombre}</p>
 
+          {/* Botón para eliminar modelo */}
+          <button onClick={() => eliminarModelo(modelo.url)}>Eliminar</button>
 
-                <p>{modelo.nombre}</p>
-                <button onClick={() => eliminarModelo(modelo.url)}>Eliminar</button>
-              </div>
-            );
-          })
-        ) : (
-          <p>No se han seleccionado modelos.</p>
-        )}
-      </div>
-
-      <div className="sonido-seleccionado">
-        <p>Sonido: {sonidoSeleccionado ? sonidoSeleccionado.nombre : "No se ha seleccionado sonido"}</p>
-        {sonidoSeleccionado && <audio controls src={sonidoSeleccionado.url} />}
-      </div>
-
-
-      <div className="acciones">
-        <button onClick={() => {
-            sessionStorage.setItem("paginaAnterior", window.location.pathname);
-            sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-            navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
-          }}>
-            Seleccionar Modelos
+          {/* Nuevo botón para asignar sonido */}
+          <button 
+            className="asignar-sonido-btn"
+            onClick={() => {
+              sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
+            }}
+          >
+            🎵 Asignar Sonido
           </button>
+          
+          {modelo.sonido && modelo.sonido.url ? (
+              <div className="sonido-asignado">
+                <p>🔊 {modelo.sonido.nombre}</p>
+                <audio controls>
+                  <source src={modelo.sonido.url} type="audio/mp3" />
+                </audio>
+              </div>
+            ) : (
+              <p className="sin-sonido">❌ Sin sonido asignado</p>
+            )}
+        </div>
+      ))
+    ) : (
+      <p>No se han seleccionado modelos.</p>
+    )}
+  </div>
 
-        <button onClick={() => {
-          sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
-        }}>
-          Seleccionar Sonido
-        </button>
+  <div className="acciones">
+    <button onClick={() => {
+        sessionStorage.setItem("paginaAnterior", window.location.pathname);
+        sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+        navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+      }}>
+        Seleccionar Modelos
+      </button>
 
-        <button onClick={sincronizarModelos} className="guardar-btn">Guardar Configuración</button>
-        <button className="volver-btn" onClick={() => {
-          const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
-          historial.pop(); // Elimina la actual
-          const paginaAnterior = historial.pop(); // Obtiene la anterior
-          sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
+    <button onClick={sincronizarModelos} className="guardar-btn">Guardar Configuración</button>
+    <button className="volver-btn" onClick={() => {
+      const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
+      historial.pop(); 
+      const paginaAnterior = historial.pop(); 
+      sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
 
-          if (paginaAnterior) {
-            navigate(paginaAnterior);
-          } else {
-            navigate(`/docente/configurar-casillas/${juegoId}`);
-          }
-        }}>
-          Volver
-        </button>
-      </div>
-    </div>
+      if (paginaAnterior) {
+        navigate(paginaAnterior);
+      } else {
+        navigate(`/docente/configurar-casillas/${juegoId}`);
+      }
+    }}>
+      Volver
+    </button>
+  </div>
+</div>
+
   );
 };
 
