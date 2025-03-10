@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom"; 
+import {  useNavigate, useLocation } from "react-router-dom"; 
 import { obtenerSonidos } from "../../services/sonidoService";
 import FormularioSubidaSonidos from "./FormularioSubidaSonidos";
 import SonidoItem from "./SonidoItem";
@@ -8,6 +8,8 @@ import BancoSonidosSeleccion from "./BancoSonidosSeleccion";
 
 const BancoSonidos = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+
   const desdePlantilla = location.state?.desdePlantilla || false;
   const [sonidos, setSonidos] = useState([]);
 
@@ -45,6 +47,15 @@ const BancoSonidos = () => {
           </div>
         </>
       )}
+
+        {/* 🔹 Botón para volver a la página anterior */}
+        <button className="volver-btn" onClick={() => {
+        const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+        navigate(paginaAnterior);
+      }}>
+        ⬅️ Volver
+      </button>
+      
     </div>
   );
 };

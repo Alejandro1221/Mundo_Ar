@@ -77,3 +77,26 @@
 .sonido-item button:hover {
   background-color: #0056b3;
 }
+
+/* 🔹 Botón de volver */
+.banco-modelos button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px; /* 🔥 Tamaño más pequeño */
+  font-size: 14px; /* 🔥 Letra más pequeña */
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 30px; /* 🔥 Mueve el botón más abajo */
+  width: auto; /* 🔥 Ajusta el ancho al contenido */
+  max-width: 150px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 🔹 Hover en botón de volver */
+.banco-modelos button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}

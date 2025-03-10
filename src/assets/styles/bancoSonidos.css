@@ -108,3 +108,17 @@
     transform: scale(1.05);
   }
   
+  .volver-btn {
+    margin-top: 20px;
+    padding: 10px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .volver-btn:hover {
+    background-color: #5a6268;
+  }

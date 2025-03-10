@@ -114,18 +114,19 @@ const DashboardDocente = () => {
         <button type="submit">Crear Juego</button>
       </form>
 
-      {/* Lista de juegos */}
+      <h3>Lista de Juegos Creados</h3>
       <div className="lista-juegos">
         {juegos.length === 0 ? (
           <p>No tienes juegos creados aún.</p>
         ) : (
           juegos.map((juego) => (
             <div key={juego.id} className="juego-item">
-              <span>{juego.nombre}</span>
-              {/*<button onClick={() => navigate(`/docente/configurar-casillas/${juego.id}`)}>Configurar</button>*/}
+              <div className="juego-nombre"> {/* 🔥 Contenedor para evitar que el texto se corte */}
+                <span>{juego.nombre}</span>
+              </div>
               <button onClick={() => {
                 sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                  navigate(`/docente/configurar-casillas/${juego.id}`);
+                navigate(`/docente/configurar-casillas/${juego.id}`);
               }}>
                 Configurar
               </button>
@@ -134,7 +135,7 @@ const DashboardDocente = () => {
         )}
       </div>
 
-      
+
       <div className="opciones-bancos">
         <button onClick={() => {
             sessionStorage.setItem("paginaAnterior", "/docente/dashboard"); // ✅ Guardar referencia al Dashboard

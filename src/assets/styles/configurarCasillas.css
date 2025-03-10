@@ -19,17 +19,18 @@
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 10px;
-    width: 60%;
+    width: 100%;
     max-width: 500px;
     margin: 20px auto;
+    padding: 10px;
   }
   
   /* 🔹 Estilo de cada casilla */
   .casilla {
     background-color: #f0f0f0;
     border: 2px solid #ccc;
-    width: 60px;
-    height: 60px;
+    width: 70px;
+    height: 70px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,10 +38,14 @@
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s ease-in-out;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
   }
   
   .casilla:hover {
     background-color: #ddd;
+    transform: scale(1.08);
   }
   
   /* 🔹 Casillas ya configuradas */
@@ -48,14 +53,17 @@
     background-color: #4CAF50;
     color: white;
     border-color: #388E3C;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
+
+.casilla.configurada:hover {
+  background-color: #388E3C; 
+}
   
-  .casilla small {
-    font-size: 12px;
-    display: block;
-    margin-top: 5px;
-  }
-  
+
   /* 🔹 Modal de selección de plantilla */
   .modal {
     display: flex;
@@ -74,7 +82,7 @@
     padding: 20px;
     border-radius: 8px;
     text-align: center;
-    width: 300px;
+    width: 320px;
   }
   
   .modal h3 {
@@ -92,12 +100,9 @@
     justify-content: space-between;
   }
   
-  .modal-buttons button {
-    padding: 8px 12px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    border-radius: 5px;
+  .modal-buttons button:first-child {
+    background: #ccc;
+    color: black;
   }
   
   .modal-buttons button:hover {
@@ -119,14 +124,50 @@
     background-color: #FF5722;
     color: white;
     border: none;
-    padding: 10px 15px;
-    font-size: 16px;
+    padding: 8px 12px; /* 🔥 Reducido */
+    font-size: 14px; /* 🔥 Letra más pequeña */
     cursor: pointer;
     border-radius: 5px;
-    margin-top: 20px;
-  }
-  
-  .volver-btn:hover {
+    margin-top: 15px;
+    width: 150px; /* 🔥 Ancho más pequeño */
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+}
+
+.volver-btn:hover {
     background-color: #E64A19;
+    transform: scale(1.05);
+}
+
+  /* 🔹 Responsividad */
+@media (max-width: 768px) {
+  .tablero {
+      grid-template-columns: repeat(4, 1fr); /* 🔥 Reduce las columnas en tablets */
+      width: 100%;
   }
+
+  .casilla {
+      width: 60px;
+      height: 60px;
+      font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tablero {
+      grid-template-columns: repeat(3, 1fr); /* 🔥 Reduce aún más las columnas en móviles */
+  }
+
+  .casilla {
+      width: 50px;
+      height: 50px;
+      font-size: 14px;
+  }
+
+  .modal-content {
+      width: 280px;
+      padding: 15px;
+  }
+}
+
   

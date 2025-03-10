@@ -1,183 +1,214 @@
-/* 🔹 Ajuste para centrar todo correctamente */
-html, body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  background-color: #f8f9fa; /* 🔹 Fondo más claro para mejor visibilidad */
-}
-
-/* 🔹 Estilos generales del dashboard */
-.dashboard-docente {
+/* 🔹 Ajustes generales solo para el dashboard */
+.dashboard-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 600px; /* 🔹 Reducimos un poco para centrar mejor */
+  width: 90%;
+  max-width: 750px;
+  min-height: 90vh;
   margin: auto;
   padding: 2rem;
-  background: #ffffff;
+  background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  text-align: center;
 }
 
 /* 🔹 Título */
-.dashboard-docente h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  text-align: center;
-  width: 100%;
+.dashboard-container h1 {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+  font-weight: bold;
 }
 
-/* 🔹 Botón de cerrar sesión */
 .logout-btn {
-  background: #ff4d4d;
+  position: absolute;  
+  top: 15px;  
+  right: 20px; 
+  background: #e74c3c;
   color: white;
   border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 8px 12px; 
+  border-radius: 6px; 
+  font-size: 0.9rem; 
   font-weight: bold;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
-  margin-bottom: 15px;
+  transition: background 0.3s ease-in-out, transform 0.2s;
+  box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+  min-width: auto; 
+  max-width: 150px;
+  text-align: center;
 }
 
 .logout-btn:hover {
-  background: #cc0000;
+  background: #c0392b;
+  transform: scale(1.05);
 }
 
-/* 🔹 Formulario para crear juegos */
 .crear-juego-form {
-  display: flex;
-  flex-direction: column; /* 🔹 Cambiado a columna para mejor alineación */
-  align-items: center;
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px; 
 }
 
-/* 🔹 Input del formulario */
 .crear-juego-form input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
   width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   font-size: 1rem;
-  margin-bottom: 10px; /* 🔹 Espaciado para evitar que se pegue con el botón */
+  margin-bottom: 12px;
 }
-
-/* 🔹 Botón de crear juego */
 .crear-juego-form button {
-  background: #4a90e2;
+  background: #3498db;
   color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
   font-size: 1rem;
-  font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
   width: 100%;
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+.crear-juego-form button:hover {
+  background: #2980b9;
+  transform: scale(1.05);
+
 }
 
-.crear-juego-form button:hover {
-  background: #3f81cc;
+/* 🔹 Título de la lista */
+.lista-juegos h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 /* 🔹 Lista de juegos */
 .lista-juegos {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
   width: 100%;
   max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-/* 🔹 Tarjetas de juegos */
 .juego-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: center;
   width: 100%;
   padding: 15px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 1.1rem;
+  background: #ecf0f1;
+  border-radius: 10px;
+  font-size: 1rem;
   font-weight: bold;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  transition: transform 0.2s ease-in-out;
 }
 
-/* 🔹 Botón de "Configurar" */
+.juego-nombre {
+  flex-grow: 1;  
+  text-align: left;
+  padding-right: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+}
+.juego-item:hover {
+  transform: scale(1.02);
+}
+
 .juego-item button {
-  background: #2ecc71;
+  background: #27ae60;
   color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 6px;
-  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.3s ease-in-out;
+  min-width: 100px;
+  max-width: 160px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
 }
-
 .juego-item button:hover {
-  background: #27ae60;
+  background: #219150;
+  transform: scale(1.05);
 }
 
-/* 🔹 Contenedor de los botones de Banco de Modelos y Sonidos */
 .opciones-bancos {
-  display: flex;
-  flex-direction: column; /* 🔹 Alineado en columna para evitar desorden */
-  gap: 10px;
-  margin-top: 20px;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 15px;
 }
-
-/* 🔹 Botones de bancos */
 .opciones-bancos button {
   background: #f39c12;
   color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
   width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
 }
-
 .opciones-bancos button:hover {
   background: #e67e22;
+  transform: scale(1.05);
 }
 
-/* 🔹 Diseño responsivo */
-@media (max-width: 768px) {
-  .dashboard-docente {
-      padding: 1.5rem;
-      width: 100%;
-  }
-  .crear-juego-form {
-      flex-direction: column;
-      width: 100%;
-  }
-  .opciones-bancos {
-      flex-direction: column;
-      gap: 10px;
-      width: 100%;
-  }
-  .opciones-bancos button {
-      width: 100%;
+
+/* 🔹 Ajustes responsivos */
+@media (max-width: 1024px) {
+  .dashboard-container {
+    max-width: 80%;
+    padding: 1.5rem;
   }
 }
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    width: 90%;
+    max-width: 600px;
+    padding: 1.2rem;
+  }
+
+  .logout-btn {
+    top: 10px;
+    right: 15px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .opciones-bancos button {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    width: 95%;
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .juego-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .juego-item button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+

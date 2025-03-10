@@ -1,9 +1,9 @@
 /* 📌 Contenedor Principal */
 .modelo-sonido-container {
   text-align: center;
-  max-width: 900px;  /* Aumenta el ancho */
+  max-width: 900px;
   margin: auto;
-  background: #f9f9f9;  /* Fondo más suave */
+  background: #f9f9f9;
   padding: 20px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -17,50 +17,40 @@
   gap: 20px;
 }
 
+/* 📌 Modelo Item */
 .modelo-item {
   border: 2px solid #ddd;
   border-radius: 12px;
   padding: 15px;
   background: linear-gradient(135deg, #f9f9f9, #ffffff);
-  width: 260px; /* Aumenta espacio */
-  height: 330px; /* Aumenta espacio */
+  width: 240px; /* 🔹 Ajuste de tamaño */
+  height: 310px; /* 🔹 Ajuste de tamaño */
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease-in-out;
-  position: relative;  /* Necesario para la base */
+  position: relative;
 }
 
 .modelo-item:hover {
-  transform: scale(1.05);
+  transform: scale(1.05); /* 🔥 Efecto suave al pasar el mouse */
 }
 
 /* 📌 Escena de A-Frame */
 .modelo-item .aframe-scene {
-  width: 220px !important; /* Asegura que el modelo no se corte */
-  height: 220px !important;
+  width: 200px !important; 
+  height: 200px !important;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.8); /* Fondo semi-transparente */
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 10px;
   position: relative;
 }
 
-/* 📌 Base debajo del modelo */
-.modelo-item .base {
-  position: absolute;
-  bottom: 20px;
-  width: 100px;
-  height: 10px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
-  filter: blur(5px); /* Difumina para simular sombra */
-}
-
 /* 📌 Nombre del Modelo */
 .modelo-item p {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: #333;
   margin-top: 5px;
@@ -76,11 +66,11 @@
   cursor: pointer;
   transition: 0.3s;
   font-weight: bold;
+  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
-  font-size: 14px;
 }
 
 /* 📌 Hover en Botón Eliminar */
@@ -91,26 +81,35 @@
 /* 📌 Sonido Seleccionado */
 .sonido-seleccionado {
   margin-top: 20px;
-  font-size: 18px;
+  font-size: 16px;
   color: #444;
+  font-weight: bold;
 }
 
 /* 📌 Botones de Acción */
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* 📌 Botones */
 .acciones button {
-  margin: 10px;
-  padding: 10px 15px;
-  font-size: 16px;
+  padding: 8px 14px;
+  font-size: 14px;
   border: none;
   cursor: pointer;
   border-radius: 8px;
   font-weight: bold;
+  transition: 0.3s;
 }
 
 /* 📌 Botón Guardar */
 .guardar-btn {
   background-color: #008000;
   color: white;
-  transition: 0.3s;
 }
 
 .guardar-btn:hover {
@@ -121,9 +120,43 @@
 .volver-btn {
   background-color: orange;
   color: white;
-  transition: 0.3s;
+  padding: 6px 12px; /* 🔥 Botón más pequeño */
+  font-size: 13px; /* 🔥 Letra más pequeña */
+  margin-top: 20px; /* 🔥 Más separación */
 }
 
 .volver-btn:hover {
   background-color: darkorange;
+}
+
+/* 📌 Responsivo */
+@media (max-width: 768px) {
+  .modelo-item {
+    width: 200px;
+    height: 280px;
+  }
+
+  .acciones button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modelo-item {
+    width: 180px;
+    height: 260px;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+
+  .volver-btn {
+    width: 100%;
+  }
 }
