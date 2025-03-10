@@ -32,6 +32,18 @@ const ModeloSonido = () => {
   const cargarConfiguracionExistente = async () => {
     try {
       let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+      let sonidoGuardado = sessionStorage.getItem("sonidoSeleccionado"); // 🔹 Recuperar sonido
+  
+      if (sonidoGuardado) {
+        try {
+          sonidoGuardado = JSON.parse(sonidoGuardado);
+          console.log("🔊 Sonido recuperado desde sessionStorage:", sonidoGuardado); // 🔍 Verificar en consola
+          setSonidoSeleccionado(sonidoGuardado); // ✅ Asignar sonido
+        } catch (err) {
+          console.error("❌ Error al parsear `sonidoSeleccionado`, reiniciando...", err);
+          sonidoGuardado = null;
+        }
+      }
   
       if (modelosGuardados) {
         try {
@@ -47,7 +59,7 @@ const ModeloSonido = () => {
         }
       }
   
-      // 🔄 Si no hay modelos en sessionStorage, buscar en Firestore
+      // 🔄 Si no hay datos en sessionStorage, buscar en Firestore
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
   
@@ -56,7 +68,7 @@ const ModeloSonido = () => {
         if (casilla?.configuracion) {
           setModelosSeleccionados(casilla.configuracion.modelos || []);
           setSonidoSeleccionado(casilla.configuracion.sonido || null);
-          console.log("📥 Modelos obtenidos de Firestore:", casilla.configuracion.modelos);
+          console.log("📥 Datos obtenidos de Firestore:", casilla.configuracion);
         }
       }
     } catch (error) {

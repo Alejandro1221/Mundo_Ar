@@ -26,7 +26,13 @@ const BancoSonidosSeleccion = ({ onSeleccionar }) => {
                 <source src={sonido.url} type="audio/mp3" />
                 Tu navegador no soporta el elemento de audio.
               </audio>
-              <button onClick={() => onSeleccionar(sonido)}>🎵 Seleccionar</button>
+              <button onClick={() => {
+                  console.log("🎵 Sonido seleccionado:", sonido); 
+                  sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonido));
+              }}>
+                🎵 Seleccionar
+              </button>
+
             </div>
           ))
         ) : (
