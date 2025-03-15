@@ -14,7 +14,7 @@ const Home = () => {
         <Link to="/login" className="role-btn" aria-label="Iniciar sesión como docente">
           Docente
         </Link>
-        <Link to="/estudiante" className="role-btn" aria-label="Acceder como estudiante">
+        <Link to="/estudiante/login" className="role-btn" aria-label="Acceder como estudiante">
           Estudiante
         </Link>
       </div>

@@ -1,0 +1,36 @@
+.dashboard-estudiante {
+    text-align: center;
+    padding: 20px;
+}
+
+.lista-juegos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+.juego-item {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.juego-item:hover {
+    background-color: #e9ecef;
+}
+
+.juego-item h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.juego-item p {
+    font-size: 14px;
+    color: #555;
+}

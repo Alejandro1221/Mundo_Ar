@@ -3,7 +3,7 @@ import Home from "../pages/home";
 import Register from "../components/auth/Register";
 import Login from "../components/auth/Login"; 
 import DocenteRoutes from "./DocenteRoutes"; 
-/*import EstudianteRoutes from "./EstudiantesRoutes";*/
+import EstudianteRoutes from "./EstudianteRoutes";
 
 const AppRoutes = () => {
   return (
@@ -12,6 +12,7 @@ const AppRoutes = () => {
         <Route path="/register" element={<Register />} /> 
         <Route path="/login" element={<Login />} /> 
         <Route path="/docente/*" element={<DocenteRoutes />} />
+        <Route path="/estudiante/*" element={<EstudianteRoutes />} /> 
        
     </Routes>
   );
