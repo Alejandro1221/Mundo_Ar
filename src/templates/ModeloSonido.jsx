@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos"; // ✅ Importa el hook
 import { useNavigate, useLocation } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../services/firebaseConfig";
 import "aframe";
 import { Entity, Scene } from "aframe-react";
+import imagenSonido from "../assets/images/imag_sonido.png";
+
 import "../assets/styles/modeloSonido.css";
 
 
@@ -17,8 +19,11 @@ const ModeloSonido = () => {
    const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
    const [juegoId] = useState(sessionStorage.getItem("juegoId"));
    const [casillaId] = useState(sessionStorage.getItem("casillaId"));
+   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
 
-  
+   const [reproduciendo, setReproduciendo] = useState(false);
+   const audioRef = useRef(null);
+
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
@@ -28,6 +33,14 @@ const ModeloSonido = () => {
     }
   }, [juegoId, casillaId, navigate]);
 
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        setReproduciendo(false);
+      }
+    };
+  }, []);
 
   const cargarConfiguracionExistente = async () => {
     try {
@@ -76,8 +89,6 @@ const ModeloSonido = () => {
     }
   };
   
-
-  // 🔹 Sincronizar modelos con Firestore
   const sincronizarModelos = async () => {
     try {
       const juegoRef = doc(db, "juegos", juegoId);
@@ -96,12 +107,11 @@ const ModeloSonido = () => {
   
         await updateDoc(juegoRef, { casillas: casillasActuales });
   
-        // ✅ Mostrar mensaje de confirmación
-        alert("✅ Plantilla guardada correctamente.");
+        mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
       }
     } catch (error) {
       console.error("❌ Error al guardar en Firestore:", error);
-      alert("❌ Hubo un error al guardar la plantilla. Intenta de nuevo.");
+      mostrarMensaje("❌ Error al guardar la plantilla.", "error");
     }
   };
 
@@ -143,14 +153,46 @@ const eliminarModelo = async (urlModelo) => {
   }
 };
 
+const mostrarMensaje = (texto, tipo = "info") => {
+  setMensaje({ texto, tipo });
+  setTimeout(() => {
+    setMensaje({ texto: "", tipo: "" }); // Oculta el mensaje después de 3 segundos
+  }, 3000);
+};
+const manejarReproduccion = () => {
+  if (!sonidoSeleccionado || !sonidoSeleccionado.url) {
+    mostrarMensaje("⚠️ No hay sonido asignado.", "warning");
+    return;
+  }
+
+  if (audioRef.current) {
+    const audio = audioRef.current;
+    
+    if (audio.paused) {
+      audio.play().catch((error) => {
+        console.error("⚠️ No se pudo reproducir el audio:", error);
+        mostrarMensaje("⚠️ No se pudo reproducir el audio. Interacción requerida.", "warning");
+      });
+      setReproduciendo(true);
+    } else {
+      audio.pause();
+      setReproduciendo(false);
+    }
+  }
+};
   return (
-    <div className="modelo-sonido-container">
+  <div className="docente-modelo-container">
+     {mensaje.texto && (
+        <div className={`mensaje ${mensaje.tipo}`}>
+          {mensaje.texto}
+        </div>
+      )}
   <h2>Configurar Modelo-Sonido</h2>
 
-  <div className="modelos-seleccionados">
+  <div className="docente-modelos-seleccionados">
     {modelosSeleccionados.length > 0 ? (
       modelosSeleccionados.map((modelo, index) => (
-        <div key={index} className="modelo-item">
+        <div key={index} className="docente-modelo-item">
           <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
             <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
             
@@ -230,6 +272,17 @@ const eliminarModelo = async (urlModelo) => {
     }}>
       Volver
     </button>
+
+    <div className="boton-sonido-container">
+      <img 
+        src={imagenSonido} 
+        alt="Reproducir sonido" 
+        className="boton-sonido" 
+        onClick={manejarReproduccion} 
+      />
+      <audio ref={audioRef} src={sonidoSeleccionado?.url} style={{ display: "none" }} />
+    </div>
+    
   </div>
 </div>
 

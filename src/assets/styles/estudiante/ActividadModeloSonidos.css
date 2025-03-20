@@ -1,0 +1,126 @@
+/* 🔹 Contenedor principal */
+.estudiante-modelo-sonido-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    height: 100vh;
+}
+
+/* 🔹 Título */
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* 🔹 Contenedor de modelos */
+.estudiante-modelos-seleccionados {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* 🔹 Cada modelo en su cuadro */
+.estudiante-modelo-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 220px;
+}
+
+/* 🔹 Modelo 3D dentro del cuadro */
+.estudiante-modelo-item scene {
+    width: 100%;
+    height: 200px;
+}
+
+/* 🔹 Nombre del modelo */
+.estudiante-modelo-item p {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* 🔹 Contenedor de sonido */
+.estudiante-sonido-asignado {
+    margin-top: 15px;
+    padding: 10px;
+    background: #e8f5e9;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* 🔹 Estilo para el reproductor de audio */
+audio {
+    margin-top: 10px;
+    width: 100%;
+    max-width: 250px;
+}
+
+/* 🔹 Botón de volver */
+.estudiante-volver-btn {
+    background-color: #FF5722;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+    width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+}
+
+.estudiante-volver-btn:hover {
+    background-color: #E64A19;
+    transform: scale(1.05);
+}
+
+.estudiante-modelo-item {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .estudiante-modelo-item:hover {
+    transform: scale(1.1);
+  }
+  
+  .seleccionado {
+    border: 3px solid green;
+    background-color: #d4f8d4;
+  }
+  
+  .boton-sonido {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+  }
+  
+  .mensaje-feedback {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 15px;
+  }
+  
+/* 🔹 Responsividad */
+@media (max-width: 768px) {
+    .estudiante-modelos-seleccionados {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .estudiante-modelo-item {
+        width: 90%;
+    }
+}

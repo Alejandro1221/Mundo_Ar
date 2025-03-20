@@ -17,15 +17,22 @@ export const obtenerCasillas = async (juegoId) => {
   }
 };
 
-export const actualizarCasillas = async (juegoId, nuevasCasillas) => {
+export const actualizarCasillas = async (juegoId, index, nuevaPlantilla) => {
   try {
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
+
     if (juegoSnap.exists()) {
+      const juegoData = juegoSnap.data();
+      const nuevasCasillas = [...(juegoData.casillas || Array(30).fill({ plantilla: null }))];
+
+      // 🔹 Actualizar solo la casilla específica
+      nuevasCasillas[index] = { plantilla: nuevaPlantilla };
+
       await updateDoc(juegoRef, { casillas: nuevasCasillas });
     }
   } catch (error) {
-    console.error("Error al actualizar casillas:", error);
+    console.error("Error al actualizar casilla:", error);
   }
 };
 

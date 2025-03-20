@@ -1,20 +1,27 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ Importar useNavigate para navegación interna
+import { useNavigate } from "react-router-dom"; 
 import { obtenerCasillas, actualizarCasillas } from "../services/casillasService";
 
 export const useCasillas = (juegoId) => {
-  const navigate = useNavigate(); // ✅ Hook para cambiar de página dentro de la app
+  const navigate = useNavigate();
   const [casillas, setCasillas] = useState(Array(30).fill({ plantilla: null }));
   const [modalVisible, setModalVisible] = useState(false);
   const [plantillaSeleccionada, setPlantillaSeleccionada] = useState("");
   const [casillaSeleccionada, setCasillaSeleccionada] = useState(null);
 
+  // ✅ 1. Validar datos al cargar casillas
   const cargarCasillas = useCallback(async () => {
-    const casillasCargadas = await obtenerCasillas(juegoId);
+    let casillasCargadas = await obtenerCasillas(juegoId);
+    
+    if (!Array.isArray(casillasCargadas) || casillasCargadas.length !== 30) {
+      console.warn("Datos de casillas corruptos o incompletos. Reiniciando estructura.");
+      casillasCargadas = Array(30).fill({ plantilla: null }); // 🔹 Forzar estructura correcta
+    }
+    
     setCasillas(casillasCargadas);
   }, [juegoId]);
 
-    // 📌 Mapeo de rutas según la plantilla seleccionada
+  // 📌 Mapeo de rutas según la plantilla seleccionada
   const rutasPlantillas = {
     "modelo-sonido": "/docente/plantilla-sonido-modelo",
   };
@@ -26,7 +33,7 @@ export const useCasillas = (juegoId) => {
         sessionStorage.setItem("paginaAnterior", window.location.pathname);
         sessionStorage.setItem("juegoId", juegoId);
         sessionStorage.setItem("casillaId", index);
-        navigate(ruta);  // ✅ Redirigir a la plantilla correspondiente
+        navigate(ruta);
       } else {
         alert(`La plantilla "${plantillaActual}" aún no está implementada.`);
       }
@@ -37,8 +44,7 @@ export const useCasillas = (juegoId) => {
     setModalVisible(true);
   };
 
-  
-
+  // ✅ 2. Solo actualizar la casilla modificada en Firestore
   const guardarCambios = async () => {
     if (casillaSeleccionada === null || !plantillaSeleccionada) {
       alert("Seleccione una plantilla.");
@@ -48,15 +54,14 @@ export const useCasillas = (juegoId) => {
     const nuevasCasillas = [...casillas];
     nuevasCasillas[casillaSeleccionada] = { plantilla: plantillaSeleccionada };
 
-    await actualizarCasillas(juegoId, nuevasCasillas);
+    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); // 🔹 Solo actualiza una casilla
     setCasillas(nuevasCasillas);
     setModalVisible(false);
 
-    // ✅ En lugar de abrir en nueva pestaña, usamos navigate() para cambiar de página dentro de la app
     if (plantillaSeleccionada === "modelo-sonido") {
       sessionStorage.setItem("juegoId", juegoId);
       sessionStorage.setItem("casillaId", casillaSeleccionada);
-      navigate("/plantilla-sonido-modelo"); // ✅ Redirección interna en React
+      navigate("/plantilla-sonido-modelo");
     }
   };
 

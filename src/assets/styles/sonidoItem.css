@@ -36,3 +36,27 @@
   .sonido-item button:hover {
     background-color: #c82333;
   }
+
+  .mensaje {
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+  
+  .mensaje.info {
+    background-color: #d9edf7;
+    color: #31708f;
+  }
+  
+  .mensaje.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+  }
+  
+  .mensaje.error {
+    background-color: #f2dede;
+    color: #a94442;
+  }
+  

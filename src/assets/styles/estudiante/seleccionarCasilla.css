@@ -1,0 +1,49 @@
+/* 🔹 Contenedor principal */
+.tablero-container {
+    text-align: center;
+    margin-top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 🔹 Contenedor del camino */
+.camino-container {
+    position: relative;
+    width: 80%;  /* 🔥 Ajuste dinámico */
+    max-width: 600px;
+    height: auto;
+}
+
+/* 🔹 Imagen de Fondo */
+.fondo-camino {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* 🔹 Casillas */
+.casilla {
+    position: absolute;
+    width: 6%; /* 🔥 Tamaño relativo a la imagen */
+    height: 6%;
+    background-color: orange;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 30px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    box-shadow: 0 0 8px rgba(255, 255, 0, 0.8);
+}
+
+/* 🔹 Efecto hover */
+.casilla:hover {
+    transform: scale(1.2);
+    background-color: yellow;
+    color: black;
+}
