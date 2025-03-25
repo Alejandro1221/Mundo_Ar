@@ -50,7 +50,14 @@ const ModeloSonido = () => {
       if (sonidoGuardado) {
         try {
           sonidoGuardado = JSON.parse(sonidoGuardado);
-          console.log("🔊 Sonido recuperado desde sessionStorage:", sonidoGuardado); // 🔍 Verificar en consola
+  
+          // 🔹 Agregar modeloAsociado desde sessionStorage si existe
+          const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
+          if (modeloAsociado) {
+            sonidoGuardado.modeloAsociado = modeloAsociado;
+          }
+  
+          console.log("🔊 Sonido recuperado desde sessionStorage:", sonidoGuardado);
           setSonidoSeleccionado(sonidoGuardado); // ✅ Asignar sonido
         } catch (err) {
           console.error("❌ Error al parsear `sonidoSeleccionado`, reiniciando...", err);
@@ -224,6 +231,7 @@ const manejarReproduccion = () => {
             className="asignar-sonido-btn"
             onClick={() => {
               sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+              sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
               sessionStorage.setItem("paginaAnterior", window.location.pathname);
               navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
             }}

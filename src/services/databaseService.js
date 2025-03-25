@@ -1,15 +1,17 @@
 import { db } from "./firebaseConfig";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";  // ✅ Agregamos `collection` y `getDocs`
 
+const CASILLAS_VACIAS = Array(30).fill({ plantilla: null }); 
+
 // 🔹 Función para obtener todos los juegos desde Firestore
 export const obtenerJuegos = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, "juegos"));  // ✅ Corrección aquí
+    const querySnapshot = await getDocs(collection(db, "juegos")); 
     const juegos = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
-    console.log("Juegos obtenidos:", juegos); // ✅ Verificar en la consola
+    console.log("Juegos obtenidos:", juegos); 
     return juegos;
   } catch (error) {
     console.error("Error obteniendo juegos:", error);
@@ -24,14 +26,13 @@ export const obtenerCasillasPorJuego = async (juegoId) => {
 
     if (juegoSnap.exists()) {
       const juegoData = juegoSnap.data();
-      return juegoData.casillas || Array(30).fill({ plantilla: null }); // 🔹 Unificamos con módulo docente
+      return juegoData.casillas || CASILLAS_VACIAS; 
     } else {
-      console.warn("El juego no existe.");
-      return Array(30).fill({ plantilla: null }); // 🔹 Ahora siempre devuelve 30 casillas
+      console.warn("⚠️ El juego no existe en Firestore.");
+      return CASILLAS_VACIAS; 
     }
   } catch (error) {
-    console.error("Error obteniendo casillas:", error);
-    return Array(30).fill({ plantilla: null }); // 🔹 Evitamos errores devolviendo 30 casillas vacías
+    console.error("❌ Error obteniendo casillas:", error);
+    return CASILLAS_VACIAS; 
   }
 };
-
