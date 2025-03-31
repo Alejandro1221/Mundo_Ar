@@ -2,11 +2,9 @@ import React from "react";
 import { eliminarSonido } from "../services/sonidoService";
 import "../assets/styles/bancoSonidos/sonidoItem.css";
 
-
-
 const SonidoItem = ({ sonido, setSonidos }) => {
   const handleEliminar = async () => {
-    const confirmar = window.confirm(`¿Seguro que deseas eliminar ${sonido.nombre}?`);
+    const confirmar = window.confirm(`¿Seguro que deseas eliminar "${sonido.nombre}"?`);
     if (!confirmar) return;
 
     try {
@@ -20,14 +18,19 @@ const SonidoItem = ({ sonido, setSonidos }) => {
 
   return (
     <div className="sonido-item">
-      <p>{sonido.nombre} ({sonido.categoria})</p>
-      <audio controls>
-        <source src={sonido.url} type="audio/mp3" />
-        Tu navegador no soporta el elemento de audio.
-      </audio>
-      <button onClick={handleEliminar}>🗑️ Eliminar</button>
+      <div className="info-sonido">
+        <p className="nombre-sonido">
+          🎵 <strong>{sonido.nombre}</strong> <span className="categoria-sonido">({sonido.categoria})</span>
+        </p>
+        <audio controls>
+          <source src={sonido.url} type="audio/mp3" />
+          Tu navegador no soporta el elemento de audio.
+        </audio>
+      </div>
+      <button className="btn-eliminar-sonido" onClick={handleEliminar}>🗑️ Eliminar</button>
     </div>
   );
 };
 
 export default SonidoItem;
+

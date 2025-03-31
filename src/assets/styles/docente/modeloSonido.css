@@ -1,204 +1,214 @@
+/* ===========================
+   🎧 Estilos: Modelo-Sonido Docente
+   =========================== */
+
 /* 📌 Contenedor Principal */
 .docente-modelo-container {
   text-align: center;
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 40px auto;
-  background: #ffffff;
+  background: var(--fondo-blanco);
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 📌 Diseño de Modelos Seleccionados */
+/* 📌 Título */
+.titulo-vista {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--azul-profundo);
+  margin-bottom: 25px;
+}
+
+/* 📌 Modelos Seleccionados */
 .docente-modelos-seleccionados {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 25px; /* 🔥 Más espacio entre modelos */
+  gap: 25px;
+  margin-bottom: 30px;
 }
 
-/* 📌 Modelo Item */
+/* 📌 Item de Modelo */
 .docente-modelo-item {
-  border: 2px solid #ddd;
+  background: linear-gradient(135deg, #f9f9f9, #ffffff);
+  border: 2px solid #e0e0e0;
   border-radius: 12px;
   padding: 15px;
-  background: linear-gradient(135deg, #f9f9f9, #ffffff);
-  width: 260px; /* 🔹 Ajuste de tamaño */
-  height: 340px; /* 🔹 Más espacio */
+  width: 260px;
+  height: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px 5px 12px rgba(0, 0, 0, 0.12);
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s;
-  position: relative;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
 }
 
 .docente-modelo-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.2);
+  transform: scale(1.04);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* 📌 Escena de A-Frame */
+/* 📌 Escena A-Frame */
 .docente-modelo-item .aframe-scene {
-  width: 210px !important; 
-  height: 210px !important;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.85);
+  width: 200px !important;
+  height: 200px !important;
+  background: #f0f0f0;
   border-radius: 10px;
-  position: relative;
 }
 
-/* 📌 Nombre del Modelo */
 .docente-modelo-item p {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: #333;
-  margin-top: 5px;
+  margin: 10px 0 5px;
+}
+
+/* 📌 Botones */
+.docente-modelo-item button,
+.acciones button,
+.acciones-finales button {
+  background-color: var(--azul-profundo);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.docente-modelo-item button:hover,
+.acciones button:hover,
+.acciones-finales button:hover {
+  background-color: var(--menta);
+  transform: scale(1.05);
 }
 
 /* 📌 Botón Eliminar */
-.docente-modelo-item button {
+.docente-modelo-item .eliminar-btn {
   background-color: #e63946;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.3s ease-in-out;
-  font-weight: bold;
-  font-size: 15px;
 }
 
-.docente-modelo-item button:hover {
-  background-color: #b71c1c;
+.docente-modelo-item .eliminar-btn:hover {
+  background-color: #c62828;
 }
 
-/* 📌 Sonido Seleccionado */
-.sonido-seleccionado {
-  margin-top: 25px;
-  font-size: 18px;
-  color: #444;
-  font-weight: bold;
+/* 📌 Sonido Asignado */
+.sonido-asignado p {
+  font-size: 14px;
+  margin: 6px 0 4px;
 }
 
-/* 📌 Botones de Acción */
+.sin-sonido {
+  font-size: 13px;
+  color: #999;
+}
+
+/* 📌 Acciones Finales */
 .acciones {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 15px;
+  margin-top: 25px;
+}
+
+.guardar-btn {
+  background-color: var(--verde);
+}
+
+.volver-btn {
+  background-color: var(--naranja);
+}
+
+/* 📌 Selector de celebración */
+.seccion-celebracion {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin-top: 20px;
 }
 
-/* 📌 Botones */
-.acciones button {
-  padding: 8px 14px; 
-  font-size: 14px; 
-  width: auto;
-  min-width: 180px; 
-  max-width: 220px; 
-  text-align: center;
-  border-radius: 8px;
-  font-weight: bold;
-  transition: 0.3s;
+.seccion-celebracion input,
+.seccion-celebracion select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 250px;
 }
 
-/* 📌 Botón Seleccionar Modelos */
-.acciones .seleccionar-modelos {
-  background-color: #007bff;
-  color: white;
-}
-
-.acciones .seleccionar-modelos:hover {
-  background-color: #0056b3;
-}
-
-/* 📌 Botón Seleccionar Sonido */
-.acciones .seleccionar-sonido {
-  background-color: #007bff;
-  color: white;
-}
-
-.acciones .seleccionar-sonido:hover {
-  background-color: #0056b3;
-}
-
+/* 📌 Botón Sonido */
 .boton-sonido-container {
-  cursor: pointer;
+  margin-top: 20px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  margin-top: 15px;
 }
 
 .boton-sonido {
-  width: 80px;
-  height: 80px;
-  transition: transform 0.2s;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 }
 
 .boton-sonido:hover {
   transform: scale(1.1);
 }
 
-/* 📌 Botón Guardar */
-.guardar-btn {
-  background-color: #28a745;
-  color: white;
+/* 📌 Mensajes */
+.mensaje {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: bold;
 }
 
-.guardar-btn:hover {
-  background-color: #218838;
+.mensaje.success {
+  background-color: #d4edda;
+  color: #155724;
 }
 
-/* 📌 Botón Volver */
-.volver-btn {
-  background-color: #f4a261;
-  color: white;
-  padding: 10px 14px;
-  font-size: 15px;
-}
-
-.volver-btn:hover {
-  background-color: #e76f51;
-}
-
-.a-enter-vr {
-  transform: scale(0.5); 
-  position: absolute;
-  bottom: 10px; 
-  right: 5px; 
+.mensaje.error {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 
-/* 📌 Responsivo */
+
+/* 📌 Responsive */
 @media (max-width: 768px) {
-  .modelo-item {
+  .docente-modelo-item {
     width: 220px;
-    height: 300px;
+    height: 360px;
   }
 
   .acciones button {
-    font-size: 14px;
-    padding: 8px 12px;
+    min-width: 160px;
+  }
+
+  .seccion-celebracion input,
+  .seccion-celebracion select {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .modelo-item {
-    width: 190px;
-    height: 280px;
+  .docente-modelo-item {
+    width: 100%;
+    height: auto;
   }
 
   .acciones {
     flex-direction: column;
   }
 
-  .acciones button {
-    width: 100%;
-  }
-
+  .acciones button,
   .volver-btn {
     width: 100%;
   }

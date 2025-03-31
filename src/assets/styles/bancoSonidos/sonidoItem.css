@@ -1,62 +1,102 @@
-
 .sonido-item {
-    display: flex;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--blanco);
+  border-radius: 10px;
+  padding: 16px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 14px;
+  transition: transform 0.2s ease;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sonido-item:hover {
+  transform: scale(1.01);
+}
+
+/* 🎵 Info del sonido */
+.info-sonido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.nombre-sonido {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--texto-oscuro);
+  margin-bottom: 6px;
+}
+
+.categoria-sonido {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gris);
+}
+
+/* 🎧 Reproductor */
+.sonido-item audio {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 4px;
+}
+
+/* 🗑️ Botón de eliminar */
+.btn-eliminar-sonido {
+  background-color: var(--rojo);
+  color: var(--texto-claro);
+  padding: 10px 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-eliminar-sonido:hover {
+  background-color: #b02a37;
+}
+
+/* ℹ️ Mensajes */
+.mensaje {
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.mensaje.info {
+  background-color: var(--azul-claro);
+  color: #31708f;
+}
+
+.mensaje.success {
+  background-color: var(--verde-suave);
+  color: #3c763d;
+}
+
+.mensaje.error {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+/* 📱 Responsive */
+@media (max-width: 480px) {
+  .sonido-item {
     flex-direction: column;
     align-items: center;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  
-  .sonido-item p {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .sonido-item audio {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 10px;
-  }
-  
-  .sonido-item button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .sonido-item button:hover {
-    background-color: #c82333;
   }
 
-  .mensaje {
-    padding: 10px;
-    border-radius: 8px;
+  .info-sonido {
+    align-items: center;
     text-align: center;
-    margin-bottom: 15px;
-    font-weight: bold;
   }
-  
-  .mensaje.info {
-    background-color: #d9edf7;
-    color: #31708f;
+
+  .btn-eliminar-sonido {
+    width: 100%;
   }
-  
-  .mensaje.success {
-    background-color: #dff0d8;
-    color: #3c763d;
-  }
-  
-  .mensaje.error {
-    background-color: #f2dede;
-    color: #a94442;
-  }
-  
+}

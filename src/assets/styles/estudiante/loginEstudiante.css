@@ -1,46 +1,58 @@
 .login-estudiante {
+  background-color: #eef7fd; /* fondo azul clarito */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #f0f8ff;
-  font-family: Arial, sans-serif;
+  padding: 40px;
+  font-family: 'Segoe UI', sans-serif;
 }
 
 .login-estudiante h2 {
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #1d3557; /* azul profundo */
 }
 
 .login-estudiante input {
-  width: 80%;
-  max-width: 300px;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 300px;
+  padding: 14px;
+  border: 2px solid #a8dadc;
+  border-radius: 10px;
   font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+  background: white;
+  text-align: center;
+}
+
+.login-estudiante input:focus {
+  border-color: #457b9d;
+  box-shadow: 0 0 6px rgba(69, 123, 157, 0.4);
 }
 
 .login-estudiante button {
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
+  margin-top: 20px;
+  width: 300px;
+  padding: 14px;
+  background-color: #007bff; /* azul vibrante */
   color: white;
+  font-weight: bold;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
+  font-size: 16px;
   cursor: pointer;
-  margin-top: 10px;
+  transition: background 0.3s ease;
 }
 
 .login-estudiante button:hover {
   background-color: #0056b3;
+  transform: scale(1.03);
 }
 
 .error-message {
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
+  color: #e63946;
+  font-weight: bold;
+  margin-top: 10px;
 }

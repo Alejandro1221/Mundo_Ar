@@ -200,58 +200,58 @@ const eliminarModelo = async (urlModelo) => {
   };
 
   return (
-  <div className="docente-modelo-container">
-     {mensaje.texto && (
-        <div className={`mensaje ${mensaje.tipo}`}>
-          {mensaje.texto}
-        </div>
-      )}
-  <h2>Configurar Modelo-Sonido</h2>
-
-  <div className="docente-modelos-seleccionados">
-    {modelosSeleccionados.length > 0 ? (
-      modelosSeleccionados.map((modelo, index) => (
-        <div key={index} className="docente-modelo-item">
-          <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
-            <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
-            
-            <Entity
-              gltf-model={modelo.url}
-              position="0 1 -2"
-              scale="1.2 1.2 1.2"
-              rotation="0 45 0"
-              shadow="cast: true"
-              animation="property: rotation; to: 0 405 0; loop: true; dur: 8000"
-            />
-
-            <Entity 
-              geometry="primitive: plane; width: 2; height: 2"
-              material="color: #ddd; opacity: 0.6"
-              position="0 -0.01 -2"
-              rotation="-90 0 0"
-              shadow="receive: true"
-            />
-          </Scene>
-
-          <p>{modelo.nombre}</p>
-
-          {/* Botón para eliminar modelo */}
-          <button onClick={() => eliminarModelo(modelo.url)}>Eliminar</button>
-
-          {/* Nuevo botón para asignar sonido */}
-          <button 
-            className="asignar-sonido-btn"
-            onClick={() => {
-              sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
-              sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
-            }}
-          >
-            🎵 Asignar Sonido
-          </button>
-          
-          {modelo.sonido && modelo.sonido.url ? (
+    <div className="docente-modelo-container">
+    {mensaje.texto && (
+      <div className={`mensaje ${mensaje.tipo}`}>
+        {mensaje.texto}
+      </div>
+    )}
+  
+    <h2 className="titulo-vista">Configurar Modelo-Sonido</h2>
+  
+    {/* 📦 Lista de modelos seleccionados */}
+    <div className="docente-modelos-seleccionados">
+      {modelosSeleccionados.length > 0 ? (
+        modelosSeleccionados.map((modelo, index) => (
+          <div key={index} className="docente-modelo-item">
+            <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
+              <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
+              <Entity
+                gltf-model={modelo.url}
+                position="0 1 -2"
+                scale="1.2 1.2 1.2"
+                rotation="0 45 0"
+                shadow="cast: true"
+                animation="property: rotation; to: 0 405 0; loop: true; dur: 8000"
+              />
+              <Entity 
+                geometry="primitive: plane; width: 2; height: 2"
+                material="color: #ddd; opacity: 0.6"
+                position="0 -0.01 -2"
+                rotation="-90 0 0"
+                shadow="receive: true"
+              />
+            </Scene>
+  
+            <p className="nombre-modelo">{modelo.nombre}</p>
+  
+            <button className="btn-rojo" onClick={() => eliminarModelo(modelo.url)}>
+              🗑️ Eliminar
+            </button>
+  
+            <button
+              className="asignar-sonido-btn"
+              onClick={() => {
+                sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+                sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
+                sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
+              }}
+            >
+              🎵 Asignar Sonido
+            </button>
+  
+            {modelo.sonido?.url ? (
               <div className="sonido-asignado">
                 <p>🔊 {modelo.sonido.nombre}</p>
                 <audio controls>
@@ -261,96 +261,102 @@ const eliminarModelo = async (urlModelo) => {
             ) : (
               <p className="sin-sonido">❌ Sin sonido asignado</p>
             )}
-        </div>
-      ))
-    ) : (
-      <p>No se han seleccionado modelos.</p>
-    )}
-  </div>
-
-  <div className="acciones">
-    <button onClick={() => {
-        sessionStorage.setItem("paginaAnterior", window.location.pathname);
-        sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-        navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
-      }}>
-        Seleccionar Modelos
-      </button>
-
-      <div className="seccion-celebracion">
-        <label htmlFor="tipoCelebracion">🎈 Tipo de Celebración:</label>
-        <select
-          id="tipoCelebracion"
-          value={celebracion.tipo}
-          onChange={(e) =>
-            setCelebracion({ tipo: e.target.value, opciones: {} })
-          }
-        >
-          <option value="confeti">🎉 Confeti (visual)</option>
-          <option value="gif">🎥 GIF animado</option>
-          <option value="mensaje">✅ Mensaje de texto</option>
-          <option value="animacion">🌈 Animación suave</option>
-        </select>
-
-        {/* Configuraciones específicas por tipo */}
-        {celebracion.tipo === "gif" && (
-          <input
-            type="text"
-            placeholder="URL del GIF"
-            value={celebracion.opciones.gifUrl || ""}
-            onChange={(e) =>
-              setCelebracion({
-                ...celebracion,
-                opciones: { gifUrl: e.target.value }
-              })
-            }
-          />
-        )}
-
-        {celebracion.tipo === "mensaje" && (
-          <input
-            type="text"
-            placeholder="Mensaje personalizado"
-            value={celebracion.opciones.mensaje || ""}
-            onChange={(e) =>
-              setCelebracion({
-                ...celebracion,
-                opciones: { mensaje: e.target.value }
-              })
-            }
-          />
-        )}
-      </div>
-
-    <button onClick={sincronizarModelos} className="guardar-btn">Guardar Configuración</button>
-    <button className="volver-btn" onClick={() => {
-      const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
-      historial.pop(); 
-      const paginaAnterior = historial.pop(); 
-      sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
-
-      if (paginaAnterior) {
-        navigate(paginaAnterior);
-      } else {
-        navigate(`/docente/configurar-casillas/${juegoId}`);
-      }
-    }}>
-      Volver
-    </button>
-
-    <div className="boton-sonido-container">
-      <img 
-        src={imagenSonido} 
-        alt="Reproducir sonido" 
-        className="boton-sonido" 
-        onClick={manejarReproduccion} 
-      />
-      <audio ref={audioRef} src={sonidoSeleccionado?.url} style={{ display: "none" }} />
+          </div>
+        ))
+      ) : (
+        <p className="mensaje-vacio">⚠️ No se han seleccionado modelos.</p>
+      )}
     </div>
-    
+  
+    {/* 🎉 Configuración de Celebración */}
+    <section className="seccion-celebracion">
+      <label htmlFor="tipoCelebracion">🎈 Tipo de Celebración:</label>
+      <select
+        id="tipoCelebracion"
+        value={celebracion.tipo}
+        onChange={(e) => setCelebracion({ tipo: e.target.value, opciones: {} })}
+      >
+        <option value="confeti">🎉 Confeti (visual)</option>
+        <option value="gif">🎥 GIF animado</option>
+        <option value="mensaje">✅ Mensaje de texto</option>
+        <option value="animacion">🌈 Animación suave</option>
+      </select>
+  
+      {celebracion.tipo === "gif" && (
+        <input
+          type="text"
+          placeholder="URL del GIF"
+          value={celebracion.opciones.gifUrl || ""}
+          onChange={(e) =>
+            setCelebracion({
+              ...celebracion,
+              opciones: { gifUrl: e.target.value }
+            })
+          }
+        />
+      )}
+  
+      {celebracion.tipo === "mensaje" && (
+        <input
+          type="text"
+          placeholder="Mensaje personalizado"
+          value={celebracion.opciones.mensaje || ""}
+          onChange={(e) =>
+            setCelebracion({
+              ...celebracion,
+              opciones: { mensaje: e.target.value }
+            })
+          }
+        />
+      )}
+    </section>
+  
+    {/* ✅ Botones de acción */}
+    <div className="acciones-finales">
+      <button
+        className="btn-secundario"
+        onClick={() => {
+          sessionStorage.setItem("paginaAnterior", window.location.pathname);
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+        }}
+      >
+        ➕ Seleccionar Modelos
+      </button>
+  
+      <button className="guardar-btn" onClick={sincronizarModelos}>
+        💾 Guardar Configuración
+      </button>
+  
+      <button
+        className="volver-btn"
+        onClick={() => {
+          const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
+          historial.pop();
+          const paginaAnterior = historial.pop();
+          sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
+          if (paginaAnterior) {
+            navigate(paginaAnterior);
+          } else {
+            navigate(`/docente/configurar-casillas/${juegoId}`);
+          }
+        }}
+      >
+        ⬅️ Volver
+      </button>
+  
+      <div className="boton-sonido-container">
+        <img 
+          src={imagenSonido} 
+          alt="Reproducir sonido" 
+          className="boton-sonido" 
+          onClick={manejarReproduccion} 
+        />
+        <audio ref={audioRef} src={sonidoSeleccionado?.url} style={{ display: "none" }} />
+      </div>
+    </div>
   </div>
-</div>
-
+  
   );
 };
 

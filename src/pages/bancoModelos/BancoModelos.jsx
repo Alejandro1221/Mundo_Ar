@@ -4,6 +4,7 @@ import { obtenerCategorias } from "../../services/categoriasService";
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
+import { FiPlus, FiArrowLeft } from "react-icons/fi";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 
 
@@ -12,6 +13,8 @@ const BancoModelos = () => {
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [modelosSeleccionados, setModelosSeleccionados] = useState([]);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -92,48 +95,86 @@ const BancoModelos = () => {
 
   return (
     <div className="banco-modelos">
-      {!desdePlantilla && <FormularioSubida setModelos={setModelos} />}
 
       <h1>Banco de Modelos</h1>
-
-      {/* 🔹 Select dinámico con categorías */}
-      <select onChange={(e) => setCategoriaSeleccionada(e.target.value)} value={categoriaSeleccionada}>
+      
+      {/* 🔹 Botón para mostrar/ocultar el formulario (solo si no viene desde plantilla) */}
+      {!desdePlantilla && (
+        <button
+          className="btn-toggle-formulario"
+          onClick={() => setMostrarFormulario(!mostrarFormulario)}
+        >
+          {mostrarFormulario ? (
+            <>
+              <FiArrowLeft /> Ocultar Formulario
+            </>
+          ) : (
+            <>
+              <FiPlus /> Subir Modelo
+            </>
+          )}
+        </button>
+      )}
+  
+      {/* 🔹 Formulario de subida (solo si está activado) */}
+      {!desdePlantilla && mostrarFormulario && (
+        <FormularioSubida setModelos={setModelos} />
+      )}
+  
+      {/* 🔹 Selector de categoría */}
+      <select
+        onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+        value={categoriaSeleccionada}
+      >
         {categorias.map((cat, index) => (
-          <option key={index} value={cat}>{cat}</option>
+          <option key={index} value={cat}>
+            {cat}
+          </option>
         ))}
       </select>
-
+  
+      {/* 🔹 Lista de modelos */}
       <div className="lista-modelos">
         {modelosFiltrados.length > 0 ? (
           modelosFiltrados.map((modelo) => (
-            <ModeloItem 
-              key={modelo.id} 
-              modelo={modelo} 
+            <ModeloItem
+              key={modelo.id}
+              modelo={modelo}
               esPlantilla={desdePlantilla}
-              manejarSeleccion={desdePlantilla ? manejarSeleccion : null} 
-              manejarEliminacion={manejarEliminacion} 
-              seleccionado={desdePlantilla ? modelosSeleccionados.some((m) => m.id === modelo.id) : false}
+              manejarSeleccion={desdePlantilla ? manejarSeleccion : null}
+              manejarEliminacion={manejarEliminacion}
+              seleccionado={
+                desdePlantilla
+                  ? modelosSeleccionados.some((m) => m.id === modelo.id)
+                  : false
+              }
             />
           ))
         ) : (
           <p>⚠️ No hay modelos disponibles.</p>
         )}
       </div>
-
-      {/* ✅ Mostrar el botón solo si está en modo selección desde una plantilla */}
+  
+      {/* 🔹 Confirmar selección desde plantilla */}
       {desdePlantilla && (
-        <button onClick={confirmarSeleccion}>✅ Confirmar Selección</button>
+        <button className="btn-confirmar" onClick={confirmarSeleccion}>
+          ✅ Confirmar Selección
+        </button>
       )}
-
-
-      <button onClick={() => {
-        const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
-        navigate(paginaAnterior);
-      }}>
+  
+      {/* 🔙 Volver */}
+      <button
+        className="btn-volver"
+        onClick={() => {
+          const paginaAnterior =
+            sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+          navigate(paginaAnterior);
+        }}
+      >
         Volver
       </button>
     </div>
   );
-};
+}  
 
 export default BancoModelos;
