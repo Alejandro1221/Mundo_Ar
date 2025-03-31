@@ -4,8 +4,7 @@ import { loadFull } from "tsparticles";
 
 const Background = () => {
   const particlesInit = useCallback(async (engine) => {
-    console.log("Inicializando partículas...");
-    await loadFull(engine); // Carga completa de tsparticles
+    await loadFull(engine);
   }, []);
 
   return (
@@ -13,16 +12,36 @@ const Background = () => {
       id="tsparticles"
       init={particlesInit}
       options={{
-        fullScreen: { enable: false }, // 🔹 Evita que ocupe todo el viewport
+        fullScreen: { enable: false },
         background: {
-          color: "transparent", // 🔹 Deja el fondo transparente para ver el gradiente
+          color: "transparent",
         },
         particles: {
-          number: { value: 50 },
-          shape: { type: "circle" },
-          opacity: { value: 0.7 },
-          size: { value: 6 },
-          move: { enable: true, speed: 1 },
+          number: {
+            value: 20, 
+            density: {
+              enable: true,
+              area: 800,
+            },
+          },
+          color: {
+            value: ["#90BFC3", "#DDE5CD", "#F3D9D5"], 
+          },
+          shape: {
+            type: "circle",
+          },
+          opacity: {
+            value: 0.3, 
+          },
+          size: {
+            value: { min: 8, max: 12 }, 
+          },
+          move: {
+            enable: true,
+            speed: 0.3, 
+            direction: "none",
+            outMode: "bounce",
+          },
         },
       }}
       style={{
@@ -31,7 +50,7 @@ const Background = () => {
         height: "100%",
         top: 0,
         left: 0,
-        zIndex: -1, // 🔹 Envía las partículas al fondo
+        zIndex: -1,
       }}
     />
   );

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
+import { FiLogOut } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { collection, query, where, getDocs, addDoc, doc, getDoc } from "firebase/firestore";
 import "../../assets/styles/docente/dashboardDocente.css";
 
@@ -10,6 +12,7 @@ const DashboardDocente = () => {
   const [juegos, setJuegos] = useState([]);
   const [nombreJuego, setNombreJuego] = useState("");
   const navigate = useNavigate();
+  const [mostrarInput, setMostrarInput] = useState(false);
 
   // Detectar usuario autenticado
   useEffect(() => {
@@ -112,23 +115,43 @@ const DashboardDocente = () => {
 
   return (
     <div className="dashboard-container">
-      <h1>Bienvenido, {usuario?.nombre || usuario?.email}</h1>
-
-      <button className="logout-btn" onClick={handleCerrarSesion}>
-        Cerrar Sesión
+      <button className="boton-logout" onClick={handleCerrarSesion}>
+        <FiLogOut />
+        Cerrar sesión
       </button>
-
+  
+      <h1>Bienvenido, {usuario?.nombre || usuario?.email}</h1>
+  
       {/* Crear un nuevo juego */}
-      <form onSubmit={crearJuego} className="crear-juego-form">
-        <input
-          type="text"
-          placeholder="Nombre del juego"
-          value={nombreJuego}
-          onChange={(e) => setNombreJuego(e.target.value)}
-        />
-        <button type="submit">Crear Juego</button>
-      </form>
-
+      <div className="crear-juego-form">
+        {mostrarInput && (
+            <>
+              <label className="label">Nombre del juego</label>
+              <input
+                type="text"
+                className="input"
+                placeholder="Escribe un nombre"
+                value={nombreJuego}
+                onChange={(e) => setNombreJuego(e.target.value)}
+              />
+            </>
+          )}
+          <button
+            type="button"
+            className="boton"
+            onClick={() => {
+              if (!mostrarInput) {
+                setMostrarInput(true); // Mostrar input
+              } else if (nombreJuego.trim() !== "") {
+                crearJuego(); // Ejecuta la función que ya tienes
+                setMostrarInput(false); // Oculta input después
+              }
+            }}
+          >
+            Crear Juego
+        </button>
+      </div>
+          
       <h3>Lista de Juegos Creados</h3>
       <div className="lista-juegos">
         {juegos.length === 0 ? (
@@ -136,38 +159,46 @@ const DashboardDocente = () => {
         ) : (
           juegos.map((juego) => (
             <div key={juego.id} className="juego-item">
-              <div className="juego-nombre"> {/* 🔥 Contenedor para evitar que el texto se corte */}
-                <span>{juego.nombre}</span>
-              </div>
-              <button onClick={() => {
-                sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                navigate(`/docente/configurar-casillas/${juego.id}`);
-              }}>
-                Configurar
+              <div className="juego-nombre">{juego.nombre}</div>
+              <button
+                className="icono-btn"
+                onClick={() => {
+                  sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                  navigate(`/docente/configurar-casillas/${juego.id}`);
+                }}
+                aria-label="Modificar juego"
+              >
+                <FiEdit />
               </button>
             </div>
           ))
         )}
       </div>
 
-
       <div className="opciones-bancos">
-        <button onClick={() => {
-            sessionStorage.setItem("paginaAnterior", "/docente/dashboard"); // ✅ Guardar referencia al Dashboard
+        <button
+          className="boton"
+          onClick={() => {
+            sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
             navigate("/docente/banco-modelos", { state: { desdePlantilla: false } });
-        }}>
+          }}
+        >
           Banco de Modelos
         </button>
-
-        <button onClick={() => {
-          sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
-          navigate("/docente/banco-sonidos", { state: { desdePlantilla: false } });
-        }}>
+  
+        <button
+          className="boton"
+          onClick={() => {
+            sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
+            navigate("/docente/banco-sonidos", { state: { desdePlantilla: false } });
+          }}
+        >
           Banco de Sonidos
         </button>
       </div>
     </div>
   );
-};
-
+}  
 export default DashboardDocente;
+
+
