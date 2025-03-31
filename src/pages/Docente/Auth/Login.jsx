@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../../services/firebaseConfig"; // Importar Firebase
+import { useNavigate, Link } from "react-router-dom";
+import { auth } from "../../../services/firebaseConfig"; // Importar Firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
-import "../../assets/styles/auth.css"; 
+import "../../../assets/styles/auth.css";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,7 +16,7 @@ const Login = () => {
     setError("");
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       console.log("✅ Usuario autenticado:", userCredential.user);
       alert("¡Inicio de sesión exitoso!");
 
@@ -54,8 +55,8 @@ const Login = () => {
               <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
                 <div className="auth-links">
-                    <a href="/register">Registrarse</a>
-                    <a href="/recuperar">¿Olvidaste tu contraseña?</a>
+                  <Link to="/register">Registrarse</Link>
+                  <Link to="/recuperar">¿Olvidaste tu contraseña?</Link>
                 </div>
 
               <button type="submit" className="auth-button primary-btn">Ingresar</button>

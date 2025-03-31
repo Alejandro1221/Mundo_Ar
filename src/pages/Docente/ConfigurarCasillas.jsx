@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCasillas } from "../../hooks/useCasillas";
-import "../../assets/styles/configurarCasillas.css";
+import "../../assets/styles/docente/configurarCasillas.css";
 
 const ConfigurarCasillas = () => {
   const { juegoId } = useParams(); 
@@ -37,6 +37,7 @@ const ConfigurarCasillas = () => {
             <select value={plantillaSeleccionada} onChange={(e) => setPlantillaSeleccionada(e.target.value)}>
               <option value="">Seleccione una plantilla</option>
               <option value="modelo-sonido">Modelo-Sonido</option>
+              <option value="clasificacion-modelos">Clasificar Modelos</option>
             </select>
             <div className="modal-buttons">
               <button onClick={() => setModalVisible(false)}>Cancelar</button>

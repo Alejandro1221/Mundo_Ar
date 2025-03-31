@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { collection, query, where, getDocs, doc, getDoc, setDoc } from "firebase/firestore";
-import "../../assets/styles/dashboardDocente.css";
+import { collection, query, where, getDocs, addDoc, doc, getDoc } from "firebase/firestore";
+import "../../assets/styles/docente/dashboardDocente.css";
 
 const DashboardDocente = () => {
   const [usuario, setUsuario] = useState(null);
@@ -19,19 +19,28 @@ const DashboardDocente = () => {
         return;
       }
   
-      setUsuario(user);
-      const usuarioRef = doc(db, "docentes", user.uid);
-      const usuarioSnap = await getDoc(usuarioRef);
-  
-      if (usuarioSnap.exists()) {
-        setUsuario((prev) => ({ ...prev, nombre: usuarioSnap.data().nombre }));
-      }
-  
-      cargarJuegos(user.uid);
-    });
+      const nombre = await obtenerNombreDocente(user.uid);
+  setUsuario({ ...user, nombre }); // agregamos el nombre al objeto user
+
+  cargarJuegos(user.uid);
+});
   
     return () => unsubscribe(); 
   }, [navigate]);
+
+  const obtenerNombreDocente = async (uid) => {
+    try {
+      const usuarioRef = doc(db, "docentes", uid);
+      const usuarioSnap = await getDoc(usuarioRef);
+      if (usuarioSnap.exists()) {
+        return usuarioSnap.data().nombre;
+      }
+      return null;
+    } catch (error) {
+      console.error("Error obteniendo el nombre del docente:", error);
+      return null;
+    }
+  };
   
 
   // Cargar juegos creados por el docente
@@ -73,8 +82,14 @@ const DashboardDocente = () => {
         creadoPor: usuario.uid,
         fechaCreacion: new Date(),
       };
-  
-      await setDoc(doc(db, "juegos", nombreJuego), nuevoJuego);
+
+      const juegosExistentes = juegos.map(j => j.nombre.toLowerCase());
+      if (juegosExistentes.includes(nombreJuego.toLowerCase())) {
+        alert("⚠️ Ya existe un juego con ese nombre.");
+        return;
+      }
+
+      await addDoc(collection(db, "juegos"), nuevoJuego);
       alert(`Juego "${nombreJuego}" creado exitosamente.`);
       setNombreJuego(""); // Reset input
       cargarJuegos(usuario.uid);

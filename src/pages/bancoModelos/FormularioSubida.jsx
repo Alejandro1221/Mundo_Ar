@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { subirModelo } from "../../services/modelosService";
 import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
-import "../../assets/styles/formularioSubida.css";
+import "../../assets/styles/bancoModelos/formularioSubida.css";
+//import "../../assets/styles/formularioSubida.css";
 
 const FormularioSubida = ({ setModelos }) => {
   const [nombre, setNombre] = useState("");

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import {  useNavigate, useLocation } from "react-router-dom"; 
 import { obtenerSonidos } from "../../services/sonidoService";
 import FormularioSubidaSonidos from "./FormularioSubidaSonidos";
-import SonidoItem from "./SonidoItem";
-import "../../assets/styles/bancoSonidos.css";
+import SonidoItem from "../../components/SonidoItem";
 import BancoSonidosSeleccion from "./BancoSonidosSeleccion";
+import "../../assets/styles/bancoSonidos/bancoSonidos.css";
+
 
 const BancoSonidos = () => {
   const location = useLocation();

@@ -24,6 +24,7 @@ export const useCasillas = (juegoId) => {
   // 📌 Mapeo de rutas según la plantilla seleccionada
   const rutasPlantillas = {
     "modelo-sonido": "/docente/plantilla-sonido-modelo",
+    "clasificacion-modelos": "/docente/clasificacion-modelos", 
   };
 
   const abrirModal = (index, plantillaActual) => {
@@ -58,10 +59,14 @@ export const useCasillas = (juegoId) => {
     setCasillas(nuevasCasillas);
     setModalVisible(false);
 
-    if (plantillaSeleccionada === "modelo-sonido") {
-      sessionStorage.setItem("juegoId", juegoId);
-      sessionStorage.setItem("casillaId", casillaSeleccionada);
-      navigate("/plantilla-sonido-modelo");
+    sessionStorage.setItem("juegoId", juegoId);
+    sessionStorage.setItem("casillaId", casillaSeleccionada);
+
+    const ruta = rutasPlantillas[plantillaSeleccionada];
+    if (ruta) {
+      navigate(ruta);
+    } else {
+      alert(`La plantilla "${plantillaSeleccionada}" aún no está implementada.`);
     }
   };
 

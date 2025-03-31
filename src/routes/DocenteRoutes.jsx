@@ -1,9 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardDocente from "../pages/Docente/DashboardDocente";
-import BancoModelos from "../components/bancoModelos/BancoModelos";
-import BancoSonidos from "../components/bancoSonidos/BancoSonidos";
+import BancoModelos from "../pages/bancoModelos/BancoModelos.jsx";
+import BancoSonidos from "../pages/bancoSonidos/BancoSonidos.jsx";
 import ConfigurarCasillas from "../pages/Docente/ConfigurarCasillas.jsx";  
 import ModeloSonido from "../templates/ModeloSonido";
+import ClasificacionModelos from "../templates/ClasificacionModelos";
+
 
 
 const DocenteRoutes = () => {
@@ -14,6 +16,8 @@ const DocenteRoutes = () => {
         <Route path="banco-modelos" element={<BancoModelos />} />
         <Route path="banco-sonidos" element={<BancoSonidos />} />  
         <Route path="plantilla-sonido-modelo" element={<ModeloSonido />} />
+        <Route path="clasificacion-modelos" element={<ClasificacionModelos />} />
+
         
     </Routes>
   );

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerCasillasPorJuego } from "../../services/databaseService";
-import caminoImg from "../../assets/images/imag1.jpeg"; // ✅ Importamos la imagen
-//import "../../assets/styles/estudiante/seleccionarCasilla.css";
+import caminoImg from "../../assets/images/imag1.jpeg"; 
 
 const SeleccionarCasilla = () => {
   const navigate = useNavigate();
@@ -77,12 +76,14 @@ const SeleccionarCasilla = () => {
     console.log(`🎯 Casilla seleccionada: ${index + 1}, Plantilla asignada: ${casillaSeleccionada.plantilla}`);
 
     // Guardamos el `casillaId` en sessionStorage para su uso en la actividad
-    sessionStorage.setItem("casillaId", index);
+    //sessionStorage.setItem("casillaId", index);
+    sessionStorage.setItem("casillaId", index.toString());
+
 
     // 🔹 Rutas de cada plantilla
     const rutasPlantillas = {
       "modelo-sonido": `/estudiante/actividad-modelo-sonidos/${index + 1}`,
-      "otra-plantilla": `/estudiante/otra-plantilla/${index + 1}`,
+      "clasificacion-modelos": `/estudiante/actividad-clasificacion-modelos/${index + 1}`,
     };
 
     const ruta = rutasPlantillas[casillaSeleccionada.plantilla];

@@ -1,12 +1,83 @@
-.btn-primary {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-weight: bold;
+/* ====================
+   PALETA DE COLORES AUTISMO
+   ==================== */
+   :root {
+    --azul-profundo: #0B3343;
+    --menta: #83B68C;
+    --celeste-suave: #90BFC3;
+    --verde-claro: #DDE5CD;
+    --rosado-suave: #F3D9D5;
+    --beige: #F1E3D5;
+    --lila-palido: #E0DDE0;
+    --azul-niebla: #D6E2E9;
+    --azul-petroleo: #005B70;
+    --gris-oscuro: #4A4A4A;
+    --ocre-suave: #D4C19C;
+    --rosado-contraste: #D35F5A;
+  
+    --texto-oscuro: #1A1A1A;
+    --texto-claro: #FFFFFF;
+    --fondo-claro: #FAFAFA;
+    --fondo-gris: #F5F5F5;
+  }
+  
+  /* ====================
+     RESET BÁSICO
+     ==================== */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  body {
+    background-color: var(--fondo-claro);
+    color: var(--texto-oscuro);
+  }
+  
+  /* ====================
+     BOTONES
+     ==================== */
+  .boton {
+    background-color: var(--azul-profundo);
+    color: var(--texto-claro);
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
     cursor: pointer;
-}
-
-.btn-primary:hover {
-    background-color: #0056b3;
-}
+    transition: background-color 0.3s ease;
+  }
+  
+  .boton:hover {
+    background-color: var(--menta);
+  }
+  
+  /* ====================
+     INPUTS
+     ==================== */
+  .input {
+    padding: 10px;
+    border: 1px solid var(--azul-niebla);
+    border-radius: 10px;
+    width: 100%;
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+  
+  .label {
+    margin-bottom: 4px;
+    display: block;
+    font-weight: bold;
+  }
+  
+  /* ====================
+     CONTENEDORES COMUNES
+     ==================== */
+  .contenedor {
+    padding: 24px;
+    border-radius: 16px;
+    background-color: var(--fondo-gris);
+    margin-bottom: 20px;
+  }

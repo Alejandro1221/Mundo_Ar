@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../services/firebaseConfig"; 
+import { auth, db } from "../../../services/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import "../../assets/styles/auth.css"; 
+import "../../../assets/styles/auth.css";
 
 const RegisterDocente = () => {
   const [nombre, setNombre] = useState("");
@@ -14,62 +14,83 @@ const RegisterDocente = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(""); 
+    setError("");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
       const usuario = userCredential.user;
 
       await setDoc(doc(db, "docentes", usuario.uid), {
-        nombre: nombre,
-        email: email,
+        nombre,
+        email: email.trim(),
       });
 
       console.log("✅ Usuario registrado:", usuario);
       alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
-
-      navigate("/login"); 
-
+      navigate("/login");
     } catch (error) {
       console.error("❌ Error en el registro:", error);
-      setError("Error al registrarse: " + error.message);
+      let mensajeError = "Error al registrarse.";
+
+      switch (error.code) {
+        case "auth/email-already-in-use":
+          mensajeError = "⚠️ El correo ya está registrado.";
+          break;
+        case "auth/invalid-email":
+          mensajeError = "⚠️ El correo no es válido.";
+          break;
+        case "auth/weak-password":
+          mensajeError = "⚠️ La contraseña debe tener al menos 6 caracteres.";
+          break;
+        default:
+          mensajeError = "⚠️ Ocurrió un error inesperado.";
+      }
+
+      setError(mensajeError);
     }
   };
 
   return (
-    <div className="auth-container"> 
-      <div className="auth-box register-box"> 
+    <div className="auth-container">
+      <div className="auth-box register-box">
         <h1>Registro Docente</h1>
-
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleRegister}>
           <input
             type="text"
+            placeholder="Nombre Completo"
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             required
-            placeholder="Nombre Completo"
           />
           <input
             type="email"
+            placeholder="Correo Electrónico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            placeholder="Correo Electrónico"
           />
           <input
             type="password"
+            placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            placeholder="Contraseña"
           />
 
-            <div className="button-group">
-                <button type="submit" className="auth-button primary-btn">Registrarse</button>
-                <button type="button" className="auth-button secondary-btn" onClick={() => navigate("/login")}>Ingresar</button>
-            </div>
+          <div className="button-group">
+            <button type="submit" className="auth-button primary-btn">
+              Registrarse
+            </button>
+            <button
+              type="button"
+              className="auth-button secondary-btn"
+              onClick={() => navigate("/login")}
+            >
+              Ingresar
+            </button>
+          </div>
         </form>
       </div>
     </div>

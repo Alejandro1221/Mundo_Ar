@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
 import { obtenerCategorias } from "../../services/categoriasService"; 
-import ModeloItem from "./ModeloItem";
-import FormularioSubida from "./FormularioSubida";
-import "../../assets/styles/bancoModelos.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import ModeloItem from "../../components/ModeloItem";
+import FormularioSubida from "./FormularioSubida";
+//import "../../../assets/styles/bancoModelos.css";
+import "../../assets/styles/bancoModelos/bancoModelos.css";
+
 
 const BancoModelos = () => {
   const [modelos, setModelos] = useState([]);

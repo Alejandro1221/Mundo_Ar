@@ -1,6 +1,8 @@
 import React from "react";
-import { eliminarSonido } from "../../services/sonidoService";
-import "../../assets/styles/bancoSonidos.css";
+import { eliminarSonido } from "../services/sonidoService";
+import "../assets/styles/bancoSonidos/sonidoItem.css";
+
+
 
 const SonidoItem = ({ sonido, setSonidos }) => {
   const handleEliminar = async () => {

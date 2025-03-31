@@ -12,8 +12,8 @@
   "dependencies": {
     "@react-three/drei": "^10.0.4",
     "@react-three/fiber": "^9.1.0",
-    "aframe": "^1.7.0",
     "aframe-react": "^4.4.0",
+    "canvas-confetti": "^1.9.3",
     "firebase": "^11.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

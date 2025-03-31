@@ -1,7 +1,7 @@
-// components/bancoSonidos/BancoSonidosSeleccion.jsx
 import React, { useEffect, useState } from "react";
 import { obtenerSonidos } from "../../services/sonidoService";
-import "../../assets/styles/bancoSonidosSeleccion.css";
+import "../../assets/styles/bancoSonidos/bancoSonidosSeleccion.css";
+
 
 const BancoSonidosSeleccion = ({ onSeleccionar }) => {
   const [sonidos, setSonidos] = useState([]);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { subirSonido, obtenerCategorias, crearCategoria } from "../../services/sonidoService";
-import "../../assets/styles/formularioSubidaSonidos.css";
+import "../../assets/styles/bancoSonidos/formularioSubidaSonidos.css";
+
 
 const FormularioSubidaSonidos = ({ setSonidos }) => {
   const [archivo, setArchivo] = useState(null);

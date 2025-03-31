@@ -1,5 +1,5 @@
 import React from "react";
-import "../../assets/styles/modeloItem.css";
+import "../assets/styles/bancoModelos/modeloItem.css";
 
 const ModeloItem = ({ modelo, esPlantilla, manejarSeleccion, manejarEliminacion, seleccionado = false }) => {
   return (

@@ -1,14 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useSeleccionModelos } from "../hooks/useSeleccionModelos"; // ✅ Importa el hook
+import { useSeleccionModelos } from "../hooks/useSeleccionModelos"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../services/firebaseConfig";
-import "aframe";
 import { Entity, Scene } from "aframe-react";
 import imagenSonido from "../assets/images/imag_sonido.png";
-
-import "../assets/styles/modeloSonido.css";
-
+import "../assets/styles/docente/modeloSonido.css";
 
 const ModeloSonido = () => {
   const navigate = useNavigate();
@@ -21,8 +18,21 @@ const ModeloSonido = () => {
    const [casillaId] = useState(sessionStorage.getItem("casillaId"));
    const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
 
+   
+   const [celebracion, setCelebracion] = useState({
+    tipo: "confeti",
+    opciones: {}
+  });
+
    const [reproduciendo, setReproduciendo] = useState(false);
    const audioRef = useRef(null);
+
+   const celebracionesDisponibles = [
+    { id: "confeti", nombre: "Confeti (Visual)", sonido: false },
+    { id: "estrellas", nombre: "Estrellas brillantes", sonido: false },
+    { id: "aplausos", nombre: "Aplausos (sin sonido)", sonido: false },
+    { id: "globos", nombre: "Globos flotando", sonido: false },
+  ];
 
   useEffect(() => {
     if (!juegoId || !casillaId) {
@@ -45,7 +55,7 @@ const ModeloSonido = () => {
   const cargarConfiguracionExistente = async () => {
     try {
       let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-      let sonidoGuardado = sessionStorage.getItem("sonidoSeleccionado"); // 🔹 Recuperar sonido
+      let sonidoGuardado = sessionStorage.getItem("sonidoSeleccionado"); 
   
       if (sonidoGuardado) {
         try {
@@ -88,7 +98,7 @@ const ModeloSonido = () => {
         if (casilla?.configuracion) {
           setModelosSeleccionados(casilla.configuracion.modelos || []);
           setSonidoSeleccionado(casilla.configuracion.sonido || null);
-          console.log("📥 Datos obtenidos de Firestore:", casilla.configuracion);
+          setCelebracion(casilla.configuracion.celebracion || { tipo: "confeti", opciones: {} });
         }
       }
     } catch (error) {
@@ -109,6 +119,7 @@ const ModeloSonido = () => {
           configuracion: {
             modelos: modelosSeleccionados,
             sonido: sonidoSeleccionado,
+            celebracion: celebracion,
           },
         };
   
@@ -160,33 +171,34 @@ const eliminarModelo = async (urlModelo) => {
   }
 };
 
-const mostrarMensaje = (texto, tipo = "info") => {
-  setMensaje({ texto, tipo });
-  setTimeout(() => {
-    setMensaje({ texto: "", tipo: "" }); // Oculta el mensaje después de 3 segundos
-  }, 3000);
-};
-const manejarReproduccion = () => {
-  if (!sonidoSeleccionado || !sonidoSeleccionado.url) {
-    mostrarMensaje("⚠️ No hay sonido asignado.", "warning");
-    return;
-  }
-
-  if (audioRef.current) {
-    const audio = audioRef.current;
-    
-    if (audio.paused) {
-      audio.play().catch((error) => {
-        console.error("⚠️ No se pudo reproducir el audio:", error);
-        mostrarMensaje("⚠️ No se pudo reproducir el audio. Interacción requerida.", "warning");
-      });
-      setReproduciendo(true);
-    } else {
-      audio.pause();
-      setReproduciendo(false);
+  const mostrarMensaje = (texto, tipo = "info") => {
+    setMensaje({ texto, tipo });
+    setTimeout(() => {
+      setMensaje({ texto: "", tipo: "" }); // Oculta el mensaje después de 3 segundos
+    }, 3000);
+  };
+  const manejarReproduccion = () => {
+    if (!sonidoSeleccionado || !sonidoSeleccionado.url) {
+      mostrarMensaje("⚠️ No hay sonido asignado.", "warning");
+      return;
     }
-  }
-};
+
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      
+      if (audio.paused) {
+        audio.play().catch((error) => {
+          console.error("⚠️ No se pudo reproducir el audio:", error);
+          mostrarMensaje("⚠️ No se pudo reproducir el audio. Interacción requerida.", "warning");
+        });
+        setReproduciendo(true);
+      } else {
+        audio.pause();
+        setReproduciendo(false);
+      }
+    }
+  };
+
   return (
   <div className="docente-modelo-container">
      {mensaje.texto && (
@@ -264,6 +276,51 @@ const manejarReproduccion = () => {
       }}>
         Seleccionar Modelos
       </button>
+
+      <div className="seccion-celebracion">
+        <label htmlFor="tipoCelebracion">🎈 Tipo de Celebración:</label>
+        <select
+          id="tipoCelebracion"
+          value={celebracion.tipo}
+          onChange={(e) =>
+            setCelebracion({ tipo: e.target.value, opciones: {} })
+          }
+        >
+          <option value="confeti">🎉 Confeti (visual)</option>
+          <option value="gif">🎥 GIF animado</option>
+          <option value="mensaje">✅ Mensaje de texto</option>
+          <option value="animacion">🌈 Animación suave</option>
+        </select>
+
+        {/* Configuraciones específicas por tipo */}
+        {celebracion.tipo === "gif" && (
+          <input
+            type="text"
+            placeholder="URL del GIF"
+            value={celebracion.opciones.gifUrl || ""}
+            onChange={(e) =>
+              setCelebracion({
+                ...celebracion,
+                opciones: { gifUrl: e.target.value }
+              })
+            }
+          />
+        )}
+
+        {celebracion.tipo === "mensaje" && (
+          <input
+            type="text"
+            placeholder="Mensaje personalizado"
+            value={celebracion.opciones.mensaje || ""}
+            onChange={(e) =>
+              setCelebracion({
+                ...celebracion,
+                opciones: { mensaje: e.target.value }
+              })
+            }
+          />
+        )}
+      </div>
 
     <button onClick={sincronizarModelos} className="guardar-btn">Guardar Configuración</button>
     <button className="volver-btn" onClick={() => {

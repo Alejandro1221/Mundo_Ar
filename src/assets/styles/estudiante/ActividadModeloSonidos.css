@@ -123,4 +123,32 @@ audio {
     .estudiante-modelo-item {
         width: 90%;
     }
-}
+}.celebracion-mensaje {
+    font-size: 1.8rem;
+    color: green;
+    margin-top: 20px;
+    animation: aparecer 1s ease-in-out;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .celebracion-mensaje {
+    font-size: 1.8rem;
+    color: green;
+    margin-top: 20px;
+    animation: aparecer 1s ease-in-out;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  @keyframes aparecer {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
