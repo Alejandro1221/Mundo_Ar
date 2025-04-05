@@ -4,6 +4,7 @@ import LoginEstudiante from "../pages/Estudiantes/Auth/LoginEstudiante";
 import DashboardEstudiante from "../pages/Estudiantes/DashboardEstudiante";
 import SeleccionarCasilla from "../pages/Estudiantes/SeleccionarCasilla";
 import ActividadModeloSonido from "../pages/Estudiantes/ActividadModeloSonido";
+import VistaPreviaModeloSonido from "../pages/Estudiantes/VistaPreviaModeloSonido"; 
 import ActividadClasificacionModelos from "../pages/Estudiantes/ActividadClasificacionModelos"; 
 
 const EstudianteRoutes = () => {
@@ -13,6 +14,7 @@ const EstudianteRoutes = () => {
       <Route path="dashboard" element={<DashboardEstudiante />} />  
       <Route path="seleccionar-casilla" element={<SeleccionarCasilla />} />
       <Route path="actividad-modelo-sonidos/:casillaId" element={<ActividadModeloSonido />} />
+      <Route path="vista-previa-modelo-sonido" element={<VistaPreviaModeloSonido />} />
       <Route path="actividad-clasificacion-modelos/:casillaId" element={<ActividadClasificacionModelos />} /> 
     </Routes>
   );

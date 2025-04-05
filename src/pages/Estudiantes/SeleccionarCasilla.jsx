@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerCasillasPorJuego } from "../../services/databaseService";
 import caminoImg from "../../assets/images/imag1.jpeg"; 
-import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
+//import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
 
 const SeleccionarCasilla = () => {
   const navigate = useNavigate();

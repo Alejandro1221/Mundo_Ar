@@ -9,7 +9,8 @@ import { CELEBRACIONES } from "../../utils/celebraciones";
 import ModeloInteractivo from "../../components/ModeloInteractivo";
 
 
-const ActividadModeloSonido = () => {
+const ActividadModeloSonido = ({ vistaPrevia = false }) => {
+
   const navigate = useNavigate();
   const [modelos, setModelos] = useState([]);
   const [sonido, setSonido] = useState(null);
@@ -21,54 +22,65 @@ const ActividadModeloSonido = () => {
   const audioRef = useRef(null);
   const [celebracion, setCelebracion] = useState("mensaje");
   const [mostrarCelebracion, setMostrarCelebracion] = useState(false);
-
-
+  
 
   useEffect(() => {
-    console.log("➡️ Entrando a ActividadModeloSonido.jsx");
-    console.log("🔹 Juego ID:", juegoId, "Casilla ID:", casillaId);
-
-    if (!juegoId || !casillaId) {
+    if (vistaPrevia) {
+      console.log("👁️ Modo vista previa activado");
+  
+      const modelosPrevios = JSON.parse(sessionStorage.getItem("modelosSeleccionados")) || [];
+      const sonidoPrevio = JSON.parse(sessionStorage.getItem("sonidoSeleccionado")) || null;
+      const celebracionPrev = JSON.parse(sessionStorage.getItem("celebracionSeleccionada")) || { tipo: "mensaje", opciones: {} };
+  
+      setModelos(modelosPrevios);
+      setSonido(sonidoPrevio);
+      setCelebracion(celebracionPrev);
+    } else {
+      console.log("➡️ Modo estudiante real");
+      
+      if (!juegoId || !casillaId) {
         alert("Error: No se encontró el juego o la casilla.");
         navigate("/estudiante/dashboard");
         return;
-    }
-
-    const cargarConfiguracion = async () => {
-      try {
+      }
+  
+      const cargarConfiguracion = async () => {
+        try {
           const juegoRef = doc(db, "juegos", juegoId);
           const juegoSnap = await getDoc(juegoRef);
   
           if (juegoSnap.exists()) {
-              const casilla = juegoSnap.data().casillas[casillaId];
-  
-              console.log("📌 Datos obtenidos de la casilla:", casilla);
-  
-              if (casilla?.configuracion) {
-                  setModelos(casilla.configuracion.modelos || []);
-                  setSonido(casilla.configuracion.sonido || null);
-                  setCelebracion(casilla.configuracion.celebracion || "mensaje");
-            
-              } else {
-                  console.warn("⚠️ La casilla tiene plantilla, pero sin configuración. Mostrando mensaje de error.");
-                  setModelos([]);  // Se asegura de que no haya modelos en el estado
-                  setSonido(null);
-                  alert("⚠️ Esta casilla tiene una plantilla asignada pero no ha sido configurada por el docente.");
-              }
-          } else {
-              console.warn("⚠️ No se encontró el juego en Firestore.");
+            const casilla = juegoSnap.data().casillas[casillaId];
+            if (casilla?.configuracion) {
+              setModelos(casilla.configuracion.modelos || []);
+              setSonido(casilla.configuracion.sonido || null);
+              setCelebracion(casilla.configuracion.celebracion || "mensaje");
+            } else {
+              alert("⚠️ Esta casilla tiene plantilla asignada pero no configurada.");
+            }
           }
-      } catch (error) {
+        } catch (error) {
           console.error("❌ Error al cargar configuración:", error);
-      }
-  };
-    cargarConfiguracion();
-}, [juegoId, casillaId, navigate]);
+        }
+      };
+  
+      cargarConfiguracion();
+    }
+  }, [vistaPrevia, juegoId, casillaId, navigate]);
 
 const manejarSeleccion = (modelo) => {
   setSeleccion(modelo);
 
-  if (modelo.url === sonido.modeloAsociado) {
+  if (!sonido || !sonido.modeloAsociado) {
+    console.warn("⛔ Sonido aún no está disponible o incompleto.");
+    setMensaje("⚠️ Espera un momento mientras se carga el sonido.");
+    setMostrarCelebracion(false);
+    return;
+  }
+
+  const esCorrecto = modelo.url === sonido.modeloAsociado;
+
+  if (esCorrecto) {
     setMensaje("🎉 ¡Correcto! Este es el sonido del modelo.");
     setMostrarCelebracion(true);
 
@@ -135,6 +147,12 @@ const manejarReproduccion = () => {
       <button className="estudiante-volver-btn" onClick={() => navigate("/estudiante/seleccionar-casilla")}>
         Volver
       </button>
+
+      {vistaPrevia && (
+        <button className="btn-secundario" onClick={() => navigate(-1)}>
+          🔙 Volver al modo docente
+        </button>
+      )}
     </div>
   );
 };
