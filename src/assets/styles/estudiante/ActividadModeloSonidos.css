@@ -1,154 +1,158 @@
-/* 🔹 Contenedor principal */
-.estudiante-modelo-sonido-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    height: 100vh;
+/* 🌐 Global para AR.js */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  background-color: transparent;
+  font-family: Arial, sans-serif;
 }
 
-/* 🔹 Título */
-h2 {
-    color: #333;
-    margin-bottom: 20px;
+/* 🧱 Contenedor principal AR */
+.estudiante-modelo-sonido-container,
+.actividad-ra-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: transparent;
 }
 
-/* 🔹 Contenedor de modelos */
-.estudiante-modelos-seleccionados {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
+/* 🎮 Escena A-Frame AR.js */
+a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
 }
 
-/* 🔹 Cada modelo en su cuadro */
-.estudiante-modelo-item {
-    background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    width: 220px;
+canvas {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
 }
 
-/* 🔹 Modelo 3D dentro del cuadro */
-.estudiante-modelo-item scene {
-    width: 100%;
-    height: 200px;
+
+
+/* 🔊 Botón para reproducir sonido */
+.boton-sonido {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 60px;
+  height: 60px;
+  z-index: 999;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  padding: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
-/* 🔹 Nombre del modelo */
-.estudiante-modelo-item p {
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* 🔹 Contenedor de sonido */
-.estudiante-sonido-asignado {
-    margin-top: 15px;
-    padding: 10px;
-    background: #e8f5e9;
-    border: 1px solid #4CAF50;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-}
-
-/* 🔹 Estilo para el reproductor de audio */
-audio {
-    margin-top: 10px;
-    width: 100%;
-    max-width: 250px;
-}
-
-/* 🔹 Botón de volver */
+/* 🔙 Botón para volver */
 .estudiante-volver-btn {
-    background-color: #FF5722;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
-    width: 200px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.3);
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 999;
+  padding: 10px 20px;
+  background-color: #FF5722;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .estudiante-volver-btn:hover {
-    background-color: #E64A19;
-    transform: scale(1.05);
+  background-color: #E64A19;
+  transform: scale(1.05);
 }
 
-.estudiante-modelo-item {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-  }
-  
-  .estudiante-modelo-item:hover {
-    transform: scale(1.1);
-  }
-  
-  .seleccionado {
-    border: 3px solid green;
-    background-color: #d4f8d4;
-  }
-  
-  .boton-sonido {
-    width: 60px;
-    height: 60px;
-    cursor: pointer;
-  }
-  
-  .mensaje-feedback {
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 15px;
-  }
-  
-/* 🔹 Responsividad */
-@media (max-width: 768px) {
-    .estudiante-modelos-seleccionados {
-        flex-direction: column;
-        align-items: center;
-    }
+/* 💬 Feedback visual */
+.mensaje-feedback {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+  font-weight: bold;
+  background-color: rgba(255,255,255,0.8);
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 999;
+}
 
-    .estudiante-modelo-item {
-        width: 90%;
-    }
-}.celebracion-mensaje {
-    font-size: 1.8rem;
-    color: green;
-    margin-top: 20px;
-    animation: aparecer 1s ease-in-out;
-    font-weight: bold;
-    text-align: center;
-  }
+/* 🎉 Celebración con mensaje */
+.celebracion-mensaje {
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  color: green;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 10px 25px;
+  border-radius: 15px;
+  animation: aparecer 1s ease-in-out;
+  font-weight: bold;
+  text-align: center;
+  z-index: 999;
+}
 
-  .celebracion-mensaje {
-    font-size: 1.8rem;
-    color: green;
-    margin-top: 20px;
-    animation: aparecer 1s ease-in-out;
-    font-weight: bold;
-    text-align: center;
+.gif-celebracion {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: 200px;
+  pointer-events: none;
+}
+/* 🎨 Estilo para los botones*/
+.controles-modelos {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 999;
+}
+
+.btn-modelo {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.btn-modelo:hover {
+  transform: scale(1.1);
+}
+
+.btn-modelo.activo {
+  background-color: green;
+  color: white;
+}
+
+
+@keyframes aparecer {
+  0% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0;
   }
-  
-  @keyframes aparecer {
-    0% {
-      transform: scale(0.8);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
   }
-  
+}
