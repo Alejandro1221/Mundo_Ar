@@ -3,7 +3,8 @@ import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import { useNavigate, useLocation } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../services/firebaseConfig";
-import { Entity, Scene } from "aframe-react";
+//import { Entity, Scene } from "aframe-react";
+import '@google/model-viewer';
 import imagenSonido from "../assets/images/imag_sonido.png";
 import "../assets/styles/docente/modeloSonido.css";
 
@@ -17,7 +18,7 @@ const ModeloSonido = () => {
    const [juegoId] = useState(sessionStorage.getItem("juegoId"));
    const [casillaId] = useState(sessionStorage.getItem("casillaId"));
    const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
-
+  
    
    const [celebracion, setCelebracion] = useState({
     tipo: "confeti",
@@ -137,7 +138,14 @@ const ModeloSonido = () => {
 const eliminarModelo = async (urlModelo) => {
   console.log("📌 Modelos antes de eliminar:", modelosSeleccionados);
   const nuevosModelos = modelosSeleccionados.filter((modelo) => modelo.url !== urlModelo);
-  
+
+  // 🧼 Limpiar el sonido si pertenece al modelo eliminado
+  if (sonidoSeleccionado?.modeloAsociado === urlModelo) {
+    setSonidoSeleccionado(null);
+    sessionStorage.removeItem("sonidoSeleccionado");
+    sessionStorage.removeItem("modeloAsociadoParaSonido");
+  }
+
   // 🔄 Actualizar sessionStorage antes de actualizar Firestore
   sessionStorage.setItem("modelosSeleccionados", JSON.stringify(nuevosModelos));
 
@@ -154,12 +162,12 @@ const eliminarModelo = async (urlModelo) => {
     if (juegoSnap.exists()) {
       const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
 
-      // 🔥 Solo actualizamos la configuración de la casilla, sin eliminar el modelo de la BD
       casillasActuales[casillaId] = {
         plantilla: "modelo-sonido",
         configuracion: {
-          modelos: nuevosModelos, // Actualizamos solo esta casilla, sin tocar los modelos en Firestore
-          sonido: sonidoSeleccionado,
+          modelos: nuevosModelos,
+          sonido: sonidoSeleccionado, // aquí ya sería null si era el modelo asociado
+          celebracion: celebracion,
         },
       };
 
@@ -170,6 +178,7 @@ const eliminarModelo = async (urlModelo) => {
     console.error("❌ Error al actualizar Firestore:", error);
   }
 };
+
 
   const mostrarMensaje = (texto, tipo = "info") => {
     setMensaje({ texto, tipo });
@@ -214,25 +223,15 @@ const eliminarModelo = async (urlModelo) => {
       {modelosSeleccionados.length > 0 ? (
         modelosSeleccionados.map((modelo, index) => (
           <div key={index} className="docente-modelo-item">
-            <Scene embedded shadow="type: soft" vr-mode-ui="enabled: false" style={{ width: "200px", height: "200px" }}>
-              <Entity light="type: directional; intensity: 0.7" position="1 3 1" castShadow />
-              <Entity
-                gltf-model={modelo.url}
-                position="0 1 -2"
-                scale="1.2 1.2 1.2"
-                rotation="0 45 0"
-                shadow="cast: true"
-                animation="property: rotation; to: 0 405 0; loop: true; dur: 8000"
-              />
-              <Entity 
-                geometry="primitive: plane; width: 2; height: 2"
-                material="color: #ddd; opacity: 0.6"
-                position="0 -0.01 -2"
-                rotation="-90 0 0"
-                shadow="receive: true"
-              />
-            </Scene>
-  
+            <model-viewer
+              src={modelo.url}
+              alt={`Modelo ${modelo.nombre}`}
+              camera-controls
+              auto-rotate
+              shadow-intensity="1"
+              style={{ width: "200px", height: "200px" }}
+            ></model-viewer>
+              
             <p className="nombre-modelo">{modelo.nombre}</p>
   
             <button className="btn-rojo" onClick={() => eliminarModelo(modelo.url)}>

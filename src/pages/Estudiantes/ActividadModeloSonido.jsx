@@ -76,8 +76,10 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
     const seleccionada = modelo.url.trim().toLowerCase();
     const asociada = sonido?.modeloAsociado?.trim().toLowerCase();
   
-    console.log("🔎 Seleccionado:", seleccionada);
-    console.log("🎯 Asociado:", asociada);
+    console.log("Comparando modelo:");
+    console.log("✅ Seleccionada:", seleccionada);
+    console.log("🎯 Asociada   :", asociada);
+    console.log("¿Son iguales?", seleccionada === asociada);
   
     setModeloActivo(modelo.url);
   
@@ -95,7 +97,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
       setMostrarCelebracion(false);
     }
   };
-  
   
   const manejarReproduccion = () => {
     if (audioRef.current) {

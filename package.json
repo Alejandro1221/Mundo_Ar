@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/model-viewer": "^4.0.0",
     "@react-three/drei": "^10.0.4",
     "@react-three/fiber": "^9.1.0",
     "aframe-react": "^4.4.0",
