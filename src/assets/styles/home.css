@@ -2,73 +2,63 @@
    HOME PAGE STYLES
    ==================== */
 
-/* Fondo animado con transición de colores suaves */
-@keyframes cambioColor {
-  0% { background: var(--celeste-suave); }  
-  25% { background: var(--azul-niebla); } 
-  50% { background: var(--menta); } 
-  75% { background: var(--rosado-suave); }
-  100% { background: var(--lila-palido); } 
-}
-
-.home-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; 
-  align-items: center;
-  padding: 20px;
-  position: relative;
-  background: rgba(255, 255, 255, 0.3);
-  animation: cambioColor 18s infinite alternate ease-in-out;
-}
-
-/* Contenedor central del contenido */
-.home-content {
-  background-color: var(--fondo-claro);
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  max-width: 600px;
-  width: 90%;
-  text-align: center;
-}
-
-/* Botones para roles */
-.home-buttons {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin-top: 24px;
-}
-
-.role-btn {
-  background-color: var(--azul-profundo);
-  color: var(--texto-claro);
-  font-size: 1.1rem;
-  font-weight: bold;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  text-decoration: none;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.role-btn:hover {
-  background-color: var(--menta);
-  transform: scale(1.05);
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Footer */
-.home-footer {
-  text-align: center;
-  padding: 16px 0;
-  width: 100%;
-  font-size: 0.9rem;
-  color: var(--texto-oscuro);
-  background-color: transparent;
-  margin-top: 40px;
-}
+   .home-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    padding: 20px;
+    background-color: var(--fondo-claro); /* ❌ Sin animaciones */
+  }
+  
+  /* Contenedor central del contenido */
+  .home-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: var(--sombra-suave);
+    max-width: 600px;
+    width: 90%;
+    text-align: center;
+  }
+  
+  /* Botones para roles */
+  .home-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 24px;
+  }
+  
+  .role-btn {
+    background-color: var(--azul-suave);
+    color: var(--texto-principal);
+    font-size: 1.1rem;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--borde-suave);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  .role-btn:hover {
+    background-color: var(--verde-menta);
+    transform: scale(1.05);
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Footer */
+  .home-footer {
+    text-align: center;
+    padding: 16px 0;
+    width: 100%;
+    font-size: 0.9rem;
+    color: var(--texto-principal);
+    background-color: transparent;
+    margin-top: 40px;
+  }
+  

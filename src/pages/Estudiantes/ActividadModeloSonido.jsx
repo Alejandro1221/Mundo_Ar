@@ -6,6 +6,7 @@ import { CELEBRACIONES } from "../../utils/celebraciones";
 import imagenSonido from "../../assets/images/imag_sonido.png";
 import "../../assets/styles/estudiante/ActividadModeloSonidos.css";
 import "../../aframe/seleccionable";
+import "../../aframe/colisionable";
 
 
 const ActividadModeloSonido = ({ vistaPrevia = false }) => {
@@ -20,6 +21,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
+
 
   useEffect(() => {
     window.manejarSeleccionGlobal = manejarSeleccion;
@@ -98,29 +100,26 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
     }
   };
   
-  const manejarReproduccion = () => {
-    if (audioRef.current) {
-      if (audioRef.current.paused) {
-        audioRef.current.play().catch(() => {});
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  };
 
   return (
     <div className="actividad-ra-container">
-      {/* 🔊 Botón de sonido */}
+     
       {sonido?.url && (
         <img
           src={imagenSonido}
           alt="Reproducir sonido"
           className="boton-sonido"
-          onClick={manejarReproduccion}
+          onClick={() => {
+            if (audioRef.current) {
+              if (audioRef.current.paused) {
+                audioRef.current.play().catch(() => {});
+              } else {
+                audioRef.current.pause();
+              }
+            }
+          }}
         />
       )}
-
-      <audio ref={audioRef} src={sonido?.url} style={{ display: "none" }} />
 
       {/* 🎮 Escena AR */}
       <a-scene
@@ -130,6 +129,24 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
         renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
         background="transparent: true"
       >
+        
+        <a-entity
+          id="esfera-sonido"
+          geometry="primitive: sphere; radius: 0.2"
+          material="color: yellow"
+          position="0 0 -2"
+          class="objetivo-sonido"
+          sonido-emisor
+        ></a-entity>
+              
+        {/* 🎧 Audio oculto que se reproducirá */}
+        <audio 
+          id="audio-sonido-principal" 
+          ref={audioRef} 
+          src={sonido?.url} 
+          style={{ display: "none" }} 
+        />
+
         {modelos.map((modelo, index) => (
           <a-entity
             key={index}
@@ -138,6 +155,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
             position={`${-0.8 + index * 0.6} 0 -2`}
             scale="0.25 0.25 0.25"
             seleccionable
+            colisionable
             data-modelo-url={modelo.url}
           ></a-entity>
         ))}

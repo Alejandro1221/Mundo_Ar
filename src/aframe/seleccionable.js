@@ -27,7 +27,7 @@ if (!AFRAME.components["seleccionable"]) {
         startTouch = touch;
       });
 
-      el.sceneEl.canvas.addEventListener("touchend", () => {
+      /*el.sceneEl.canvas.addEventListener("touchend", () => {
         startTouch = null;
         const modeloURL = el.getAttribute("data-modelo-url");
 
@@ -36,6 +36,11 @@ if (!AFRAME.components["seleccionable"]) {
         if (window.manejarSeleccionGlobal && modeloURL) {
           window.manejarSeleccionGlobal({ url: modeloURL });
         }
+      });*/
+
+      el.sceneEl.canvas.addEventListener("touchend", () => {
+        startTouch = null;
+        // Ya no validamos la selección aquí, lo haremos con colisión.
       });
     },
   });
