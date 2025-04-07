@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../services/firebaseConfig";
+import { auth } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
-import { collection, query, where, getDocs, addDoc, doc, getDoc,updateDoc } from "firebase/firestore";
+import {crearJuegoEnFirestore,actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
+import { doc, getDoc } from "firebase/firestore";
 import "../../assets/styles/docente/dashboardDocente.css";
 
 const DashboardDocente = () => {
@@ -51,27 +52,17 @@ const DashboardDocente = () => {
   // Cargar juegos creados por el docente
   const cargarJuegos = async (uid) => {
     try {
-      const juegosQuery = query(collection(db, "juegos"), where("creadoPor", "==", uid));
-      const juegosSnapshot = await getDocs(juegosQuery);
-
-      if (juegosSnapshot.empty) {
-        setJuegos([]);
-      } else {
-        const juegosData = juegosSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setJuegos(juegosData);
-      }
+      const juegosData = await obtenerJuegosPorDocente(uid);
+      setJuegos(juegosData);
     } catch (error) {
       console.error("Error al cargar los juegos:", error);
     }
   };
 
   // Crear un nuevo juego
-  const crearJuego = async (e) => {
-    e.preventDefault();
-    
-    // ✅ Verifica que el usuario esté definido antes de usar usuario.uid
+  const crearJuego = async () => {
     if (!usuario || !usuario.uid) {  
-      alert("Error: No se pudo identificar al usuario. Recarga la página e intenta de nuevo.");
+      alert("Error: No se pudo identificar al usuario.");
       return;
     }
   
@@ -88,28 +79,28 @@ const DashboardDocente = () => {
         fechaCreacion: new Date(),
         publico: publico,
       };
-
+  
       const juegosExistentes = juegos.map(j => j.nombre.toLowerCase());
       if (juegosExistentes.includes(nombreJuego.toLowerCase())) {
         alert("⚠️ Ya existe un juego con ese nombre.");
         return;
       }
-
-      await addDoc(collection(db, "juegos"), nuevoJuego);
+  
+      await crearJuegoEnFirestore(nuevoJuego);
       alert(`Juego "${nombreJuego}" creado exitosamente.`);
-      setNombreJuego(""); // Reset input
+      setNombreJuego("");
       cargarJuegos(usuario.uid);
     } catch (error) {
       console.error("Error al crear el juego:", error);
       alert("Hubo un error al crear el juego.");
     }
   };
+  
 
   // Cambiar visibilidad del juego
   const cambiarVisibilidad = async (juegoId, nuevoEstado) => {
     try {
-      const juegoRef = doc(db, "juegos", juegoId);
-      await updateDoc(juegoRef, { publico: nuevoEstado });
+      await actualizarJuego(juegoId, { publico: nuevoEstado });
   
       // 🔄 Actualizar estado local
       setJuegos(prev =>

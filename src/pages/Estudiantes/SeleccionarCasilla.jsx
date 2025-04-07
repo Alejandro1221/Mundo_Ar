@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerCasillasPorJuego } from "../../services/databaseService";
+import volverIcono from "../../assets/images/volver.png";
 import caminoImg from "../../assets/images/imag1.jpeg"; 
 import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
 
@@ -11,6 +12,7 @@ const SeleccionarCasilla = () => {
   useEffect(() => {
       const cargarCasillas = async () => {
         const idGuardado = sessionStorage.getItem("juegoId");
+        console.log("🎮 ID obtenido en SeleccionarCasilla:", idGuardado);
         
         if (!idGuardado) {
           console.warn("⚠️ No se encontró juegoId en sessionStorage. Redirigiendo...");
@@ -65,26 +67,26 @@ const SeleccionarCasilla = () => {
 
   ];
 
-  // 🔹 Función para redirigir a la plantilla correspondiente según la casilla seleccionada
+  // Función para redirigir a la plantilla correspondiente según la casilla seleccionada
   const irAPlantilla = (index) => {
     const casillaSeleccionada = casillas[index];
-    
+  
     if (!casillaSeleccionada || !casillaSeleccionada.plantilla) {
       alert("⚠️ Esta casilla no tiene una plantilla configurada.");
       return;
     }
-
+  
     console.log(`🎯 Casilla seleccionada: ${index + 1}, Plantilla asignada: ${casillaSeleccionada.plantilla}`);
-
-
-    // 🔹 Rutas de cada plantilla
+  
+    sessionStorage.setItem("casillaId", index);
+  
     const rutasPlantillas = {
       "modelo-sonido": `/estudiante/actividad-modelo-sonidos/${index + 1}`,
       "clasificacion-modelos": `/estudiante/actividad-clasificacion-modelos/${index + 1}`,
     };
-
+  
     const ruta = rutasPlantillas[casillaSeleccionada.plantilla];
-
+  
     if (ruta) {
       console.log(`🚀 Redirigiendo a: ${ruta}`);
       navigate(ruta);
@@ -92,28 +94,34 @@ const SeleccionarCasilla = () => {
       alert("⚠️ La plantilla seleccionada no está disponible.");
     }
   };
-  
-    return (
-      <div className="tablero-container">
+
+  return (
+    <div className="tablero-container">
+      <div className="encabezado-casilla">
+        <img src={volverIcono} alt="Volver" className="volver-esquina-superior"
+          onClick={() => navigate("/estudiante/dashboard")}
+        />
         <h2>Selecciona una Casilla</h2>
-  
-        <div className="camino-container">
-          <img src={caminoImg} alt="Camino de juego" className="fondo-camino" />
-  
-          {casillas.map((casilla, index) => (
-            <div 
-              key={index} 
-              className="casilla"
-              style={{ top: posiciones[index].top, left: posiciones[index].left }}
-              onClick={() => irAPlantilla(index)} 
-              title={casilla.plantilla || "Sin plantilla asignada"}
-            >
-              {index + 1}
-            </div>
-          ))}
-        </div>
       </div>
-    );
-  };
+
+      <div className="camino-container">
+        <img src={caminoImg} alt="Camino de juego" className="fondo-camino" />
+
+        {casillas.map((casilla, index) => (
+          <div 
+            key={index} 
+            className="casilla"
+            style={{ top: posiciones[index].top, left: posiciones[index].left }}
+            onClick={() => irAPlantilla(index)} 
+            title={casilla.plantilla || "Sin plantilla asignada"}
+          >
+            {index + 1}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
   
-  export default SeleccionarCasilla;
+  
+export default SeleccionarCasilla;

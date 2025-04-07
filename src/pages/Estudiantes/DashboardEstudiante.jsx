@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { obtenerJuegos } from "../../services/databaseService"; 
+import { obtenerJuegosPublicos } from "../../services/juegosService";
 import "../../assets/styles/estudiante/dashboardEstudiante.css"; 
 
 
@@ -17,7 +17,7 @@ const DashboardEstudiante = () => {
     }
 
     const cargarJuegos = async () => {
-      const juegosObtenidos = await obtenerJuegos();
+      const juegosObtenidos = await obtenerJuegosPublicos();
       setJuegos(juegosObtenidos);
     };
     cargarJuegos();
