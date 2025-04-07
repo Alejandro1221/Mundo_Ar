@@ -25,8 +25,15 @@ const DashboardEstudiante = () => {
 
   return (
     <div className="dashboard-estudiante">
-      <h1>Bienvenido, {username || "Estudiante"} 👋</h1> 
-      <h2>Selecciona un Juego</h2>
+      <div className="header-dashboard">
+        <div className="texto-bienvenida">
+          <h1>Bienvenido, {username || "Estudiante"} 👋</h1>
+          <h2>Selecciona un Juego</h2>
+        </div>
+        <button className="boton-salir" onClick={() => navigate("/")}>
+          Salir
+        </button>
+      </div>
       <div className="lista-juegos">
         {juegos.length > 0 ? (
           juegos.map((juego) => (
@@ -37,8 +44,8 @@ const DashboardEstudiante = () => {
                 sessionStorage.setItem("juegoId", juego.id);
                 navigate(`/estudiante/seleccionar-casilla`);
               }}
-            >
-              <h3>{juego.nombre}</h3>
+            > 
+              <h3>🎲{juego.nombre}</h3>
               <p>{juego.descripcion || "Sin descripción"}</p>
             </div>
           ))

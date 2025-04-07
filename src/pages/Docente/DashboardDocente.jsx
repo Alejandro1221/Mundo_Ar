@@ -4,7 +4,7 @@ import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
-import { collection, query, where, getDocs, addDoc, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, doc, getDoc,updateDoc } from "firebase/firestore";
 import "../../assets/styles/docente/dashboardDocente.css";
 
 const DashboardDocente = () => {
@@ -13,6 +13,8 @@ const DashboardDocente = () => {
   const [nombreJuego, setNombreJuego] = useState("");
   const navigate = useNavigate();
   const [mostrarInput, setMostrarInput] = useState(false);
+  const [publico, setPublico] = useState(false);
+  
 
   // Detectar usuario autenticado
   useEffect(() => {
@@ -84,6 +86,7 @@ const DashboardDocente = () => {
         casillas: Array(30).fill({ configuracion: null }),
         creadoPor: usuario.uid,
         fechaCreacion: new Date(),
+        publico: publico,
       };
 
       const juegosExistentes = juegos.map(j => j.nombre.toLowerCase());
@@ -99,6 +102,26 @@ const DashboardDocente = () => {
     } catch (error) {
       console.error("Error al crear el juego:", error);
       alert("Hubo un error al crear el juego.");
+    }
+  };
+
+  // Cambiar visibilidad del juego
+  const cambiarVisibilidad = async (juegoId, nuevoEstado) => {
+    try {
+      const juegoRef = doc(db, "juegos", juegoId);
+      await updateDoc(juegoRef, { publico: nuevoEstado });
+  
+      // 🔄 Actualizar estado local
+      setJuegos(prev =>
+        prev.map(j =>
+          j.id === juegoId ? { ...j, publico: nuevoEstado } : j
+        )
+      );
+  
+      console.log(`✅ Visibilidad del juego actualizada: ${nuevoEstado}`);
+    } catch (error) {
+      console.error("❌ Error al actualizar visibilidad:", error);
+      alert("No se pudo actualizar la visibilidad.");
     }
   };
   
@@ -134,6 +157,20 @@ const DashboardDocente = () => {
                 value={nombreJuego}
                 onChange={(e) => setNombreJuego(e.target.value)}
               />
+              {/* switch público */}
+              <div className="switch-container">
+              <label className="switch-label">
+                <span>Juego Público</span>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={publico}
+                    onChange={(e) => setPublico(e.target.checked)}
+                  />
+                  <span className="slider" />
+                </label>
+              </label>
+            </div>
             </>
           )}
           <button
@@ -141,7 +178,7 @@ const DashboardDocente = () => {
             className="boton"
             onClick={() => {
               if (!mostrarInput) {
-                setMostrarInput(true); // Mostrar input
+                setMostrarInput(true); 
               } else if (nombreJuego.trim() !== "") {
                 crearJuego(); // Ejecuta la función que ya tienes
                 setMostrarInput(false); // Oculta input después
@@ -160,6 +197,21 @@ const DashboardDocente = () => {
           juegos.map((juego) => (
             <div key={juego.id} className="juego-item">
               <div className="juego-nombre">{juego.nombre}</div>
+
+               {/* 🔹 Switch público para editar visibilidad */}
+              <div className="switch-container">
+                <label className="switch-label">
+                  <span>Público</span>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={juego.publico}
+                      onChange={() => cambiarVisibilidad(juego.id, !juego.publico)}
+                    />
+                    <span className="slider" />
+                  </label>
+                </label>
+              </div>
               <button
                 className="icono-btn"
                 onClick={() => {
