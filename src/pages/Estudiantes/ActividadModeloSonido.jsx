@@ -8,7 +8,6 @@ import "../../assets/styles/estudiante/ActividadModeloSonidos.css";
 import "../../aframe/seleccionable";
 import "../../aframe/colisionable";
 
-
 const ActividadModeloSonido = ({ vistaPrevia = false }) => {
   const navigate = useNavigate();
   const [modelos, setModelos] = useState([]);
@@ -21,7 +20,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
-
 
   useEffect(() => {
     window.manejarSeleccionGlobal = manejarSeleccion;
@@ -77,12 +75,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
   
     const seleccionada = modelo.url.trim().toLowerCase();
     const asociada = sonido?.modeloAsociado?.trim().toLowerCase();
-  
-    console.log("Comparando modelo:");
-    console.log("✅ Seleccionada:", seleccionada);
-    console.log("🎯 Asociada   :", asociada);
-    console.log("¿Son iguales?", seleccionada === asociada);
-  
     setModeloActivo(modelo.url);
   
     const esCorrecto = seleccionada === asociada;
@@ -103,6 +95,11 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
   return (
     <div className="actividad-ra-container">
+      <div className="barra-superior">
+        <button className="btn-volver" onClick={() => navigate("/estudiante/seleccionar-casilla")}>⬅</button>
+        <h2 className="titulo-actividad">Actividad: Escucha y selecciona</h2>
+        <div className="espaciador-derecho"></div>
+      </div>
      
       {sonido?.url && (
         <img
@@ -123,18 +120,17 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
       {/* 🎮 Escena AR */}
       <a-scene
-        embedded
-        arjs="sourceType: webcam; debugUIEnabled: false;"
-        vr-mode-ui="enabled: false"
-        renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
-        background="transparent: true"
-      >
-        
+         
+          arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+          vr-mode-ui="enabled: false"
+          renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+          background="transparent: true"
+        >
         <a-entity
           id="esfera-sonido"
           geometry="primitive: sphere; radius: 0.2"
-          material="color: yellow"
-          position="0 0 -2"
+          material="color: #83B68C"
+          position="0.5 0 -3"
           class="objetivo-sonido"
           sonido-emisor
         ></a-entity>
@@ -151,28 +147,30 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
           <a-entity
             key={index}
             gltf-model={modelo.url}
-            //position={`${-1 + index * 1.5} 0 -2`}
-            position={`${-0.8 + index * 0.6} 0 -2`}
+            position={`-0.5 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
+
             scale="0.25 0.25 0.25"
+            //scale="0.35 0.35 0.35"
             seleccionable
             colisionable
             data-modelo-url={modelo.url}
           ></a-entity>
         ))}
 
-      {modelos.map((modelo, index) => (
-        <button
-          key={index}
-          className="btn-modelo"
-          style={{ left: `${10 + index * 120}px`, top: "10px", position: "absolute", zIndex: 999 }}
-          onClick={() => setModeloActivo(modelo.url)}
-        >
-          {modelo.nombre}
-        </button>
-      ))}
-
-        <a-entity camera="fov: 65"></a-entity>
+      <a-entity camera="fov: 95" position="0 0 0"></a-entity>
       </a-scene>
+
+      <div className="controles-modelos">
+        {modelos.map((modelo, index) => (
+          <button
+            key={index}
+            className={`btn-modelo ${modelo.url === modeloActivo ? "activo" : ""}`}
+            onClick={() => setModeloActivo(modelo.url)}
+          >
+            {modelo.nombre}
+          </button>
+        ))}
+      </div>
 
       {/* 🎉 Feedback visual */}
       {mensaje && <p className="mensaje-feedback">{mensaje}</p>}
@@ -183,8 +181,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
         </div>
       )}
 
-      {/* 🔙 Botón volver */}
-      <button className="estudiante-volver-btn" onClick={() => navigate("/estudiante/seleccionar-casilla")}>⬅️ Volver</button>
     </div>
   );
 };

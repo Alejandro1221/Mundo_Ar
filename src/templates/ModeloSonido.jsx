@@ -6,7 +6,7 @@ import { db, storage } from "../services/firebaseConfig";
 //import { Entity, Scene } from "aframe-react";
 import '@google/model-viewer';
 import imagenSonido from "../assets/images/imag_sonido.png";
-import "../assets/styles/docente/modeloSonido.css";
+//import "../assets/styles/docente/modeloSonido.css";
 
 const ModeloSonido = () => {
   const navigate = useNavigate();

@@ -20,27 +20,17 @@ if (!AFRAME.components["seleccionable"]) {
         const pos = el.getAttribute("position");
         el.setAttribute("position", {
           x: Math.max(-1.2, Math.min(1.2, pos.x + deltaX)),
-          y: Math.max(-0.8, Math.min(1.2, pos.y - deltaY)),
+          y: Math.max(-1, Math.min(1.2, pos.y - deltaY)),
+
           z: pos.z,
         });
 
         startTouch = touch;
       });
 
-      /*el.sceneEl.canvas.addEventListener("touchend", () => {
-        startTouch = null;
-        const modeloURL = el.getAttribute("data-modelo-url");
-
-        if (window.modeloActivoUrl !== modeloURL) return; // ✅ validación extra aquí
-
-        if (window.manejarSeleccionGlobal && modeloURL) {
-          window.manejarSeleccionGlobal({ url: modeloURL });
-        }
-      });*/
-
       el.sceneEl.canvas.addEventListener("touchend", () => {
         startTouch = null;
-        // Ya no validamos la selección aquí, lo haremos con colisión.
+        
       });
     },
   });

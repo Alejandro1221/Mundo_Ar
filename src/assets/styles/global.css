@@ -107,4 +107,17 @@
     box-shadow: var(--sombra-suave); 
     margin-bottom: 20px;
   }
+
+  a-scene,
+a-scene .a-canvas,
+a-scene canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  object-fit: cover !important;
+  z-index: 0;
+}
   
