@@ -5,6 +5,7 @@ import volverIcono from "../../assets/images/volver.png";
 import caminoImg from "../../assets/images/imag1.jpeg"; 
 import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
 
+
 const SeleccionarCasilla = () => {
   const navigate = useNavigate();
   const [casillas, setCasillas] = useState([]);
@@ -106,7 +107,6 @@ const SeleccionarCasilla = () => {
 
       <div className="camino-container">
         <img src={caminoImg} alt="Camino de juego" className="fondo-camino" />
-
         {casillas.map((casilla, index) => (
           <div 
             key={index} 

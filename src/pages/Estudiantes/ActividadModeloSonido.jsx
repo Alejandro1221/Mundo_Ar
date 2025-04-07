@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
 import { CELEBRACIONES } from "../../utils/celebraciones";
+import { useAR } from "../../hooks/useAR";
 import imagenSonido from "../../assets/images/imag_sonido.png";
 import "../../assets/styles/estudiante/ActividadModeloSonidos.css";
 import "../../aframe/seleccionable";
 import "../../aframe/colisionable";
 
 const ActividadModeloSonido = ({ vistaPrevia = false }) => {
+  useAR();
   const navigate = useNavigate();
   const [modelos, setModelos] = useState([]);
   const [sonido, setSonido] = useState(null);
@@ -92,11 +94,17 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
     }
   };
   
-
   return (
     <div className="actividad-ra-container">
       <div className="barra-superior">
-        <button className="btn-volver" onClick={() => navigate("/estudiante/seleccionar-casilla")}>⬅</button>
+      <button
+  className="btn-volver"
+  onClick={() => {
+    window.location.href = "/estudiante/seleccionar-casilla";
+  }}
+>
+  ⬅
+</button>
         <h2 className="titulo-actividad">Actividad: Escucha y selecciona</h2>
         <div className="espaciador-derecho"></div>
       </div>
@@ -120,7 +128,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
       {/* 🎮 Escena AR */}
       <a-scene
-         
           arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
           vr-mode-ui="enabled: false"
           renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"

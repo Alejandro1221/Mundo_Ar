@@ -15,6 +15,14 @@
     --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
   
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  
   /* ====================
      TIPOGRAFÍA GLOBAL
      ==================== */
@@ -108,7 +116,7 @@
     margin-bottom: 20px;
   }
 
-  a-scene,
+a-scene,
 a-scene .a-canvas,
 a-scene canvas {
   position: fixed !important;
@@ -120,4 +128,4 @@ a-scene canvas {
   object-fit: cover !important;
   z-index: 0;
 }
-  
+
