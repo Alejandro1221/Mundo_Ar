@@ -1,136 +1,138 @@
+/* ==========================
+   Estilos Autenticación Docente
+   ========================== */
 
-.auth-container {
-    background: url('/paisaje.jpg') no-repeat center center/cover;
-    background-attachment: fixed;
+   .auth-container {
+    background-color: var(--docente-fondo-claro); /* Fondo profesional */
     min-height: 100vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-/* 🔹 Caja translúcida con Glassmorphism */
-.auth-box {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
+    padding: 20px;
+  }
+  
+  .auth-box {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    border-radius: var(--borde-suave);
     padding: 30px;
-    width: 380px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 420px;
     text-align: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    z-index: 1;
+    box-shadow: var(--sombra-suave);
     position: relative;
-}
-
-/* 🔹 Título */
-.auth-box h1 {
-    color: #2c2c2c;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-}
-
-.auth-box h2 {
-    color: var(--texto-oscuro);
-    font-size: 1.8rem;
+    z-index: 1;
+  }
+  
+  .auth-box h1 {
+    color: var(--texto-principal);
+    font-size: 2rem;
     margin-bottom: 20px;
   }
-
-/* 🔹 Estilos de Input */
-.auth-box input {
+  
+  /* ========== Inputs ========== */
+  .auth-box input {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
-    border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.3);
-    color: rgb(0, 0, 0);
+    border: 1px solid var(--docente-secundario);
+    border-radius: var(--borde-suave);
+    background-color: #ffffff;
+    color: var(--texto-principal);
     font-size: 1rem;
     outline: none;
-}
-
-/* 🔹 Placeholder de inputs */
-.auth-box input::placeholder {
-    color: rgba(44, 44, 44, 0.7);
-}
-
-/* 🔹 Botones */
-.auth-button {
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  
+  .auth-box input:focus {
+    border-color: var(--docente-primario);
+    box-shadow: 0 0 0 2px rgba(33, 112, 161, 0.2);
+  }
+  
+  .auth-box input::placeholder {
+    color: #999999;
+  }
+  
+  /* ========== Botones generales ========== */
+  .auth-button {
     width: 100%;
-    padding: 12px;
-    background: #6a5acd; /* Un color amigable y accesible */
-    color: white;
-    font-weight: bold;
+    margin-top: 8px;
+  }
+  
+  /* Botones especiales para docente */
+  .primary-btn {
+    background-color: var(--docente-primario);
+    color: var(--texto-blanco);
     border: none;
-    border-radius: 15px;
+    border-radius: var(--borde-suave);
+    padding: 10px 16px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out, background 0.3s;
-}
-
-.auth-button:hover {
-    box-shadow: 0 5px 15px rgba(106, 90, 205, 0.4);
-}
-/* 🔹 Separación entre botones */
-.button-group {
+    transition: background-color 0.3s ease;
+  }
+  
+  .primary-btn:hover {
+    background-color: #18577f;
+  }
+  
+  .secondary-btn {
+    background-color: var(--docente-secundario);
+    color: var(--texto-principal);
+    border: none;
+    border-radius: var(--borde-suave);
+    padding: 10px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .secondary-btn:hover {
+    background-color: #90bada;
+    transform: scale(1.02);
+  }
+  
+  /* ========== Grupo de botones ========== */
+  .button-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 15px; 
-}
-
-/* 🔹 Botón primario */
-.primary-btn {
-    background: var(--azul-profundo); /* antes: #6a5acd */
-  color: var(--texto-claro);
-}
-
-.primary-btn:hover {
-    background: var(--menta);
-}
-
-/* 🔹 Botón secundario */
-.secondary-btn {
-    background: rgba(255, 255, 255, 0.3);
-    color: #2c2c2c; /* Texto más oscuro */
-}
-
-.secondary-btn:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.05);
-}
-
-/* 🔹 Enlaces */
-.auth-links {
+    margin-top: 15px;
+  }
+  
+  /* ========== Enlaces ========== */
+  .auth-links {
     display: flex;
     justify-content: space-between;
-    margin: 10px 0;
-}
-
-.auth-links a {
-    color: #2c2c2c;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: bold;
-}
-
-.auth-links a:hover {
-    text-decoration: underline;
-}
-
-/* 🔹 Mensajes de error */
-.error-message {
-    color: #ff4d4d;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
-
-.register-box {
-    width: 420px; /* un poquito más ancho si lo deseas */
+    margin: 12px 0;
   }
-
-/* 🔹 Ajustes responsive */
-@media (max-width: 600px) {
+  
+  .auth-links a {
+    color: var(--texto-secundario);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+  
+  .auth-links a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ========== Errores ========== */
+  .error-message {
+    background-color: #ffe6e6;
+    color: #cc0000;
+    padding: 10px;
+    border-radius: var(--borde-suave);
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
+  
+  /* ========== Responsive ========== */
+  @media (max-width: 600px) {
     .auth-box {
-        width: 90%;
-        padding: 20px;
+      width: 90%;
+      padding: 20px;
     }
-}
+  }
+  

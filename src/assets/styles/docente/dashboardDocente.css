@@ -1,5 +1,5 @@
 /* =============================
-   CONTENEDOR PRINCIPAL DASHBOARD
+   CONTENEDOR PRINCIPAL
    ============================= */
    .dashboard-container {
     position: relative;
@@ -11,52 +11,55 @@
     min-height: 90vh;
     margin: auto;
     padding: 2rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    background-color: var(--docente-fondo-claro);
+    border-radius: var(--borde-suave);
+    box-shadow: var(--sombra-suave);
     text-align: center;
   }
   
   /* =============================
-     TÍTULO
+     ENCABEZADO
      ============================= */
-  .dashboard-container h1 {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
-    color: var(--texto-oscuro);
+  .dashboard-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  
+  .dashboard-header h1 {
+    font-size: 1.8rem;
+    color: var(--texto-principal);
+    margin: 0;
     font-weight: bold;
   }
   
-  /* =============================
-     BOTÓN CERRAR SESIÓN
-     ============================= */
-     .boton-logout {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: #d94f4f;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      font-size: 0.85rem;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      z-index: 10;
-      transition: background-color 0.3s ease;
-      width: auto; 
-      max-width: 200px; 
-    }
-    
+  /* Botón cerrar sesión */
+  .boton-logout {
+    background-color: var(--docente-peligro);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    flex-shrink: 0;
+    white-space: nowrap;
+    max-width: fit-content;
+  }
   
   .boton-logout:hover {
-    background-color: #c0392b;
+    background-color: #8a2f2f;
   }
   
   /* =============================
-     CREAR JUEGO FORMULARIO
+     FORMULARIO CREAR JUEGO
      ============================= */
   .crear-juego-form {
     width: 100%;
@@ -67,116 +70,38 @@
     margin-bottom: 32px;
   }
   
-  .label {
-    font-weight: bold;
-    margin-bottom: 4px;
+  .crear-juego-form .label {
     text-align: left;
+    font-weight: 600;
+    color: var(--texto-principal);
   }
   
-  .input {
+  .crear-juego-form .input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 1px solid var(--docente-secundario);
+    border-radius: var(--borde-suave);
+    background-color: #fff;
     font-size: 1rem;
   }
   
-  
   /* =============================
-     LISTA DE JUEGOS
+     SWITCH
      ============================= */
-  .lista-juegos {
-    width: 100%;
-    max-width: 600px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
-    align-items: center;
-  }
-  
-  .lista-juegos h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--texto-oscuro);
-    margin-bottom: 12px;
-  }
-  
-  /* =============================
-     CADA JUEGO
-     ============================= */
-     .juego-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 16px;
-      background: var(--azul-niebla);
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-      width: 100%;
-      min-width: 550px;
-      max-width: 60px; 
-      margin: 0 auto; 
-      gap: 12px;
-    }
-    
-    .juego-nombre {
-      flex: 1;
-      font-size: 1rem;
-      font-weight: bold;
-      color: var(--texto-oscuro);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      min-width: 0;
-    }
-    
-    .icono-btn {
-      background: var(--azul-profundo);
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-    }
-    
-    .icono-btn:hover {
-      background-color: var(--menta);
-    }
-    
-  /* =============================
-     BOTONES FINALES (BANCOS)
-     ============================= */
-  .opciones-bancos {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    width: 100%;
-    max-width: 500px;
-  }
-
   .switch-container {
-    margin: 16px 0;
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .switch-label {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     font-weight: 600;
-    font-size: 1rem;
     color: var(--texto-principal);
   }
   
-  /* Estilo switch */
   .switch {
     position: relative;
     display: inline-block;
@@ -211,12 +136,105 @@
     transition: 0.4s;
   }
   
-  input:checked + .slider {
-    background-color: var(--azul-suave);
+  .switch input:checked + .slider {
+    background-color: var(--docente-primario);
   }
   
-  input:checked + .slider:before {
+  .switch input:checked + .slider:before {
     transform: translateX(24px);
   }
   
+  
+  /* =============================
+     LISTA DE JUEGOS
+     ============================= */
+  .lista-juegos {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .lista-juegos h3 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: var(--texto-principal);
+    margin-bottom: 12px;
+  }
+  
+ /* =============================
+   BLOQUE DE JUEGOS - mejorado
+   ============================= */
+.bloque-juegos {
+  width: 100%;
+  background-color: #e6effc; /* Fondo azul clarito */
+  padding: 2rem;
+  margin-bottom: 40px;
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+}
+
+/* =============================
+   Tarjeta de cada juego - mejorada
+   ============================= */
+.juego-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: white; /* Tarjeta blanca sobre fondo azul */
+  border-radius: var(--borde-suave);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.juego-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+  
+  .juego-nombre {
+    flex: 1;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--texto-principal);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .icono-btn {
+    background: var(--docente-primario);
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .icono-btn:hover {
+    background-color: #18577f;
+  }
+  
+  /* =============================
+     BOTONES FINALES (BANCOS)
+     ============================= */
+  .opciones-bancos {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+  }
   

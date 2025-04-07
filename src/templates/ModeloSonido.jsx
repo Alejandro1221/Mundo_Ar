@@ -3,10 +3,9 @@ import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import { useNavigate, useLocation } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "../services/firebaseConfig";
-//import { Entity, Scene } from "aframe-react";
 import '@google/model-viewer';
 import imagenSonido from "../assets/images/imag_sonido.png";
-//import "../assets/styles/docente/modeloSonido.css";
+import "../assets/styles/docente/modeloSonido.css";
 
 const ModeloSonido = () => {
   const navigate = useNavigate();
@@ -215,8 +214,17 @@ const eliminarModelo = async (urlModelo) => {
         {mensaje.texto}
       </div>
     )}
-  
-    <h2 className="titulo-vista">Configurar Modelo-Sonido</h2>
+
+    <div className="titulo-con-icono">
+      <h2 className="titulo-vista">Configurar Modelo-Sonido</h2>
+      <img 
+        src={imagenSonido} 
+        alt="Reproducir sonido" 
+        className="icono-titulo-sonido" 
+        onClick={manejarReproduccion} 
+      />
+    </div>
+    
   
     {/* 📦 Lista de modelos seleccionados */}
     <div className="docente-modelos-seleccionados">
@@ -359,16 +367,6 @@ const eliminarModelo = async (urlModelo) => {
       >
         ⬅️ Volver
       </button>
-  
-      <div className="boton-sonido-container">
-        <img 
-          src={imagenSonido} 
-          alt="Reproducir sonido" 
-          className="boton-sonido" 
-          onClick={manejarReproduccion} 
-        />
-        <audio ref={audioRef} src={sonidoSeleccionado?.url} style={{ display: "none" }} />
-      </div>
     </div>
   </div>
   

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../services/firebaseConfig";
+import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
@@ -129,27 +129,32 @@ const DashboardDocente = () => {
 
   return (
     <div className="dashboard-container">
-      <button className="boton-logout" onClick={handleCerrarSesion}>
-        <FiLogOut />
-        Cerrar sesión
-      </button>
-  
-      <h1>Bienvenido, {usuario?.nombre || usuario?.email}</h1>
+      <div className="dashboard-header">
+        <h1>
+          {usuario?.nombre
+            ? `Bienvenido profe ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
+            : "Bienvenido profe"}
+        </h1>
+        <button className="boton-logout" onClick={handleCerrarSesion}>
+          <FiLogOut />
+          Cerrar sesión
+        </button>
+      </div>
   
       {/* Crear un nuevo juego */}
       <div className="crear-juego-form">
         {mostrarInput && (
-            <>
-              <label className="label">Nombre del juego</label>
-              <input
-                type="text"
-                className="input"
-                placeholder="Escribe un nombre"
-                value={nombreJuego}
-                onChange={(e) => setNombreJuego(e.target.value)}
-              />
-              {/* switch público */}
-              <div className="switch-container">
+          <>
+            <label className="label">Nombre del juego</label>
+            <input
+              type="text"
+              className="input"
+              placeholder="Escribe un nombre"
+              value={nombreJuego}
+              onChange={(e) => setNombreJuego(e.target.value)}
+            />
+            {/* Switch público */}
+            <div className="switch-container">
               <label className="switch-label">
                 <span>Juego Público</span>
                 <label className="switch">
@@ -162,62 +167,67 @@ const DashboardDocente = () => {
                 </label>
               </label>
             </div>
-            </>
-          )}
-          <button
-            type="button"
-            className="boton"
-            onClick={() => {
-              if (!mostrarInput) {
-                setMostrarInput(true); 
-              } else if (nombreJuego.trim() !== "") {
-                crearJuego(); // Ejecuta la función que ya tienes
-                setMostrarInput(false); // Oculta input después
-              }
-            }}
-          >
-            Crear Juego
+          </>
+        )}
+  
+        <button
+          type="button"
+          className="boton"
+          onClick={() => {
+            if (!mostrarInput) {
+              setMostrarInput(true);
+            } else if (nombreJuego.trim() !== "") {
+              crearJuego();
+              setMostrarInput(false);
+            }
+          }}
+        >
+          Crear Juego
         </button>
       </div>
-          
-      <h3>Lista de Juegos Creados</h3>
-      <div className="lista-juegos">
-        {juegos.length === 0 ? (
-          <p>No tienes juegos creados aún.</p>
-        ) : (
-          juegos.map((juego) => (
-            <div key={juego.id} className="juego-item">
-              <div className="juego-nombre">{juego.nombre}</div>
-
-               {/* 🔹 Switch público para editar visibilidad */}
-              <div className="switch-container">
-                <label className="switch-label">
-                  <span>Público</span>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={juego.publico}
-                      onChange={() => cambiarVisibilidad(juego.id, !juego.publico)}
-                    />
-                    <span className="slider" />
+  
+      {/* Lista de Juegos como bloque estilizado */}
+      <div className="bloque-juegos">
+        <h3>Lista de Juegos Creados</h3>
+        <div className="lista-juegos">
+          {juegos.length === 0 ? (
+            <p>No tienes juegos creados aún.</p>
+          ) : (
+            juegos.map((juego) => (
+              <div key={juego.id} className="juego-item">
+                <div className="juego-nombre">{juego.nombre}</div>
+  
+                <div className="switch-container">
+                  <label className="switch-label">
+                    <span>Público</span>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={juego.publico}
+                        onChange={() => cambiarVisibilidad(juego.id, !juego.publico)}
+                      />
+                      <span className="slider" />
+                    </label>
                   </label>
-                </label>
+                </div>
+  
+                <button
+                  className="icono-btn"
+                  onClick={() => {
+                    sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                    navigate(`/docente/configurar-casillas/${juego.id}`);
+                  }}
+                  aria-label="Modificar juego"
+                >
+                  <FiEdit />
+                </button>
               </div>
-              <button
-                className="icono-btn"
-                onClick={() => {
-                  sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                  navigate(`/docente/configurar-casillas/${juego.id}`);
-                }}
-                aria-label="Modificar juego"
-              >
-                <FiEdit />
-              </button>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
-
+  
+      {/* Opciones finales */}
       <div className="opciones-bancos">
         <button
           className="boton"
@@ -241,7 +251,8 @@ const DashboardDocente = () => {
       </div>
     </div>
   );
-}  
+}
+
 export default DashboardDocente;
 
 

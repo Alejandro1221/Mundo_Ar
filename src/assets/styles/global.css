@@ -1,11 +1,18 @@
-/* ====================
+
+   :root {
+    /* ====================
    PALETA DE COLORES AUTISMO
    ==================== */
-   :root {
     --fondo-claro: #D6E2E9;
     --salmon-resalte: #D35F5A;
     --azul-suave: #90BFC3;
     --verde-menta: #83B68C;
+
+     /* Paleta Docente */
+    --docente-primario: #2170a1;
+    --docente-secundario: #A3CBEA;
+    --docente-peligro: #A33E3E;
+    --docente-fondo-claro: #d8dbe2;
 
     --texto-principal: #1A1A1A;
     --texto-secundario: #1e2299;
@@ -13,6 +20,8 @@
   
     --borde-suave: 12px;
     --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+    
   }
   
   html, body {
@@ -74,7 +83,7 @@
   }
   
   .boton:hover {
-    background-color: var(--verde-menta--menta);
+    background-color: var(--verde-menta);
   }
 
   .boton-resalte {

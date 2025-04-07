@@ -18,35 +18,35 @@ const ConfigurarCasillas = () => {
     <div className="configurar-casillas-container">
       {/* 🔙 Botón Volver con ícono */}
       <button
-        className="btn-volver-icono"
+        className="configurar-casillas-container__btn-volver"
         onClick={() => navigate("/docente/dashboard")}
         aria-label="Volver al dashboard"
       >
         <FiArrowLeft />
       </button>
   
-      <h2>Configurar Casillas del Juego</h2>
+      <h2 className="configurar-casillas-container__titulo">Configurar Casillas del Juego</h2>
   
       {/* 🔲 Tablero de casillas */}
-      <div className="tablero">
+      <div className="configurar-casillas-container__tablero">
         {casillas.map((casilla, index) => (
           <div
             key={index}
-            className={`casilla ${casilla.plantilla ? "configurada" : ""}`}
+            className={`configurar-casillas-container__casilla ${casilla.plantilla ? "configurada" : ""}`}
             onClick={() => abrirModal(index, casilla.plantilla)}
           >
             <span>{index + 1}</span>
             {casilla.plantilla && (
-              <span className="nombre-plantilla">{casilla.plantilla}</span>
+              <span className="configurar-casillas-container__plantilla">{casilla.plantilla}</span>
             )}
           </div>
         ))}
       </div>
   
-      {/* 📦 Modal de selección de plantilla */}
+      {/* 📦 Modal */}
       {modalVisible && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className="configurar-casillas-container__modal">
+          <div className="configurar-casillas-container__modal-content">
             <h3>Seleccionar Plantilla</h3>
             <select
               value={plantillaSeleccionada}
@@ -56,7 +56,7 @@ const ConfigurarCasillas = () => {
               <option value="modelo-sonido">Modelo-Sonido</option>
               <option value="clasificacion-modelos">Clasificar Modelos</option>
             </select>
-            <div className="modal-buttons">
+            <div className="configurar-casillas-container__modal-buttons">
               <button onClick={() => setModalVisible(false)}>Cancelar</button>
               <button onClick={guardarCambios}>Guardar</button>
             </div>

@@ -1,135 +1,145 @@
-.banco-sonidos {
-  width: 100%;
-  max-width: 500px;
-  min-height: 550px;
-  margin: 50px auto;
-  padding: 30px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.banco-sonidos h2 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--texto-oscuro);
-  margin-bottom: 20px;
-}
-
-/* 📂 Formulario */
-.form-subida-sonidos {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-input,
-select,
-button {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 15px;
-  transition: all 0.3s ease;
-}
-
-/* 🎨 Botones generales */
-button {
-  background: var(--azul);
-  color: var(--texto-claro);
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-}
-
-button:hover {
-  background: var(--azul-profundo);
-  transform: scale(1.03);
-}
-
-/* 🎯 Botón Nueva Categoría */
-button.nueva-categoria {
-  background: var(--menta);
-}
-
-button.nueva-categoria:hover {
-  background: #6da574;
-  transform: scale(1.03);
-}
-
-/* 🎵 Lista de sonidos */
-.lista-sonidos {
-  margin-top: 25px;
-  max-height: 300px;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-
-/* 🔊 Item de sonido */
-.sonido-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #f0f4f8;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-}
-
-.sonido-item:hover {
-  background: #e3eaf0;
-  transform: scale(1.02);
-}
-
-.sonido-item p {
-  flex: 1;
-  text-align: left;
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--texto-oscuro);
-}
-
-audio {
-  margin-right: 12px;
-}
-
-/* 🗑️ Botón eliminar */
-.sonido-item button {
-  background: var(--rojo);
-  border: none;
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.sonido-item button:hover {
-  background: #c82333;
-  transform: scale(1.05);
-}
-
-/* 🔙 Botón volver */
-.volver-btn {
-  margin-top: 20px;
-  padding: 10px 15px;
-  background-color: var(--naranja);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  font-weight: bold;
-}
-
-.volver-btn:hover {
-  background-color: #e67e22;
-  transform: scale(1.05);
-}
+/* =============================
+   CONTENEDOR PRINCIPAL
+   ============================= */
+   .banco-sonidos {
+    width: 100%;
+    max-width: 600px;
+    min-height: 550px;
+    margin: 50px auto;
+    padding: 30px;
+    background: var(--docente-fondo-claro);
+    border-radius: var(--borde-suave);
+    box-shadow: var(--sombra-suave);
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  /* =============================
+     TÍTULO
+     ============================= */
+  .banco-sonidos h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--texto-principal);
+    margin-bottom: 24px;
+  }
+  
+  /* =============================
+     FORMULARIO DE SUBIDA
+     ============================= */
+  .form-subida-sonidos {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .form-subida-sonidos input,
+  .form-subida-sonidos select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--docente-secundario);
+    border-radius: var(--borde-suave);
+    font-size: 1rem;
+  }
+  
+  /* Botón para nueva categoría */
+  .form-subida-sonidos .nueva-categoria {
+    background: var(--menta);
+    color: var(--texto-claro);
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--borde-suave);
+    padding: 10px 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .form-subida-sonidos .nueva-categoria:hover {
+    background-color: #6da574;
+    transform: scale(1.03);
+  }
+  
+  /* =============================
+     LISTA DE SONIDOS
+     ============================= */
+  .lista-sonidos {
+    margin-top: 16px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  /* =============================
+     ITEM DE SONIDO
+     ============================= */
+  .sonido-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f0f4f8;
+    padding: 12px 14px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sonido-item:hover {
+    background: #e3eaf0;
+    transform: scale(1.02);
+  }
+  
+  .sonido-item p {
+    flex: 1;
+    text-align: left;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--texto-principal);
+  }
+  
+  .sonido-item audio {
+    margin: 0 12px;
+  }
+  
+  /* Botón eliminar */
+  .sonido-item button {
+    background: var(--docente-peligro);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: var(--borde-suave);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+  
+  .sonido-item button:hover {
+    background: #b03030;
+    transform: scale(1.05);
+  }
+  
+  /* =============================
+     BOTÓN VOLVER
+     ============================= */
+  .volver-btn {
+    margin-top: 24px;
+    padding: 10px 18px;
+    background-color: var(--naranja);
+    color: white;
+    border: none;
+    border-radius: var(--borde-suave);
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .volver-btn:hover {
+    background-color: #e67e22;
+    transform: scale(1.05);
+  }
+  
