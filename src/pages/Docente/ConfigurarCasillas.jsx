@@ -55,6 +55,7 @@ const ConfigurarCasillas = () => {
               <option value="">Seleccione una plantilla</option>
               <option value="modelo-sonido">Modelo-Sonido</option>
               <option value="clasificacion-modelos">Clasificar Modelos</option>
+              <option value="rompecabezas-modelo">Rompecabezas Modelo</option>
             </select>
             <div className="configurar-casillas-container__modal-buttons">
               <button onClick={() => setModalVisible(false)}>Cancelar</button>

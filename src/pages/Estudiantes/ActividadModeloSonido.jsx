@@ -97,14 +97,9 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
   return (
     <div className="actividad-ra-container">
       <div className="barra-superior">
-      <button
-  className="btn-volver"
-  onClick={() => {
-    window.location.href = "/estudiante/seleccionar-casilla";
-  }}
->
-  ⬅
-</button>
+      <button className="btn-volver" onClick={() => {window.location.href = "/estudiante/seleccionar-casilla";}}>
+        ⬅
+      </button>
         <h2 className="titulo-actividad">Actividad: Escucha y selecciona</h2>
         <div className="espaciador-derecho"></div>
       </div>

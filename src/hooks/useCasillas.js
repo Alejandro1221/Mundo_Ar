@@ -24,7 +24,8 @@ export const useCasillas = (juegoId) => {
   // 📌 Mapeo de rutas según la plantilla seleccionada
   const rutasPlantillas = {
     "modelo-sonido": "/docente/plantilla-sonido-modelo",
-    "clasificacion-modelos": "/docente/clasificacion-modelos", 
+    "clasificacion-modelos": "/docente/clasificacion-modelos",
+    "rompecabezas-modelo":"/docente/rompecabezas-modelo",
   };
 
   const abrirModal = (index, plantillaActual) => {

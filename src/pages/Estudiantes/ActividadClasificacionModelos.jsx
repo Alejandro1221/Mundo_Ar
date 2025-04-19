@@ -2,162 +2,168 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
-import { Entity, Scene } from "aframe-react";
-import "../../assets/styles/estudiante/actividadClasificacionModelos.css";
+import { useAR } from "../../hooks/useAR";
+import "../../assets/styles/estudiante/ActividadClasificacionModelos.css";
+import "../../aframe/seleccionable";
 
 const ActividadClasificacionModelos = () => {
-  const casillaId = sessionStorage.getItem("casillaId");
+  useAR();
   const navigate = useNavigate();
-  const juegoId = sessionStorage.getItem("juegoId");
-
   const [modelos, setModelos] = useState([]);
   const [grupos, setGrupos] = useState([]);
-  const [mensaje, setMensaje] = useState("");
+  const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
+  const [modeloActivo, setModeloActivo] = useState(null);
+
+  const juegoId = sessionStorage.getItem("juegoId");
+  const casillaId = sessionStorage.getItem("casillaId");
+
+  useEffect(() => {
+    window.modeloActivoUrl = modeloActivo;
+  }, [modeloActivo]);
 
   useEffect(() => {
     if (!juegoId || !casillaId) {
-      alert("Juego o casilla no encontrada");
-      return navigate("/estudiante/dashboard");
+      alert("Error: No se encontró el juego o la casilla.");
+      navigate("/estudiante/dashboard");
+      return;
     }
 
-    console.log("🧠 juegoId:", juegoId);
-    console.log("🧠 casillaId:", casillaId);
+    const cargarConfiguracion = async () => {
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
 
-    const cargarDatos = async () => {
-      try {
-        const juegoRef = doc(db, "juegos", juegoId);
-        const juegoSnap = await getDoc(juegoRef);
-
-        if (juegoSnap.exists()) {
-          const casilla = juegoSnap.data().casillas[casillaId];
-
-          console.log("📦 Casilla obtenida:", casilla);
-
-          if (casilla?.configuracion) {
-            const { modelos, grupos } = casilla.configuracion;
-            setModelos(modelos || []);
-            setGrupos(grupos || []);
-          } else {
-            console.warn("⚠️ Casilla sin configuración");
-            setMensaje("⚠️ Esta casilla no tiene modelos configurados.");
-          }
+      if (juegoSnap.exists()) {
+        const casilla = juegoSnap.data().casillas[casillaId];
+        if (casilla?.configuracion) {
+          setModelos(casilla.configuracion.modelos || []);
+          setGrupos(casilla.configuracion.grupos || []);
+          setCelebracion(casilla.configuracion.celebracion || { tipo: "mensaje", opciones: {} });
+        } else {
+          alert("⚠️ Esta casilla no tiene configuración.");
         }
-      } catch (err) {
-        console.error("❌ Error al cargar datos:", err);
-        setMensaje("❌ Error al cargar la actividad.");
       }
     };
 
-    cargarDatos();
-  }, [casillaId, juegoId, navigate]);
+    cargarConfiguracion();
+  }, [juegoId, casillaId, navigate]);
 
   useEffect(() => {
-    console.log("🧩 Modelos cargados:", modelos);
-    console.log("🧩 Grupos cargados:", grupos);
-  }, [modelos, grupos]);
+    window.verificarClasificacion = (modeloEl) => {
+      console.log("🟡 Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); // DEBUG
+      const categoriaModelo = modeloEl.getAttribute("grupo");
+      const posicionModelo = new THREE.Vector3();
+      modeloEl.object3D.getWorldPosition(posicionModelo);
+
+      document.querySelectorAll("a-box[categoria]").forEach((zona) => {
+        const categoriaZona = zona.getAttribute("categoria");
+        const posicionZona = new THREE.Vector3();
+        zona.object3D.getWorldPosition(posicionZona);
+
+        const distancia = posicionModelo.distanceTo(posicionZona);
+        if (distancia < 0.6 && categoriaModelo === categoriaZona) {
+          zona.setAttribute("material", "color: #FFD700; opacity: 0.9; transparent: true");
+
+          modeloEl.setAttribute("position", {
+            x: zona.getAttribute("position").x,
+            y: zona.getAttribute("position").y + 0.25,
+            z: zona.getAttribute("position").z
+          });
+
+          modeloEl.setAttribute("scale", "0.08 0.08 0.08");
+          modeloEl.removeAttribute("seleccionable");
+
+          mostrarFeedback("¡Correcto!");
+        }
+      });
+    };
+  }, [grupos]);
+
+  const mostrarFeedback = (texto) => {
+    const prev = document.getElementById("mensaje-feedback");
+    if (prev) prev.remove();
+  
+    const mensaje = document.createElement("a-text");
+    mensaje.setAttribute("value", texto);
+    mensaje.setAttribute("color", "yellow");
+    mensaje.setAttribute("position", "0 0 -1"); // visible frente a la cámara
+    mensaje.setAttribute("align", "center");
+    mensaje.setAttribute("scale", "1 1 1");
+    mensaje.setAttribute("id", "mensaje-feedback");
+    mensaje.setAttribute("side", "double");
+    mensaje.setAttribute("look-at", "[camera]");
+  
+    const cam = document.querySelector("a-entity[camera]");
+    if (cam) {
+      cam.appendChild(mensaje);
+    }
+  
+    setTimeout(() => {
+      if (mensaje && mensaje.parentNode) mensaje.remove();
+    }, 2000);
+  };
 
   return (
-    <div className="actividad-3d-container">
-      <h2>Actividad: Clasificación de Modelos</h2>
-  
-      <Scene embedded vr-mode-ui="enabled: false">
-        {/* Luces y cámara */}
-        <Entity light="type: ambient; intensity: 0.8" />
-        <Entity light="type: directional; intensity: 0.5" position="1 3 2" />
-        <Entity camera look-controls position="0 2 6" />
-  
-        {/* Mano simulada con mouse */}
-        <Entity
-          id="mano"
-          cursor="rayOrigin: mouse"
-          raycaster="objects: .draggable"
-          super-hands="{}"
-        />
-  
-        {/* Zonas dinámicas según los grupos */}
-        {grupos.map((grupo, i) => (
-          <Entity
-            key={grupo}
-            id={`zona-${grupo}`}
-            class="zona-grupo"
-            geometry="primitive: plane; width: 3; height: 3"
-            material={`color: ${i % 2 === 0 ? '#AED581' : '#81D4FA'}; opacity: 0.7`}
-            rotation="-90 0 0"
-            position={{ x: -4 + i * 4, y: 0.01, z: -4 }}
-            drop-target
-            static-body="shape: box"
-            events={{
-              'drag-drop': (e) => {
-                const modeloId = e.detail?.dragged?.id;
-                const zonaId = `zona-${grupo}`;
-                console.log(`🔄 Soltaste ${modeloId} en ${zonaId}`);
-  
-                const modelo = modelos.find(m => m.nombre === modeloId);
-                if (modelo?.grupo === grupo) {
-                  setMensaje(`✅ ¡Correcto! ${modelo.nombre} está en el grupo ${grupo}`);
-                } else {
-                  setMensaje(`❌ ${modelo?.nombre || "Modelo"} no pertenece al grupo ${grupo}`);
-                }
-              }
-            }}
-          >
-            <Entity
-              text={{ value: grupo, align: "center", color: "#000" }}
-              position={{ x: 0, y: 0.1, z: 1.5 }}
-            />
-          </Entity>
-        ))}
-  
-        {/* Modelos arrastrables */}
-        {modelos.length > 0 ? (
-          modelos.map((modelo, i) =>
-            modelo.url ? (
-              <Entity
-                key={i}
-                id={modelo.nombre}
-                class="draggable"
-                gltf-model={modelo.url}
-                position={{ x: -3 + i * 2.5, y: 1, z: -2 }}
-                scale="1 1 1"
-                animation="property: rotation; to: 0 360 0; loop: true; dur: 10000"
-                draggable
-                grabbable
-                events={{
-                  "model-loaded": function (e) {
-                    e.target.setAttribute("dynamic-body", "shape: box");
-                  }
-                }}
-              />
-            ) : null
-          )
-        ) : (
-          <Entity
-            text={{ value: "⚠️ No hay modelos para mostrar", color: "red" }}
-            position="0 2 0"
-          />
-        )}
-  
-        {/* Plano base */}
-        <Entity
-          geometry="primitive: plane; width: 20; height: 20"
-          material="color: #ccc"
-          rotation="-90 0 0"
-          position="0 0 0"
-        />
-      </Scene>
-  
-      {/* Mensaje visual */}
-      {mensaje && <p className="mensaje-feedback">{mensaje}</p>}
-  
-      <button
-        className="estudiante-volver-btn"
-        onClick={() => navigate("/estudiante/seleccionar-casilla")}
-      >
-        Volver
+    <div className="actividad-ra-container">
+      <div className="barra-superior">
+      <button className="btn-volver" onClick={() => {window.location.href = "/estudiante/seleccionar-casilla";}}>
+        ⬅
       </button>
+        <h2 className="titulo-actividad">Clasifica los modelos</h2>
+        <div className="espaciador-derecho"></div>
+      </div>
+
+      <a-scene
+        arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+        vr-mode-ui="enabled: false"
+        renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+        background="transparent: true"
+      >
+        {grupos.map((grupo, index) => (
+          <a-entity key={index}>
+            <a-box
+              categoria={grupo}
+              position={`${(index - (grupos.length - 1) / 2) * 1.5} 0 -3`}
+              depth="0.5" height="0.5" width="0.5"
+              color="#4CAF50"
+              material="opacity: 0.5; transparent: true"
+            ></a-box>
+            <a-text
+              value={grupo}
+              position={`${(index - (grupos.length - 1) / 2) * 1.5} 0.5 -3`}
+              align="center"
+              color="#000"
+            ></a-text>
+          </a-entity>
+        ))}
+
+        {modelos.map((modelo, index) => (
+          <a-entity
+            key={index}
+            gltf-model={modelo.url}
+            position={`0 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
+            scale="0.25 0.25 0.25"
+            grupo={modelo.grupo}
+            seleccionable
+            data-modelo-url={modelo.url}
+          ></a-entity>
+        ))}
+
+        <a-entity camera="fov: 95" position="0 0 0"></a-entity>
+      </a-scene>
+
+      <div className="controles-modelos">
+        {modelos.map((modelo, index) => (
+          <button
+            key={index}
+            className={`btn-modelo ${modelo.url === modeloActivo ? "activo" : ""}`}
+            onClick={() => setModeloActivo(modelo.url)}
+          >
+            {modelo.nombre}
+          </button>
+        ))}
+      </div>
     </div>
   );
-  
 };
 
 export default ActividadClasificacionModelos;

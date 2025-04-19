@@ -21,7 +21,6 @@ if (!AFRAME.components["seleccionable"]) {
         el.setAttribute("position", {
           x: Math.max(-1.2, Math.min(1.2, pos.x + deltaX)),
           y: Math.max(-1, Math.min(1.2, pos.y - deltaY)),
-
           z: pos.z,
         });
 
@@ -30,7 +29,11 @@ if (!AFRAME.components["seleccionable"]) {
 
       el.sceneEl.canvas.addEventListener("touchend", () => {
         startTouch = null;
-        
+
+        // ✅ SOLO si existe verificarClasificacion
+        if (typeof window.verificarClasificacion === "function") {
+          window.verificarClasificacion(el);
+        }
       });
     },
   });

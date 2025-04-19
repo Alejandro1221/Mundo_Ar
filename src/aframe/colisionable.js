@@ -11,7 +11,7 @@ if (!AFRAME.components["colisionable"]) {
         if (modeloBox.intersectsBox(objetivoBox)) {
           const modeloURL = modelo.getAttribute("data-modelo-url");
           if (window.manejarSeleccionGlobal && modeloURL) {
-            objetivo.setAttribute("material", "color", "#00ff00"); // cambia color
+            objetivo.setAttribute("material", "color", "#00ff00"); 
             window.manejarSeleccionGlobal({ url: modeloURL });
           }
         }

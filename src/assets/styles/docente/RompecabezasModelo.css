@@ -1,0 +1,212 @@
+/* =============================
+   PREVIEW DE IMAGEN
+   ============================= */
+   .docente-modelo-item img {
+    margin-top: 12px;
+    border-radius: var(--borde-suave);
+    border: 2px solid var(--docente-secundario);
+    box-shadow: var(--sombra-suave);
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  /* =============================
+     INPUT DE IMAGEN
+     ============================= */
+  .docente-modelo-item input[type="file"] {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: var(--borde-suave);
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  /* =============================
+     TEXTO DE NOMBRE IMAGEN
+     ============================= */
+  .nombre-modelo {
+    margin-bottom: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+  }
+  
+/* REVIEW CUBOS EN HORIZONTAL */
+  .preview-cubos-3d {
+    display: grid;
+    grid-template-columns: repeat(2, 80px); 
+    grid-template-rows: repeat(3, 80px);     
+    gap: 16px;
+    justify-content: center;
+    margin: 30px auto;
+    perspective: 800px;
+    }
+  /* =============================
+     CUBO 3D COMPLETO
+     ============================= */
+  .cubo-3d {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    transform-style: preserve-3d;
+    transform: rotateX(20deg) rotateY(20deg);
+    animation: rotarCuboReal 6s infinite linear;
+  }
+  
+  /* =============================
+     CARAS DEL CUBO
+     ============================= */
+  .cara {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-size: 200% 300%;
+    background-repeat: no-repeat;
+    border: 1px solid var(--docente-secundario);
+    border-radius: 4px;
+    box-shadow: var(--sombra-suave);
+    background-color: #fff;
+  }
+  
+  /* Posiciones 3D de cada cara */
+  .cara-front  { transform: translateZ(40px); }
+  .cara-back   { transform: rotateY(180deg) translateZ(40px); }
+  .cara-right  { transform: rotateY(90deg)  translateZ(40px); }
+  .cara-left   { transform: rotateY(-90deg) translateZ(40px); }
+  .cara-top    { transform: rotateX(90deg)  translateZ(40px); }
+  .cara-bottom { transform: rotateX(-90deg) translateZ(40px); }
+  
+  /* =============================
+     ANIMACIÓN DE ROTACIÓN
+     ============================= */
+  @keyframes rotarCuboReal {
+    0%   { transform: rotateX(20deg) rotateY(0deg); }
+    100% { transform: rotateX(20deg) rotateY(360deg); }
+  }
+  
+  /* =============================
+     CONTENEDOR GENERAL Y BOTONES
+     ============================= */
+  .docente-modelo-container {
+    background-color: var(--docente-fondo-claro);
+    padding: 30px 20px;
+    border-radius: var(--borde-suave);
+    box-shadow: var(--sombra-suave);
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .docente-modelos-seleccionados {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .docente-modelo-item {
+    background: white;
+    border: 2px solid var(--docente-secundario);
+    border-radius: 12px;
+    padding: 16px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .seccion-celebracion {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid var(--docente-secundario);
+    border-radius: var(--borde-suave);
+    box-shadow: var(--sombra-suave);
+    text-align: left;
+  }
+  
+  .seccion-celebracion label {
+    font-weight: bold;
+    color: var(--texto-principal);
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .seccion-celebracion select,
+  .seccion-celebracion input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: var(--borde-suave);
+    font-size: 1rem;
+  }
+  
+  /* =============================
+     ACCIONES FINALES
+     ============================= */
+  .acciones-finales {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 30px;
+  }
+  
+  .guardar-btn,
+  .volver-btn {
+    background-color: var(--docente-primario);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: var(--borde-suave);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .guardar-btn:hover,
+  .volver-btn:hover {
+    background-color: #18577f;
+  }
+  
+  /* =============================
+     MENSAJE
+     ============================= */
+  .mensaje {
+    padding: 12px 18px;
+    border-radius: var(--borde-suave);
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 0.95rem;
+  }
+  
+  .mensaje.error {
+    background-color: #ffe6e6;
+    color: #b00020;
+  }
+  
+  .mensaje.exito {
+    background-color: #e6fff1;
+    color: #009e5f;
+  }
+
+  .imagen-completa-preview {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .imagen-preview-completa {
+    max-width: 100%;
+    max-height: 300px;
+    margin: 10px auto;
+    border: 2px solid var(--docente-secundario);
+    border-radius: var(--borde-suave);
+    box-shadow: var(--sombra-suave);
+  }
+  

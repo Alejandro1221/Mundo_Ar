@@ -96,7 +96,6 @@ const DashboardDocente = () => {
     }
   };
   
-
   // Cambiar visibilidad del juego
   const cambiarVisibilidad = async (juegoId, nuevoEstado) => {
     try {
