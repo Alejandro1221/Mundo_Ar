@@ -1,109 +1,115 @@
 /* Estilo general de pantalla completa */
 html, body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: transparent;
-    touch-action: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: transparent;
+  touch-action: none;
+}
+
+/* Escena A-Frame */
+a-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 0;
+}
+
+canvas {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Botón de cambio de ficha */
+.boton-cambiar-cubo {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.boton-cambiar-cubo:hover {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+/* Tableros */
+.tablero {
+  opacity: 0.25;
+}
+
+.tablero-izquierdo {
+  color: #d6d6d6;
+}
+
+.tablero-derecho {
+  color: #90BFC3;
+}
+
+/* Zonas objetivo */
+.zona {
+  opacity: 0.3;
+  border-radius: 6px;
+  transition: transform 0.2s ease;
+}
+
+/* Cubos */
+a-box[cubo-rompecabezas] {
+  transition: transform 0.2s ease;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+  color: white;
+}
+
+/* Cubo activo (resaltado) */
+a-box[cubo-rompecabezas].activo {
+  color: #FFD700 !important; /* dorado */
+  animation: brillo 1s infinite alternate;
+}
+
+@keyframes brillo {
+  from { opacity: 1; }
+  to { opacity: 0.7; }
+}
+
+/* Mensaje de éxito */
+.mensaje-rompecabezas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: limegreen;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px 30px;
+  border-radius: 15px;
+  text-align: center;
+  z-index: 1001;
+  animation: aparecer 0.5s ease-in-out;
+}
+
+/* Animación de aparición */
+@keyframes aparecer {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
   }
-  
-  /* Escena A-Frame */
-  a-scene {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100% !important;
-    height: 100% !important;
-    z-index: 0;
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
-  
-  canvas {
-    object-fit: cover !important;
-    width: 100% !important;
-    height: 100% !important;
-  }
-  
-  /* Botón de cambio de ficha */
-  .boton-cambiar-cubo {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.7);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  
-  .boton-cambiar-cubo:hover {
-    background-color: rgba(0, 0, 0, 0.85);
-  }
-  
-  /* Tableros */
-  .tablero {
-    opacity: 0.25;
-  }
-  
-  .tablero-izquierdo {
-    color: #d6d6d6;
-  }
-  
-  .tablero-derecho {
-    color: #90BFC3;
-  }
-  
-  /* Zonas objetivo */
-  .zona-objetivo {
-    opacity: 0.3;
-    border-radius: 6px;
-    transition: transform 0.2s ease;
-  }
-  
-  /* Cubos */
-  a-box[cubo-rompecabezas] {
-    transition: transform 0.2s ease;
-    border-radius: 6px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.25);
-  }
-  
-  /* Cubo activo (resaltado) */
-  a-box[cubo-rompecabezas].activo {
-    color: #FFD700 !important; /* dorado */
-  }
-  
-  /* Mensaje de éxito */
-  .mensaje-rompecabezas {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: limegreen;
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 20px 30px;
-    border-radius: 15px;
-    text-align: center;
-    z-index: 1001;
-    animation: aparecer 0.5s ease-in-out;
-  }
-  
-  /* Animación */
-  @keyframes aparecer {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.9);
-    }
-    100% {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-  }
-  
+}
