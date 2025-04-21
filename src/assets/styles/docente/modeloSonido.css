@@ -1,7 +1,4 @@
-/* =============================
-   CONTENEDOR GENERAL
-   ============================= */
-   .docente-modelo-container {
+  .docente-modelo-container {
     background-color: var(--docente-fondo-claro);
     padding: 30px 20px;
     border-radius: var(--borde-suave);
@@ -9,237 +6,231 @@
     max-width: 1100px;
     margin: auto;
     text-align: center;
-  }
-  
-  /* =============================
-     TÍTULO CON ÍCONO
-     ============================= */
-     .titulo-con-icono {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px; 
-      margin-bottom: 24px;
-    }
-    
-    .titulo-vista {
-      font-size: 1.8rem;
-      color: var(--texto-principal);
-      font-weight: bold;
-      margin: 0;
-    }
-    
-    .icono-sonido {
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    
-    .icono-sonido:hover {
-      transform: scale(1.1);
-    }
-
-    .icono-titulo-sonido {
-      width: 80px;
-      height: 80px;
-      margin-left: 10px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-      object-fit: contain;
-    }
-    
-  /* =============================
-     MENSAJE DE ALERTA
-     ============================= */
-  .mensaje {
-    padding: 12px 18px;
-    border-radius: var(--borde-suave);
-    margin-bottom: 20px;
-    font-weight: bold;
-    font-size: 0.95rem;
-  }
-  
-  .mensaje.error {
-    background-color: #ffe6e6;
-    color: #b00020;
-  }
-  
-  .mensaje.exito {
-    background-color: #e6fff1;
-    color: #009e5f;
-  }
-  
-  /* =============================
-     MODELOS SELECCIONADOS
-     ============================= */
-  .docente-modelos-seleccionados {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
-  
-  .docente-modelo-item {
-    background: white;
-    border: 2px solid var(--docente-secundario);
-    border-radius: 12px;
-    padding: 16px;
-    width: 240px;
-    box-shadow: var(--sombra-suave);
+    min-height: 100vh;
+    height: 100vh;             
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+  }
+
+  .contenido-scrollable {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 30px; /* margen inferior opcional */
   }
   
-  .nombre-modelo {
-    margin: 10px 0 6px;
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--texto-principal);
+  html, body {
+    height: 100%;
+    overflow-y: auto;
   }
-  
-  /* =============================
-     BOTONES EN MODELO
-     ============================= */
-  .docente-modelo-item button {
-    width: 100%;
-    margin-top: 8px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    font-weight: bold;
-    border: none;
-    border-radius: var(--borde-suave);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-rojo,
-  .asignar-sonido-btn {
-    background-color: var(--docente-peligro);
-    color: white;
-  }
-  
-  .btn-rojo:hover,
-  .asignar-sonido-btn:hover {
-    background-color: #912f2f;
-  }
-  
-  .docente-modelo-item .btn-rojo + .asignar-sonido-btn {
-    margin-top: 6px;
-  }
-  
-  /* =============================
-     SONIDO ASIGNADO
-     ============================= */
-  .sonido-asignado {
-    margin-top: 10px;
-    text-align: center;
-    font-size: 0.9rem;
-    color: var(--texto-principal);
-  }
-  
-  .sonido-asignado audio {
-    width: 100%;
-    margin-top: 6px;
-    border-radius: 6px;
-  }
-  
-  /* Mensaje si no hay sonido */
-  .sin-sonido {
-    margin-top: 10px;
-    font-size: 0.85rem;
-    color: #cc0000;
-    font-weight: 500;
-  }
-  
-  /* =============================
-     SECCIÓN CELEBRACIÓN
-     ============================= */
-  .seccion-celebracion {
-    margin: 30px 0;
-    padding: 20px;
-    background-color: #fff;
-    border: 2px solid var(--docente-secundario);
-    border-radius: var(--borde-suave);
-    box-shadow: var(--sombra-suave);
-    text-align: left;
-  }
-  
-  .seccion-celebracion label {
-    font-weight: bold;
-    color: var(--texto-principal);
-    margin-bottom: 8px;
-    display: block;
-  }
-  
-  .seccion-celebracion select,
-  .seccion-celebracion input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: var(--borde-suave);
-    font-size: 1rem;
-  }
-  
-  /* =============================
-     ACCIONES FINALES
-     ============================= */
-  .acciones-finales {
+
+  .titulo-con-icono {
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
+    align-items: center;
     justify-content: center;
-    margin-top: 30px;
+    gap: 6px; 
+    margin-bottom: 24px;
+  }
+  .titulo-vista {
+    font-size: 1.8rem;
+    color: var(--texto-principal);
+    font-weight: bold;
+    margin: 0;
   }
   
-  .btn-secundario,
-  .vista-previa-btn,
-  .guardar-btn,
-  .volver-btn {
-    background-color: var(--docente-primario);
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: var(--borde-suave);
+  .icono-sonido {
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: transform 0.2s ease;
   }
   
-  .btn-secundario:hover,
-  .vista-previa-btn:hover,
-  .guardar-btn:hover,
-  .volver-btn:hover {
-    background-color: #18577f;
-  }
-  
-  /* =============================
-     BOTÓN SONIDO JUNTO A TÍTULO
-     ============================= */
-  .boton-sonido {
-    width: 48px;
-    height: 48px;
-    cursor: pointer;
-    border-radius: 50%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-    transition: transform 0.3s ease;
-  }
-  
-  .boton-sonido:hover {
+  .icono-sonido:hover {
     transform: scale(1.1);
   }
-  
-  /* =============================
-     MENSAJE VACÍO
-     ============================= */
-  .mensaje-vacio {
-    color: #888;
-    font-style: italic;
-    margin: 16px 0;
+
+  .icono-titulo-sonido {
+    width: 80px;
+    height: 80px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    object-fit: contain;
   }
+ 
+.mensaje {
+  padding: 12px 18px;
+  border-radius: var(--borde-suave);
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.mensaje.error {
+  background-color: #ffe6e6;
+  color: #b00020;
+}
+
+.mensaje.exito {
+  background-color: #e6fff1;
+  color: #009e5f;
+}
+
+.docente-modelos-seleccionados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.docente-modelo-item {
+  background: white;
+  border: 2px solid var(--docente-secundario);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: var(--sombra-suave);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 180px;
+  overflow: hidden;
+}
+
+.nombre-modelo {
+  margin: 10px 0 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--texto-principal);
+}
+
+.docente-modelo-item button {
+  width: 45%;
+  margin-top: 10px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-rojo,
+.asignar-sonido-btn {
+  background-color: var(--docente-peligro);
+  color: white;
+}
+
+.btn-rojo:hover,
+.asignar-sonido-btn:hover {
+  background-color: #912f2f;
+}
+
+.docente-modelo-item .btn-rojo + .asignar-sonido-btn {
+  margin-top: 6px;
+}
+
+.sonido-asignado {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--texto-principal);
+}
+
+.sonido-asignado audio {
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 6px;
+}
+
+/* Mensaje si no hay sonido */
+.sin-sonido {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #cc0000;
+  font-weight: 500;
+}
+
+.seccion-celebracion {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: #fff;
+  border: 2px solid var(--docente-secundario);
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  text-align: left;
+}
+
+.seccion-celebracion label {
+  font-weight: bold;
+  color: var(--texto-principal);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.seccion-celebracion select,
+.seccion-celebracion input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border: 1px solid #ccc;
+  border-radius: var(--borde-suave);
+  font-size: 1rem;
+}
+
+.acciones-finales {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-secundario,
+.vista-previa-btn,
+.guardar-btn,
+.volver-btn {
+  background-color: var(--docente-primario);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secundario:hover,
+.vista-previa-btn:hover,
+.guardar-btn:hover,
+.volver-btn:hover {
+  background-color: #18577f;
+}
+
+.boton-sonido {
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.boton-sonido:hover {
+  transform: scale(1.1);
+}
+
+
+.mensaje-vacio {
+  color: #888;
+  font-style: italic;
+  margin: 16px 0;
+}
+  
+     
+    
+    
   

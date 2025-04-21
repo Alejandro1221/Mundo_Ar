@@ -20,9 +20,6 @@
   --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* ====================
-   RESET GLOBAL
-   ==================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -35,15 +32,14 @@ html, body {
   max-width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto;
   background-color: var(--fondo-claro);
   color: var(--texto-principal);
   font-size: 16px;
   line-height: 1.5;
 }
 
-/* ====================
-   ENCABEZADOS
-   ==================== */
+/* ENCABEZADOS */
 h1, h2, h3, h4 {
   font-weight: 600;
   line-height: 1.2;
@@ -52,9 +48,7 @@ h1, h2, h3, h4 {
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
 
-/* ====================
-   ESTILOS COMUNES
-   ==================== */
+/*ESTILOS COMUNES */
 .boton {
   background-color: var(--azul-suave);
   color: var(--texto-blanco);
@@ -85,9 +79,7 @@ h2 { font-size: 1.5rem; }
   font-weight: bold;
 }
 
-/* ====================
-   ESTILOS A-FRAME
-   ==================== */
+/* ESTILOS A-FRAME*/
 a-scene, a-scene .a-canvas, a-scene canvas {
   position: fixed !important;
   top: 0 !important;
