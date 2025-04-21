@@ -8,6 +8,8 @@ import imagenSonido from "../../assets/images/imag_sonido.png";
 import "../../assets/styles/estudiante/ActividadModeloSonidos.css";
 import "../../aframe/seleccionable";
 import "../../aframe/colisionable";
+import HeaderActividad from "../../components/Estudiante/HeaderActividad";
+
 
 const ActividadModeloSonido = ({ vistaPrevia = false }) => {
   useAR();
@@ -19,6 +21,8 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
   const [mostrarCelebracion, setMostrarCelebracion] = useState(false);
   const audioRef = useRef(null);
   const [modeloActivo, setModeloActivo] = useState(null);
+  const [sonando, setSonando] = useState(false);
+  const esferaRef = useRef();
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
@@ -93,32 +97,39 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
       setMostrarCelebracion(false);
     }
   };
-  
+
   return (
     <div className="actividad-ra-container">
-      <div className="barra-superior">
-      <button className="btn-volver" onClick={() => {window.location.href = "/estudiante/seleccionar-casilla";}}>
-        ⬅
-      </button>
-        <h2 className="titulo-actividad">Actividad: Escucha y selecciona</h2>
-        <div className="espaciador-derecho"></div>
-      </div>
-     
+      <HeaderActividad titulo="Actividad: Escucha y selecciona" />
+  
       {sonido?.url && (
-        <img
-          src={imagenSonido}
-          alt="Reproducir sonido"
-          className="boton-sonido"
+       <button
+       className={`boton-sonido-esfera ${sonando ? "activo" : ""}`}
+          aria-label="Reproducir sonido"
           onClick={() => {
-            if (audioRef.current) {
-              if (audioRef.current.paused) {
-                audioRef.current.play().catch(() => {});
-              } else {
-                audioRef.current.pause();
-              }
+            const audio = audioRef.current;
+            if (!audio) return;
+          
+            if (audio.paused) {
+              audio.play().then(() => setSonando(true)).catch(() => {});
+              audio.onended = () => setSonando(false);
+            } else {
+              audio.pause();
+              setSonando(false);
             }
           }}
-        />
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="var(--salmon-resalte)"
+          >
+            <path d="M3 10v4h4l5 5V5l-5 5H3zm13.54 1.23a3.95 3.95 0 00-2.04-3.41v6.36a3.95 3.95 0 002.04-2.95zm2.14-7.51a9.96 9.96 0 010 16.56 1 1 0 01-1.41-1.41 7.97 7.97 0 000-13.74 1 1 0 111.41-1.41z" />
+          </svg>
+        </button>
+     
       )}
 
       {/* 🎮 Escena AR */}
@@ -130,6 +141,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
         >
         <a-entity
           id="esfera-sonido"
+          ref={esferaRef}
           geometry="primitive: sphere; radius: 0.2"
           material="color: #83B68C"
           position="0.5 0 -3"
@@ -137,7 +149,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
           sonido-emisor
         ></a-entity>
               
-        {/* 🎧 Audio oculto que se reproducirá */}
+        {/*Audio oculto que se reproducirá */}
         <audio 
           id="audio-sonido-principal" 
           ref={audioRef} 
@@ -152,7 +164,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
             position={`-0.5 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
 
             scale="0.25 0.25 0.25"
-            //scale="0.35 0.35 0.35"
             seleccionable
             colisionable
             data-modelo-url={modelo.url}
@@ -173,8 +184,6 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
           </button>
         ))}
       </div>
-
-      {/* 🎉 Feedback visual */}
       {mensaje && <p className="mensaje-feedback">{mensaje}</p>}
 
       {mostrarCelebracion && celebracion?.tipo === "mensaje" && (
@@ -182,9 +191,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
           {celebracion.opciones?.mensaje || "¡Muy bien!"}
         </div>
       )}
-
     </div>
   );
 };
-
 export default ActividadModeloSonido;

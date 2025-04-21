@@ -4,6 +4,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
 import { useAR } from "../../hooks/useAR";
 import "../../assets/styles/estudiante/ActividadClasificacionModelos.css";
+import HeaderActividad from "../../components/Estudiante/HeaderActividad";
 import "../../aframe/seleccionable";
 
 const ActividadClasificacionModelos = () => {
@@ -85,7 +86,7 @@ const ActividadClasificacionModelos = () => {
     const mensaje = document.createElement("a-text");
     mensaje.setAttribute("value", texto);
     mensaje.setAttribute("color", "yellow");
-    mensaje.setAttribute("position", "0 0 -1"); // visible frente a la cámara
+    mensaje.setAttribute("position", "0 0 -1"); 
     mensaje.setAttribute("align", "center");
     mensaje.setAttribute("scale", "1 1 1");
     mensaje.setAttribute("id", "mensaje-feedback");
@@ -103,15 +104,8 @@ const ActividadClasificacionModelos = () => {
   };
 
   return (
-    <div className="actividad-ra-container">
-      <div className="barra-superior">
-      <button className="btn-volver" onClick={() => {window.location.href = "/estudiante/seleccionar-casilla";}}>
-        ⬅
-      </button>
-        <h2 className="titulo-actividad">Clasifica los modelos</h2>
-        <div className="espaciador-derecho"></div>
-      </div>
-
+    <>
+    <HeaderActividad titulo="Clasifica los modelos" />
       <a-scene
         arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
@@ -162,8 +156,8 @@ const ActividadClasificacionModelos = () => {
           </button>
         ))}
       </div>
-    </div>
+ </>
   );
-};
-
+}
+  
 export default ActividadClasificacionModelos;

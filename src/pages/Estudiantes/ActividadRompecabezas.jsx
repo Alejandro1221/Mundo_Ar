@@ -5,6 +5,10 @@ import { db } from "../../services/firebaseConfig";
 import { useAR } from "../../hooks/useAR";
 import "../../assets/styles/estudiante/ActividadRompecabezas.css";
 import "../../aframe/touchMove"; 
+import { CELEBRACIONES } from "../../utils/celebraciones";
+import HeaderActividad from "../../components/Estudiante/HeaderActividad";
+
+
 const ActividadRompecabezas = () => {
   useAR();
   const navigate = useNavigate();
@@ -16,16 +20,18 @@ const ActividadRompecabezas = () => {
   const zonasRef = useRef([]);
   const cuboActivoIndex = useRef(0);
   const [imagenCargada, setImagenCargada] = useState(false);
+  const [mostrarMensajeCelebracion, setMostrarMensajeCelebracion] = useState(false);
+
 
   const posicionesBase = [
-    { x: -0.6, y: 0.3, z: -2 },
-    { x: -0.4, y: 0.3, z: -2 },
-    { x: -0.6, y: 0.0, z: -2 },
-    { x: -0.4, y: 0.0, z: -2 },
-    { x: -0.6, y: -0.3, z: -2 },
-    { x: -0.4, y: -0.3, z: -2 },
+    { x: -0.8, y: 0.3, z: -2 },
+    { x: -0.45, y: 0.3, z: -2 },
+    { x: -0.8, y: 0.0, z: -2 },
+    { x: -0.45, y: 0.0, z: -2 },
+    { x: -0.8, y: -0.3, z: -2 },
+    { x: -0.45, y: -0.3, z: -2 },
   ];
-
+  
   const shuffleArray = (array) => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -65,16 +71,21 @@ const ActividadRompecabezas = () => {
     window.zonasRef = zonasRef.current;
     window.cuboActivoIndex = cuboActivoIndex.current;
     window.mensajeRef = mensajeRef.current;
+    window.celebracion = celebracion;
   }, [encajados]);
+
+  const [, setActualizar] = useState(false);
 
   const cambiarCubo = () => {
     let siguiente = cuboActivoIndex.current;
     do {
       siguiente = (siguiente + 1) % 6;
     } while (encajados[siguiente] && siguiente !== cuboActivoIndex.current);
+    
     cuboActivoIndex.current = siguiente;
-    window.cuboActivoIndex = siguiente;
-    setEncajados([...encajados]); // fuerza re-render para aplicar clase activa
+    window.cuboActivoIndex = siguiente; 
+    setEncajados([...encajados]); 
+    setActualizar(a => !a);
   };
 
   useEffect(() => {
@@ -100,12 +111,59 @@ const ActividadRompecabezas = () => {
     )
   );
 
+  useEffect(() => {
+    cubosRef.current.forEach((el, i) => {
+      if (el) {
+        el.classList.toggle("activo", i === cuboActivoIndex.current);
+      }
+    });
+  }, [encajados]);
+
+  useEffect(() => {
+    window.celebracion = celebracion;
+  }, [celebracion]);
+
+  useEffect(() => {
+    window.marcarCuboComoEncajado = (fichaId) => {
+      const nuevosEncajados = [...encajados];
+      nuevosEncajados[fichaId] = true;
+      setEncajados(nuevosEncajados);
+  
+      // Buscar el siguiente cubo disponible
+      let siguiente = fichaId;
+      do {
+        siguiente = (siguiente + 1) % 6;
+      } while (nuevosEncajados[siguiente] && siguiente !== fichaId);
+  
+      if (!nuevosEncajados.every(Boolean)) {
+        cuboActivoIndex.current = siguiente;
+        window.cuboActivoIndex = siguiente;
+        setActualizar(a => !a); 
+      }
+
+      if (nuevosEncajados.every(Boolean)) {
+        if (mensajeRef.current) {
+          mensajeRef.current.setAttribute("visible", "true");
+        }
+        if (window.celebracion?.tipo && CELEBRACIONES[window.celebracion.tipo]) {
+          const tipo = window.celebracion.tipo;
+          const opciones = window.celebracion.opciones || {};
+          CELEBRACIONES[tipo].render(opciones);
+
+          if (tipo === "mensaje") {
+            setMostrarMensajeCelebracion(true);
+          }
+        }
+      }
+    };
+  }, [encajados]);
+
   return (
     <>
+      <HeaderActividad titulo="Arma el rompecabezas" />
       <button className="boton-cambiar-cubo" onClick={cambiarCubo}>
         🔁 Cambiar cubo
       </button>
-
       <a-scene
         embedded
         arjs="sourceType: webcam;"
@@ -125,10 +183,8 @@ const ActividadRompecabezas = () => {
 
         <a-plane
           color="#A9CCE3"
-          width="0.6"
-          height="0.9"
-          position="0.6 0 -2"
-          opacity="0.2"
+          width="0.7"
+          height="0.1"
           className="tablero tablero-derecho"
         ></a-plane>
 
@@ -136,14 +192,14 @@ const ActividadRompecabezas = () => {
           {[...Array(6)].map((_, i) => {
             const col = i % 2;
             const row = Math.floor(i / 2);
-            const pos = `${0.5 + col * 0.2} ${0.3 - row * 0.3} -2.01`;
+            const pos = `${0.5 + col * 0.2} ${0.3 - row * 0.26} -2.01`;
             return (
               <a-box
                 key={i}
                 className="zona"
                 zona-id={i}
                 position={pos}
-                depth="0.26"
+                depth="0.45"
                 height="0.26"
                 width="0.26"
                 color="#EEE"
@@ -197,7 +253,8 @@ const ActividadRompecabezas = () => {
                     height="0.25"
                     width="0.25"
                     position={`${pos.x} ${pos.y} ${pos.z}`}
-                    material={`src: #imagen-rompecabezas; repeat: 0.5 0.33; offset: ${offset}`}
+                    shadow="cast: true; receive: true"
+                    material={`src: #imagen-rompecabezas; repeat: 0.5 0.33; offset: ${offset}; metalness: 0.2; roughness: 0.8; emissive: ${cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'}; emissiveIntensity: ${cuboActivoIndex.current === fichaId ? '0.4' : '0'}`}
                     touch-move
                     ref={(el) => (cubosRef.current[fichaId] = el)}
                   ></a-box>
@@ -208,6 +265,11 @@ const ActividadRompecabezas = () => {
         </a-entity>
         
       </a-scene>
+      {mostrarMensajeCelebracion && celebracion?.tipo === "mensaje" && (
+        <div className="celebracion-mensaje">
+          {celebracion.opciones?.mensaje || "¡Muy bien!"}
+        </div>
+      )}
     </>
   );
 };

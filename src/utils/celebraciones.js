@@ -4,7 +4,6 @@ export const CELEBRACIONES = {
   mensaje: {
     label: "Mensaje en pantalla",
     render: (opciones) => {
-      // React lo muestra en la UI, aquí no se hace nada
     }
   },
   confeti: {
@@ -34,3 +33,5 @@ export const CELEBRACIONES = {
     }
   }
 };
+
+
