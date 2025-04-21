@@ -195,6 +195,18 @@
 .configurar-casillas-container__modal-buttons button:hover {
   opacity: 0.9;
 }
+.configurar-casillas-container__plantilla {
+  font-size: 0.80rem;
+  font-weight: normal;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+  padding: 2px 4px;
+  line-height: 1.2;
+  display: block;
+}
 
 /* 📱 Responsivo */
 @media (max-width: 768px) {
