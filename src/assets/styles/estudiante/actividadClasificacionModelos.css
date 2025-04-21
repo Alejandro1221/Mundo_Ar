@@ -1,3 +1,4 @@
+/* Estructura general */
 html, body {
   margin: 0;
   padding: 0;
@@ -9,7 +10,6 @@ html, body {
   background-color: transparent;
 }
 
-/* Contenedor principal */
 .actividad-ra-container {
   position: fixed;
   inset: 0;
@@ -17,47 +17,7 @@ html, body {
   background: transparent;
 }
 
-
-/* Botones de modelos - parte inferior */
-.controles-modelos {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  z-index: 999;
-}
-
-.btn-modelo {
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  min-width: 100px;
-  max-width: 160px;
-  text-align: center;
-  width: auto;
-}
-
-.btn-modelo:hover {
-  transform: scale(1.05);
-}
-
-.btn-modelo.activo {
-  background-color: #4CAF50;
-  color: white;
-}
-
-/* 🎮 Escena AR */
+/* Escena de A-Frame */
 a-scene {
   position: absolute;
   top: 0;
@@ -73,43 +33,52 @@ canvas {
   height: 100%;
 }
 
-/* 🎉 Feedback */
-.mensaje-feedback {
+/* Botones de modelos */
+.controles-modelos {
   position: absolute;
-  top: 80px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 20px;
-  font-weight: bold;
-  background-color: rgba(255,255,255,0.8);
-  padding: 10px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  z-index: 999;
+}
+
+.btn-modelo {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
   border-radius: 10px;
-  z-index: 999;
-}
-
-.celebracion-mensaje {
-  position: absolute;
-  top: 140px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.8rem;
-  color: rgb(35, 110, 160);
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 10px 25px;
-  border-radius: 15px;
-  animation: aparecer 1s ease-in-out;
+  padding: 10px 16px;
+  font-size: 14px;
   font-weight: bold;
+  cursor: pointer;
+  min-width: 100px;
+  max-width: 160px;
   text-align: center;
-  z-index: 999;
+  transition: transform 0.2s ease;
 }
 
-@keyframes aparecer {
-  0% {
-    transform: translateX(-50%) scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(-50%) scale(1);
-    opacity: 1;
-  }
+.btn-modelo:hover {
+  transform: scale(1.05);
 }
+
+.btn-modelo.activo {
+  background-color: #4CAF50;
+}
+
+/* Textos de grupo */
+.texto-grupo {
+  font-weight: bold;
+  
+}
+
+.zona-clasificacion {
+  transition: all 0.3s ease;
+}
+.zona-clasificacion:hover {
+  opacity: 0.6;
+}
+

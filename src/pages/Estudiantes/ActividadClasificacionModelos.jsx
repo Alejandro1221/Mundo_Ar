@@ -62,7 +62,7 @@ const ActividadClasificacionModelos = () => {
 
         const distancia = posicionModelo.distanceTo(posicionZona);
         if (distancia < 0.6 && categoriaModelo === categoriaZona) {
-          zona.setAttribute("material", "color: #FFD700; opacity: 0.9; transparent: true");
+          zona.setAttribute("material", "color:rgb(90, 216, 199); opacity: 0.9; transparent: true");
 
           modeloEl.setAttribute("position", {
             x: zona.getAttribute("position").x,
@@ -85,10 +85,10 @@ const ActividadClasificacionModelos = () => {
   
     const mensaje = document.createElement("a-text");
     mensaje.setAttribute("value", texto);
-    mensaje.setAttribute("color", "yellow");
-    mensaje.setAttribute("position", "0 0 -1"); 
+    mensaje.setAttribute("color", "blue");
+    mensaje.setAttribute("position", "0 -0.2 -1"); 
     mensaje.setAttribute("align", "center");
-    mensaje.setAttribute("scale", "1 1 1");
+    mensaje.setAttribute("scale", "0.3 0.3 0.3");
     mensaje.setAttribute("id", "mensaje-feedback");
     mensaje.setAttribute("side", "double");
     mensaje.setAttribute("look-at", "[camera]");
@@ -104,8 +104,9 @@ const ActividadClasificacionModelos = () => {
   };
 
   return (
-    <>
-    <HeaderActividad titulo="Clasifica los modelos" />
+    <div className="actividad-ra-container">
+      <HeaderActividad titulo="Clasifica los modelos" />
+
       <a-scene
         arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
@@ -116,16 +117,22 @@ const ActividadClasificacionModelos = () => {
           <a-entity key={index}>
             <a-box
               categoria={grupo}
-              position={`${(index - (grupos.length - 1) / 2) * 1.5} 0 -3`}
-              depth="0.5" height="0.5" width="0.5"
+              position={`${(index - (grupos.length - 1) / 2) * 1} 0 -3`}
+              depth="0.3" height="0.3" width="0.3"
               color="#4CAF50"
               material="opacity: 0.5; transparent: true"
             ></a-box>
             <a-text
               value={grupo}
-              position={`${(index - (grupos.length - 1) / 2) * 1.5} 0.5 -3`}
+              position={`${(index - (grupos.length - 1) / 1.9) * 2.3} 0.85 -8`}
               align="center"
-              color="#000"
+              anchor="center"
+              baseline="top"
+              wrap-count="11"
+              width="2.4"
+              scale="1 1 1"
+              color="#ffffff"
+              class="texto-grupo"
             ></a-text>
           </a-entity>
         ))}
@@ -156,8 +163,8 @@ const ActividadClasificacionModelos = () => {
           </button>
         ))}
       </div>
- </>
+    </div>
   );
 }
-  
+
 export default ActividadClasificacionModelos;
