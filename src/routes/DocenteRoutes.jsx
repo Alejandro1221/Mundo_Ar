@@ -6,6 +6,7 @@ import ConfigurarCasillas from "../pages/Docente/ConfigurarCasillas.jsx";
 import ModeloSonido from "../templates/ModeloSonido";
 import ClasificacionModelos from "../templates/ClasificacionModelos";
 import RompecabezasModelo from "../templates/RompecabezasModelo";
+import ModeloTexto from "../templates/ModeloTexto.jsx"; 
 
 const DocenteRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const DocenteRoutes = () => {
         <Route path="plantilla-sonido-modelo" element={<ModeloSonido />} />
         <Route path="clasificacion-modelos" element={<ClasificacionModelos />} />
         <Route path="rompecabezas-modelo" element={<RompecabezasModelo/>}/>
+        <Route path="modelo-texto" element={<ModeloTexto />} />
     </Routes>
   );
 };

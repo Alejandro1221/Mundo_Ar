@@ -1,4 +1,105 @@
-/* Contenedor de la actividad AR */
+:root {
+  /* 🎨 PALETA DE COLORES ACCESIBLES */
+  --fondo-claro: #D6E2E9;
+  --salmon-resalte: #D35F5A;
+  --azul-suave: #90BFC3;
+  --verde-menta: #83B68C;
+
+  /* 🎓 Paleta Docente */
+  --docente-primario: #339ddf;
+  --docente-secundario: #A3CBEA;
+  --docente-peligro: #ff4d4f;
+  ;
+  --docente-fondo-claro: #d8dbe2;
+
+  --texto-principal: #1A1A1A;
+  --texto-secundario: #1e2299;
+  --texto-blanco: #ffffff;
+
+  --borde-suave: 12px;
+  --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* ====================
+   RESET GLOBAL
+   ==================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Poppins', sans-serif;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background-color: var(--fondo-claro);
+  color: var(--texto-principal);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* ====================
+   ENCABEZADOS
+   ==================== */
+h1, h2, h3, h4 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.5rem; }
+
+/* ====================
+   ESTILOS COMUNES
+   ==================== */
+.boton {
+  background-color: var(--azul-suave);
+  color: var(--texto-blanco);
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--borde-suave);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.boton:hover {
+  background-color: var(--verde-menta);
+}
+.boton-resalte { background-color: var(--salmon-resalte); color: white; }
+.boton-correcto { background-color: var(--verde-menta); color: white; }
+
+.input {
+  padding: 10px;
+  border: 1px solid var(--azul-suave);
+  border-radius: 10px;
+  width: 100%;
+  font-size: 1rem;
+  margin-bottom: 12px;
+}
+.label {
+  margin-bottom: 4px;
+  display: block;
+  font-weight: bold;
+}
+
+/* ====================
+   ESTILOS A-FRAME
+   ==================== */
+a-scene, a-scene .a-canvas, a-scene canvas {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  object-fit: cover !important;
+  z-index: 0;
+}
+
+/* Contenedor de la actividad RA */
 .actividad-ra-container {
   position: fixed;
   inset: 0;
@@ -6,24 +107,7 @@
   background-color: transparent;
 }
 
-/* Escena A-Frame */
-a-scene {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-/* Canvas */
-canvas {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-/* Botón circular para reproducir sonido */
+/* Botón de sonido */
 .boton-sonido {
   position: absolute;
   top: 10px;
@@ -41,7 +125,7 @@ canvas {
   z-index: 999;
 }
 
-/* Contenedor de botones inferiores (nombres de modelos) */
+/* Controles de modelos */
 .controles-modelos {
   position: absolute;
   bottom: 20px;
@@ -54,7 +138,7 @@ canvas {
   z-index: 999;
 }
 
-/* Botones de modelos */
+/* Botón individual de modelo */
 .btn-modelo {
   background-color: var(--azul-suave);
   color: var(--texto-blanco);
@@ -69,17 +153,15 @@ canvas {
   max-width: 160px;
   text-align: center;
 }
-
 .btn-modelo:hover {
   transform: scale(1.05);
   background-color: var(--verde-menta);
 }
-
 .btn-modelo.activo {
   background-color: var(--salmon-resalte);
 }
 
-/* Mensaje flotante de feedback */
+/* Feedback (correcto o error) */
 .mensaje-feedback {
   position: absolute;
   top: 80px;
@@ -111,7 +193,6 @@ canvas {
   text-align: center;
 }
 
-/* Animación */
 @keyframes aparecer {
   0% {
     transform: translateX(-50%) scale(0.8);

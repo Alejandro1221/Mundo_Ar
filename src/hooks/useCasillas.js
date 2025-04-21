@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom"; 
-import { obtenerCasillas, actualizarCasillas } from "../services/casillasService";
+import { obtenerCasillas, actualizarCasillas, eliminarCasilla } from "../services/casillasService";
+
 
 export const useCasillas = (juegoId) => {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ export const useCasillas = (juegoId) => {
   const [plantillaSeleccionada, setPlantillaSeleccionada] = useState("");
   const [casillaSeleccionada, setCasillaSeleccionada] = useState(null);
 
-  // ✅ 1. Validar datos al cargar casillas
+  // Validar datos al cargar casillas
   const cargarCasillas = useCallback(async () => {
     let casillasCargadas = await obtenerCasillas(juegoId);
     
@@ -21,14 +22,15 @@ export const useCasillas = (juegoId) => {
     setCasillas(casillasCargadas);
   }, [juegoId]);
 
-  // 📌 Mapeo de rutas según la plantilla seleccionada
+  //  Mapeo de rutas según la plantilla seleccionada
   const rutasPlantillas = {
     "modelo-sonido": "/docente/plantilla-sonido-modelo",
     "clasificacion-modelos": "/docente/clasificacion-modelos",
     "rompecabezas-modelo":"/docente/rompecabezas-modelo",
+    "modelo-texto": "/docente/modelo-texto",
   };
 
-  const abrirModal = (index, plantillaActual) => {
+  /*const abrirModal = (index, plantillaActual) => {
     if (plantillaActual) {
       const ruta = rutasPlantillas[plantillaActual];
       if (ruta) {
@@ -44,9 +46,15 @@ export const useCasillas = (juegoId) => {
 
     setCasillaSeleccionada(index);
     setModalVisible(true);
+  };*/
+
+  const abrirModal = (index, plantillaActual) => {
+    setCasillaSeleccionada(index);
+    setPlantillaSeleccionada(plantillaActual || "");
+    setModalVisible(true);
   };
 
-  // ✅ 2. Solo actualizar la casilla modificada en Firestore
+  // Solo actualizar la casilla modificada en Firestore
   const guardarCambios = async () => {
     if (casillaSeleccionada === null || !plantillaSeleccionada) {
       alert("Seleccione una plantilla.");
@@ -71,6 +79,13 @@ export const useCasillas = (juegoId) => {
     }
   };
 
+  const eliminarPlantilla = async (juegoId, index) => {
+    await eliminarCasilla(juegoId, index);
+    const nuevas = [...casillas];
+    nuevas[index] = { plantilla: null };
+    setCasillas(nuevas);
+  };
+
   return { 
     casillas, 
     cargarCasillas, 
@@ -80,6 +95,7 @@ export const useCasillas = (juegoId) => {
     setModalVisible, 
     plantillaSeleccionada, 
     setPlantillaSeleccionada, 
-    casillaSeleccionada 
+    casillaSeleccionada,
+    eliminarPlantilla
   };
 };

@@ -35,4 +35,22 @@ export const actualizarCasillas = async (juegoId, index, nuevaPlantilla) => {
     console.error("Error al actualizar casilla:", error);
   }
 };
+export const eliminarCasilla = async (juegoId, index) => {
+  try {
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+
+    if (juegoSnap.exists()) {
+      const juegoData = juegoSnap.data();
+      const nuevasCasillas = [...(juegoData.casillas || Array(30).fill({ plantilla: null }))];
+
+      //Eliminar la plantilla de esa casilla
+      nuevasCasillas[index] = { plantilla: null };
+
+      await updateDoc(juegoRef, { casillas: nuevasCasillas });
+    }
+  } catch (error) {
+    console.error("Error al eliminar plantilla de la casilla:", error);
+  }
+};
 

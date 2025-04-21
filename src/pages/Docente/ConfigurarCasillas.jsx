@@ -7,16 +7,35 @@ import "../../assets/styles/docente/configurarCasillas.css";
 const ConfigurarCasillas = () => {
   const { juegoId } = useParams(); 
   const navigate = useNavigate();
-  const { casillas, cargarCasillas, abrirModal, guardarCambios, modalVisible, setModalVisible, plantillaSeleccionada, setPlantillaSeleccionada } = useCasillas(juegoId);
+
+  const {
+    casillas,
+    cargarCasillas,
+    abrirModal,
+    guardarCambios,
+    modalVisible,
+    setModalVisible,
+    plantillaSeleccionada,
+    setPlantillaSeleccionada,
+    casillaSeleccionada,
+    eliminarPlantilla
+  } = useCasillas(juegoId);
+
+  const rutasPlantillas = {
+    "modelo-sonido": "/docente/plantilla-sonido-modelo",
+    "clasificacion-modelos": "/docente/clasificacion-modelos",
+    "rompecabezas-modelo": "/docente/rompecabezas-modelo",
+    "modelo-texto": "/docente/modelo-texto"
+  };
 
   useEffect(() => {
     if (!juegoId) return navigate("/docente/dashboard");
     cargarCasillas();
   }, [juegoId, cargarCasillas, navigate]);
-  
+
   return (
     <div className="configurar-casillas-container">
-      {/* 🔙 Botón Volver con ícono */}
+      {/*Botón Volver con ícono */}
       <button
         className="configurar-casillas-container__btn-volver"
         onClick={() => navigate("/docente/dashboard")}
@@ -24,10 +43,10 @@ const ConfigurarCasillas = () => {
       >
         <FiArrowLeft />
       </button>
-  
+
       <h2 className="configurar-casillas-container__titulo">Configurar Casillas del Juego</h2>
-  
-      {/* 🔲 Tablero de casillas */}
+
+      {/* Tablero de casillas */}
       <div className="configurar-casillas-container__tablero">
         {casillas.map((casilla, index) => (
           <div
@@ -42,29 +61,73 @@ const ConfigurarCasillas = () => {
           </div>
         ))}
       </div>
-  
-      {/* 📦 Modal */}
+
+      {/* Modal */}
       {modalVisible && (
         <div className="configurar-casillas-container__modal">
           <div className="configurar-casillas-container__modal-content">
-            <h3>Seleccionar Plantilla</h3>
-            <select
-              value={plantillaSeleccionada}
-              onChange={(e) => setPlantillaSeleccionada(e.target.value)}
-            >
-              <option value="">Seleccione una plantilla</option>
-              <option value="modelo-sonido">Modelo-Sonido</option>
-              <option value="clasificacion-modelos">Clasificar Modelos</option>
-              <option value="rompecabezas-modelo">Rompecabezas Modelo</option>
-            </select>
-            <div className="configurar-casillas-container__modal-buttons">
-              <button onClick={() => setModalVisible(false)}>Cancelar</button>
-              <button onClick={guardarCambios}>Guardar</button>
-            </div>
+            {casillas[casillaSeleccionada]?.plantilla ? (
+              <>
+                <h3>Plantilla asignada:</h3>
+                <p><strong>{casillas[casillaSeleccionada]?.plantilla}</strong></p>
+                <div className="configurar-casillas-container__modal-buttons">
+                  <button
+                  className="editar-btn"
+                    onClick={() => {
+                      setModalVisible(false);
+                      const plantilla = casillas[casillaSeleccionada]?.plantilla;
+                      const ruta = rutasPlantillas[plantilla];
+                      if (ruta) {
+                        sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                        sessionStorage.setItem("juegoId", juegoId);
+                        sessionStorage.setItem("casillaId", casillaSeleccionada);
+                        navigate(ruta);
+                      }
+                    }}
+                  >
+                    ✏️ Editar Plantilla
+                  </button>
+
+                  <button
+                  className="eliminar-btn"
+                    onClick={async () => {
+                      const confirmar = window.confirm("¿Eliminar esta plantilla?");
+                      if (!confirmar) return;
+
+                      await eliminarPlantilla(juegoId, casillaSeleccionada);
+                      setModalVisible(false);
+                      cargarCasillas();
+                    }}
+                  >
+                    🗑️ Eliminar Plantilla
+                  </button>
+
+                  <button className="cancelar-btn" onClick={() => setModalVisible(false)}>Cancelar</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3>Seleccionar Plantilla</h3>
+                <select
+                  value={plantillaSeleccionada}
+                  onChange={(e) => setPlantillaSeleccionada(e.target.value)}
+                >
+                  <option value="">Seleccione una plantilla</option>
+                  <option value="modelo-sonido">Modelo-Sonido</option>
+                  <option value="clasificacion-modelos">Clasificar Modelos</option>
+                  <option value="rompecabezas-modelo">Rompecabezas Modelo</option>
+                </select>
+                <div className="configurar-casillas-container__modal-buttons">
+                  <button className="cancelar-btn"  onClick={() => setModalVisible(false)}>Cancelar</button>
+                  <button className="guardar-btn" onClick={guardarCambios}>Guardar</button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}
     </div>
   );
-}
-export default ConfigurarCasillas;  
+};
+
+export default ConfigurarCasillas;
