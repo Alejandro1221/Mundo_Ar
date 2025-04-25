@@ -7,6 +7,9 @@ import ActividadModeloSonido from "../pages/Estudiantes/ActividadModeloSonido";
 import VistaPreviaModeloSonido from "../pages/Estudiantes/VistaPreviaModeloSonido"; 
 import ActividadClasificacionModelos from "../pages/Estudiantes/ActividadClasificacionModelos"; 
 import ActividadRompecabezas from "../pages/Estudiantes/ActividadRompecabezas";
+/*import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
+      <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
+*/
 
 const EstudianteRoutes = () => {
   return (

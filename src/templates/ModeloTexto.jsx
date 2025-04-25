@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
+import "@google/model-viewer";
 import "../assets/styles/docente/modeloTexto.css";
 
 const ModeloTexto = () => {

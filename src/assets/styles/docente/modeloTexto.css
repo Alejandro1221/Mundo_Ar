@@ -1,135 +1,108 @@
-/* === Contenedor Principal === */
-.docente-modelo-texto-container {
+
+   .modelo-texto-container {
     max-width: 1100px;
-    margin: 0 auto;
-    padding: 30px 20px;
+    margin: 40px auto;
     background-color: var(--docente-fondo-claro);
+    padding: 30px;
     border-radius: var(--borde-suave);
     box-shadow: var(--sombra-suave);
+    font-family: 'Segoe UI', sans-serif;
   }
   
-  /* === Mensajes === */
+  .modelo-texto-container h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
+    color: var(--texto-principal);
+  }
+  
+  /* ✅ Mensajes de alerta */
   .mensaje {
-    padding: 12px 18px;
+    padding: 12px;
     border-radius: var(--borde-suave);
     margin-bottom: 20px;
     font-weight: bold;
-    font-size: 0.95rem;
+    text-align: center;
   }
-  .mensaje.error {
-    background-color: #ffe6e6;
-    color: #b00020;
-  }
+  
   .mensaje.success {
     background-color: #e6fff1;
     color: #009e5f;
   }
   
-  /* === Título === */
-  .titulo-vista {
-    text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: var(--texto-principal);
+  .mensaje.error {
+    background-color: #ffe6e6;
+    color: #b00020;
   }
   
-  /* === Modelos === */
-  .modelos-asignacion-lista {
+  /* ✅ Contenedor de modelos */
+  .modelos-lista {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 24px;
+    justify-content: center;
+    margin-bottom: 30px;
   }
-  .model-item {
-    background-color: white;
-    border: 2px solid var(--docente-secundario);
+  
+  .modelo-item {
+    width: 240px;
+    background-color: #fff;
     border-radius: 12px;
-    padding: 16px;
-    width: 250px;
+    border: 2px solid var(--docente-secundario);
     box-shadow: var(--sombra-suave);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
   }
-  .model-item model-viewer {
-    width: 100%;
+  
+  model-viewer {
+    width: 200px;
     height: 200px;
     margin-bottom: 10px;
   }
-  .model-item p {
-    font-weight: bold;
-    margin-bottom: 8px;
-  }
   
-  /* === Input de Texto Asociado === */
-  .model-item textarea {
-    width: 100%;
-    height: 60px;
-    font-size: 0.95rem;
-    padding: 8px;
-    border-radius: var(--borde-suave);
-    border: 1px solid #ccc;
-    resize: vertical;
-    margin-bottom: 10px;
-  }
-  
-  /* === Botones por modelo === */
-  .model-item button {
-    background-color: var(--docente-primario);
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: var(--borde-suave);
-    margin: 6px 4px 0;
-    cursor: pointer;
-    font-size: 0.85rem;
-  }
-  .model-item button:hover {
-    background-color: #18577f;
-  }
-  
-  /* === Sección de Celebración === */
-  .seccion-celebracion {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #fff;
-    border: 2px solid var(--docente-secundario);
-    border-radius: var(--borde-suave);
-    box-shadow: var(--sombra-suave);
-  }
-  .seccion-celebracion label {
-    font-weight: bold;
+  .modelo-item p {
+    font-weight: 600;
     color: var(--texto-principal);
-    margin-bottom: 6px;
-    display: block;
-  }
-  .seccion-celebracion select,
-  .seccion-celebracion input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border: 1px solid #ccc;
-    border-radius: var(--borde-suave);
-    font-size: 1rem;
+    margin: 10px 0 8px;
   }
   
-  /* === Acciones Finales === */
-  .acciones-finales {
-    margin-top: 30px;
+  /* ✅ Área para escribir el concepto */
+  .modelo-item textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 0.95rem;
+    margin-top: 8px;
+    font-family: inherit;
+  }
+  
+  /* ✅ Botones inferiores */
+  .acciones-plantilla {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
+    margin-top: 20px;
   }
-  .acciones-finales button {
-    padding: 10px 18px;
-    font-size: 1rem;
-    font-weight: 500;
-    border-radius: var(--borde-suave);
-    border: none;
-    cursor: pointer;
+  
+  .acciones-plantilla button {
     background-color: var(--docente-primario);
     color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: var(--borde-suave);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
   }
-  .acciones-finales button:hover {
+  
+  .acciones-plantilla button:hover {
     background-color: #18577f;
   }
   

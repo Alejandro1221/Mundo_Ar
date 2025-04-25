@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { obtenerCasillas, actualizarCasillas, eliminarCasilla } from "../services/casillasService";
 
-
 export const useCasillas = (juegoId) => {
   const navigate = useNavigate();
   const [casillas, setCasillas] = useState(Array(30).fill({ plantilla: null }));
@@ -16,7 +15,7 @@ export const useCasillas = (juegoId) => {
     
     if (!Array.isArray(casillasCargadas) || casillasCargadas.length !== 30) {
       console.warn("Datos de casillas corruptos o incompletos. Reiniciando estructura.");
-      casillasCargadas = Array(30).fill({ plantilla: null }); // 🔹 Forzar estructura correcta
+      casillasCargadas = Array(30).fill({ plantilla: null });
     }
     
     setCasillas(casillasCargadas);
@@ -29,24 +28,6 @@ export const useCasillas = (juegoId) => {
     "rompecabezas-modelo":"/docente/rompecabezas-modelo",
     "modelo-texto": "/docente/modelo-texto",
   };
-
-  /*const abrirModal = (index, plantillaActual) => {
-    if (plantillaActual) {
-      const ruta = rutasPlantillas[plantillaActual];
-      if (ruta) {
-        sessionStorage.setItem("paginaAnterior", window.location.pathname);
-        sessionStorage.setItem("juegoId", juegoId);
-        sessionStorage.setItem("casillaId", index);
-        navigate(ruta);
-      } else {
-        alert(`La plantilla "${plantillaActual}" aún no está implementada.`);
-      }
-      return;
-    }
-
-    setCasillaSeleccionada(index);
-    setModalVisible(true);
-  };*/
 
   const abrirModal = (index, plantillaActual) => {
     setCasillaSeleccionada(index);

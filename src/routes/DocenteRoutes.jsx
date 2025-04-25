@@ -6,7 +6,7 @@ import ConfigurarCasillas from "../pages/Docente/ConfigurarCasillas.jsx";
 import ModeloSonido from "../templates/ModeloSonido";
 import ClasificacionModelos from "../templates/ClasificacionModelos";
 import RompecabezasModelo from "../templates/RompecabezasModelo";
-import ModeloTexto from "../templates/ModeloTexto.jsx"; 
+import ModeloTexto from "../templates/ModeloTexto"; 
 
 const DocenteRoutes = () => {
   return (

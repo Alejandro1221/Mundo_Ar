@@ -85,6 +85,8 @@ const SeleccionarCasilla = () => {
       "modelo-sonido": `/estudiante/actividad-modelo-sonidos/${index + 1}`,
       "clasificacion-modelos": `/estudiante/actividad-clasificacion-modelos/${index + 1}`,
       "rompecabezas-modelo": `/estudiante/actividad-rompecabezas/${index + 1}`,
+      "modelo-texto": `/estudiante/actividad-modelo-texto/${index + 1}` 
+     
     };
   
     const ruta = rutasPlantillas[casillaSeleccionada.plantilla];

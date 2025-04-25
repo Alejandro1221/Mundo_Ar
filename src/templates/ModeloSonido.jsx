@@ -68,7 +68,7 @@ const ModeloSonido = () => {
           }
   
           console.log("🔊 Sonido recuperado desde sessionStorage:", sonidoGuardado);
-          setSonidoSeleccionado(sonidoGuardado); // ✅ Asignar sonido
+          setSonidoSeleccionado(sonidoGuardado); // Asignar sonido
         } catch (err) {
           console.error("❌ Error al parsear `sonidoSeleccionado`, reiniciando...", err);
           sonidoGuardado = null;
