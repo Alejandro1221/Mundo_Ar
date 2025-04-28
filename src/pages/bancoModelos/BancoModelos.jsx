@@ -128,9 +128,21 @@ const manejarEliminacionCategoria = async () => {
   return (
     <div className="banco-modelos">
 
-      <h1>Banco de Modelos</h1>
-      
-      {/* Botón para mostrar/ocultar el formulario (solo si no viene desde plantilla) */}
+      {/* 🔥 Nuevo encabezado: Botón Volver + Título */}
+      <div className="encabezado-pagina">
+        <button
+          className="btn-volver"
+          onClick={() => {
+            const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+            navigate(paginaAnterior);
+          }}
+        >
+          Volver
+        </button>
+        <h1>Banco de Modelos</h1>
+      </div>
+
+      {/* Botón para mostrar/ocultar formulario */}
       {!desdePlantilla && (
         <button
           className="btn-toggle-formulario"
@@ -148,12 +160,12 @@ const manejarEliminacionCategoria = async () => {
         </button>
       )}
 
-      {/* Formulario de subida (solo si está activado) */}
+      {/* Formulario de subida */}
       {!desdePlantilla && mostrarFormulario && (
         <FormularioSubida setModelos={setModelos} />
       )}
 
-      {/* Agrupar selector de categoría y botón eliminar en un contenedor */}
+      {/* Selector de categoría + botón eliminar */}
       <div className="selector-categoria">
         <select
           onChange={(e) => setCategoriaSeleccionada(e.target.value)}
@@ -174,7 +186,7 @@ const manejarEliminacionCategoria = async () => {
         </button>
       </div>
 
-      {/* Campo de eliminar categoría, solo si mostrarCampoEliminar es true */}
+      {/* Campo eliminar categoría */}
       {mostrarCampoEliminar && (
         <div className="campo-eliminar-categoria">
           <input
@@ -223,24 +235,12 @@ const manejarEliminacionCategoria = async () => {
         )}
       </div>
 
-      {/* Confirmar selección desde plantilla */}
+      {/* Confirmar selección si viene de plantilla */}
       {desdePlantilla && (
         <button className="btn-confirmar" onClick={confirmarSeleccion}>
           ✅ Confirmar Selección
         </button>
       )}
-
-      {/* 🔙 Volver */}
-      <button
-        className="btn-volver"
-        onClick={() => {
-          const paginaAnterior =
-            sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
-          navigate(paginaAnterior);
-        }}
-      >
-        Volver
-      </button>
     </div>
   );
 }  
