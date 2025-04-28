@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
-import { obtenerCategorias } from "../../services/categoriasService"; 
+import { obtenerCategorias, eliminarCategoria} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
@@ -14,12 +14,14 @@ const BancoModelos = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [modelosSeleccionados, setModelosSeleccionados] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-
+  const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
+  const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
+  const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ Manejo seguro de location.state para evitar errores
+  // Manejo seguro de location.state para evitar errores
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
 
   useEffect(() => {
@@ -35,7 +37,7 @@ const BancoModelos = () => {
         setCategorias(["Todos", ...categoriasCargadas]); // 🔹 Actualizar categorías
         setModelos(modelosCargados);
 
-        // ✅ Si se abrió desde una plantilla, recuperar modelos seleccionados desde sessionStorage
+        // Si se abrió desde una plantilla, recuperar modelos seleccionados desde sessionStorage
         if (desdePlantilla) {
           const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
           if (modelosGuardados) {
@@ -51,7 +53,7 @@ const BancoModelos = () => {
     cargarDatos();
   }, [desdePlantilla]);
 
-  // 🔹 Filtrar modelos según la categoría seleccionada
+  // Filtrar modelos según la categoría seleccionada
   const modelosFiltrados = modelos.filter(modelo =>
     categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada
 );
@@ -63,7 +65,7 @@ const BancoModelos = () => {
     });
   };
 
-  // ✅ Confirmar selección y volver a la plantilla
+  // Confirmar selección y volver a la plantilla
   const confirmarSeleccion = () => {
     console.log("📌 Antes de guardar en sessionStorage en BancoModelos.jsx:", modelosSeleccionados);
 
@@ -80,25 +82,55 @@ const BancoModelos = () => {
     navigate(-1); 
 };
 
-  const manejarEliminacion = async (modelo) => {
-    if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
-      try {
+const manejarEliminacion = async (modelo) => {
+  if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
+    try {
+      setModelosDesvaneciendo(prev => [...prev, modelo.id]); 
+      setTimeout(async () => {
         await eliminarModelo(modelo.id, modelo.modelo_url, modelo.miniatura);
         setModelos(prev => prev.filter(m => m.id !== modelo.id));
+        setModelosDesvaneciendo(prev => prev.filter(id => id !== modelo.id)); 
         console.log(`✅ Modelo "${modelo.nombre}" eliminado correctamente.`);
-      } catch (error) {
-        console.error("❌ Error al eliminar modelo:", error);
-        alert("Hubo un error al eliminar el modelo. Inténtalo de nuevo.");
-      }
+      }, 500); 
+    } catch (error) {
+      console.error("❌ Error al eliminar modelo:", error);
+      alert("Hubo un error al eliminar el modelo. Inténtalo de nuevo.");
     }
-  };
+  }
+};
+
+
+const manejarEliminacionCategoria = async () => {
+  if (!categoriaAEliminar.trim()) {
+    alert("⚠️ Escribe el nombre de una categoría.");
+    return;
+  }
+
+  if (categoriaAEliminar === "Todos") {
+    alert("⚠️ No puedes eliminar la categoría 'Todos'.");
+    return;
+  }
+
+  if (window.confirm(`¿Seguro que deseas eliminar la categoría "${categoriaAEliminar}"?`)) {
+    try {
+      await eliminarCategoria(categoriaAEliminar);
+      setCategorias(prev => prev.filter(cat => cat !== categoriaAEliminar));
+      setCategoriaSeleccionada("Todos"); // Reiniciar a Todos
+      setCategoriaAEliminar(""); // Limpiar input
+      console.log(`✅ Categoría "${categoriaAEliminar}" eliminada correctamente.`);
+    } catch (error) {
+      console.error("❌ Error al eliminar categoría:", error);
+      alert("Hubo un error al eliminar la categoría. Inténtalo de nuevo.");
+    }
+  }
+};
 
   return (
     <div className="banco-modelos">
 
       <h1>Banco de Modelos</h1>
       
-      {/* 🔹 Botón para mostrar/ocultar el formulario (solo si no viene desde plantilla) */}
+      {/* Botón para mostrar/ocultar el formulario (solo si no viene desde plantilla) */}
       {!desdePlantilla && (
         <button
           className="btn-toggle-formulario"
@@ -115,25 +147,61 @@ const BancoModelos = () => {
           )}
         </button>
       )}
-  
-      {/* 🔹 Formulario de subida (solo si está activado) */}
+
+      {/* Formulario de subida (solo si está activado) */}
       {!desdePlantilla && mostrarFormulario && (
         <FormularioSubida setModelos={setModelos} />
       )}
-  
-      {/* 🔹 Selector de categoría */}
-      <select
-        onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-        value={categoriaSeleccionada}
-      >
-        {categorias.map((cat, index) => (
-          <option key={index} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
-  
-      {/* 🔹 Lista de modelos */}
+
+      {/* Agrupar selector de categoría y botón eliminar en un contenedor */}
+      <div className="selector-categoria">
+        <select
+          onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+          value={categoriaSeleccionada}
+        >
+          {categorias.map((cat, index) => (
+            <option key={index} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <button
+          className="btn-toggle-eliminar-categoria"
+          onClick={() => setMostrarCampoEliminar(prev => !prev)}
+        >
+          {mostrarCampoEliminar ? "Cancelar Eliminación" : "🗑️ Eliminar Categoría"}
+        </button>
+      </div>
+
+      {/* Campo de eliminar categoría, solo si mostrarCampoEliminar es true */}
+      {mostrarCampoEliminar && (
+        <div className="campo-eliminar-categoria">
+          <input
+            type="text"
+            list="categorias-lista"
+            placeholder="Escribe una categoría a eliminar"
+            value={categoriaAEliminar}
+            onChange={(e) => setCategoriaAEliminar(e.target.value)}
+          />
+          <datalist id="categorias-lista">
+            {categorias
+              .filter(cat => cat !== "Todos")
+              .map((cat, index) => (
+                <option key={index} value={cat} />
+              ))}
+          </datalist>
+          <button
+            className="btn-eliminar-categoria"
+            onClick={manejarEliminacionCategoria}
+            disabled={!categoriaAEliminar.trim()}
+          >
+            🗑️ Confirmar Eliminar
+          </button>
+        </div>
+      )}
+
+      {/* Lista de modelos */}
       <div className="lista-modelos">
         {modelosFiltrados.length > 0 ? (
           modelosFiltrados.map((modelo) => (
@@ -154,14 +222,14 @@ const BancoModelos = () => {
           <p>⚠️ No hay modelos disponibles.</p>
         )}
       </div>
-  
-      {/* 🔹 Confirmar selección desde plantilla */}
+
+      {/* Confirmar selección desde plantilla */}
       {desdePlantilla && (
         <button className="btn-confirmar" onClick={confirmarSeleccion}>
           ✅ Confirmar Selección
         </button>
       )}
-  
+
       {/* 🔙 Volver */}
       <button
         className="btn-volver"

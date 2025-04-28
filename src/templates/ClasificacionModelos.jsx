@@ -28,30 +28,17 @@ const ClasificacionModelos = () => {
 
   const cargarConfiguracion = async () => {
     try {
-      let modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-      if (modelosGuardados) {
-        try {
-          const modelos = JSON.parse(modelosGuardados);
-          if (Array.isArray(modelos) && modelos.length > 0) {
-            setModelosSeleccionados(modelos);
-            return;
-          }
-        } catch (err) {
-          console.error("❌ Error al parsear modelosSeleccionados:", err);
-        }
-      }
-
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
-
+  
       if (juegoSnap.exists()) {
         const casilla = juegoSnap.data().casillas[casillaId];
         if (casilla?.configuracion) {
           const { modelos, grupos, celebracion } = casilla.configuracion;
-          setModelosSeleccionados(modelos);
+          setModelosSeleccionados(modelos || []);
           setGrupos(grupos || []);
           setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
-
+  
           const asignacionInicial = {};
           modelos.forEach((modelo) => {
             if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
@@ -63,13 +50,13 @@ const ClasificacionModelos = () => {
       console.error("Error al cargar configuración:", error);
     }
   };
-
+  
   const guardarConfiguracion = async () => {
     const modelosConGrupo = modelosSeleccionados.map((modelo) => ({
       ...modelo,
       grupo: asignaciones[modelo.url] || null,
     }));
-
+    
     const modelosSinGrupo = modelosConGrupo.filter(m => !m.grupo);
     if (modelosSinGrupo.length > 0) {
       mostrarMensaje("❌ Todos los modelos deben tener un grupo asignado.", "error");

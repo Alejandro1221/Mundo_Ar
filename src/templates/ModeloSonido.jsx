@@ -61,7 +61,7 @@ const ModeloSonido = () => {
         try {
           sonidoGuardado = JSON.parse(sonidoGuardado);
   
-          // 🔹 Agregar modeloAsociado desde sessionStorage si existe
+          // Agregar modeloAsociado desde sessionStorage si existe
           const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
           if (modeloAsociado) {
             sonidoGuardado.modeloAsociado = modeloAsociado;

@@ -120,7 +120,14 @@ const ConfigurarCasillas = () => {
                 </select>
                 <div className="configurar-casillas-container__modal-buttons">
                   <button className="cancelar-btn"  onClick={() => setModalVisible(false)}>Cancelar</button>
-                  <button className="guardar-btn" onClick={guardarCambios}>Guardar</button>
+                  <button className="guardar-btn" onClick={() => {
+                    sessionStorage.removeItem("modelosSeleccionados");
+                    sessionStorage.removeItem("sonidoSeleccionado");
+                    sessionStorage.removeItem("modeloAsociadoParaSonido");
+                    guardarCambios();
+                  }}>
+                    Guardar
+                  </button>
                 </div>
               </>
             )}

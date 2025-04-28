@@ -26,7 +26,7 @@ export const actualizarCasillas = async (juegoId, index, nuevaPlantilla) => {
       const juegoData = juegoSnap.data();
       const nuevasCasillas = [...(juegoData.casillas || Array(30).fill({ plantilla: null }))];
 
-      // 🔹 Actualizar solo la casilla específica
+      // Actualizar solo la casilla específica
       nuevasCasillas[index] = { plantilla: nuevaPlantilla };
 
       await updateDoc(juegoRef, { casillas: nuevasCasillas });
