@@ -1,52 +1,74 @@
-.login-estudiante {
+.login-estudiante-container {
   min-height: 100vh;
-  background-color: var(--fondo-claro);
+  width: 100%;
+  background-color: var(--pastel-azul);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 20px;
   text-align: center;
+  overflow: hidden;
 }
 
-.login-estudiante h2 {
-  font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: var(--texto-principal);
-}
-
-.login-estudiante input {
-  padding: 12px;
-  border: 1px solid var(--azul-suave);
-  border-radius: 10px;
-  font-size: 1rem;
+.login-content {
+  background: var(--fondo-claro);
+  padding: 30px 20px;
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  max-width: 400px;
   width: 100%;
-  max-width: 300px;
-  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.login-estudiante button {
-  background-color: var(--azul-suave);
+.logo-login {
+  width: 120px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 1.8rem;
   color: var(--texto-principal);
-  padding: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.input-login {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: var(--borde-suave);
+  border: 1px solid var(--pastel-azul);
+  font-size: 1rem;
+}
+
+.btn-login {
+  background-color: var(--pastel-verde);
+  color: var(--texto-principal);
+  padding: 12px;
   border: none;
   border-radius: var(--borde-suave);
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  width: auto; 
-  max-width: 300px;
-  margin-top: 12px;
-  margin-bottom: 12px;
-
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
 }
 
-.login-estudiante button:hover {
+.btn-login:hover {
   background-color: var(--verde-menta);
+  transform: scale(1.05);
 }
 
 .error-message {
-  color: var(--salmon-resalte);
-  margin-bottom: 12px;
+  color: var(--docente-peligro);
+  margin-bottom: 10px;
+}
+
+.footer-login {
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--texto-blanco);
 }

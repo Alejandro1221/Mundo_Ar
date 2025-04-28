@@ -5,6 +5,7 @@ import { db } from "../../services/firebaseConfig";
 import { useAR } from "../../hooks/useAR";
 import "../../assets/styles/estudiante/ActividadClasificacionModelos.css";
 import HeaderActividad from "../../components/Estudiante/HeaderActividad";
+
 import "../../aframe/seleccionable";
 
 const ActividadClasificacionModelos = () => {

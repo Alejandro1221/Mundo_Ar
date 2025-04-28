@@ -1,19 +1,13 @@
 :root {
-  /* 🎨 PALETA DE COLORES ACCESIBLES */
-  --fondo-claro: #D6E2E9;
-  --salmon-resalte: #D35F5A;
-  --azul-suave: #90BFC3;
-  --verde-menta: #83B68C;
+  --pastel-rosa: #F297A6;
+  --pastel-azul: #63CEE0;
+  --pastel-amarillo: #EFDB89;
+  --pastel-verde: #B3E18F;
+  --pastel-indigo: #8686BA;
 
-  /* 🎓 Paleta Docente */
-  --docente-primario: #339ddf;
-  --docente-secundario: #A3CBEA;
-  --docente-peligro: #ff4d4f;
-  ;
-  --docente-fondo-claro: #d8dbe2;
 
-  --texto-principal: #1A1A1A;
-  --texto-secundario: #1e2299;
+  --fondo-claro: #ffffff;
+  --texto-principal: #59595B;
   --texto-blanco: #ffffff;
 
   --borde-suave: 12px;
@@ -48,7 +42,7 @@ h1, h2, h3, h4 {
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
 
-/*ESTILOS COMUNES */
+/* ESTILOS COMUNES */
 .boton {
   background-color: var(--azul-suave);
   color: var(--texto-blanco);
@@ -57,29 +51,40 @@ h2 { font-size: 1.5rem; }
   border-radius: var(--borde-suave);
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s;
 }
+
 .boton:hover {
   background-color: var(--verde-menta);
+  transform: scale(1.05);
 }
-.boton-resalte { background-color: var(--salmon-resalte); color: white; }
-.boton-correcto { background-color: var(--verde-menta); color: white; }
+
+.boton-resalte {
+  background-color: var(--salmon-resalte);
+  color: var(--texto-blanco);
+}
+
+.boton-correcto {
+  background-color: var(--verde-menta);
+  color: var(--texto-blanco);
+}
 
 .input {
   padding: 10px;
   border: 1px solid var(--azul-suave);
-  border-radius: 10px;
+  border-radius: var(--borde-suave);
   width: 100%;
   font-size: 1rem;
   margin-bottom: 12px;
 }
+
 .label {
   margin-bottom: 4px;
   display: block;
   font-weight: bold;
 }
 
-/* ESTILOS A-FRAME*/
+/* ESTILOS A-FRAME */
 a-scene, a-scene .a-canvas, a-scene canvas {
   position: fixed !important;
   top: 0 !important;
@@ -91,7 +96,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   z-index: 0;
 }
 
-/* Contenedor de la actividad RA */
+/* CONTENEDOR ACTIVIDAD RA */
 .actividad-ra-container {
   position: fixed;
   inset: 0;
@@ -99,7 +104,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   background-color: transparent;
 }
 
-/* Botón de sonido */
+/* BOTÓN DE SONIDO */
 .boton-sonido {
   position: absolute;
   top: 10px;
@@ -117,7 +122,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   z-index: 999;
 }
 
-/* Controles de modelos */
+/* CONTROLES DE MODELOS */
 .controles-modelos {
   position: absolute;
   bottom: 20px;
@@ -130,7 +135,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   z-index: 999;
 }
 
-/* Botón individual de modelo */
+/* BOTÓN INDIVIDUAL MODELO */
 .btn-modelo {
   background-color: var(--azul-suave);
   color: var(--texto-blanco);
@@ -140,20 +145,22 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: background-color 0.3s ease, transform 0.2s;
   min-width: 100px;
   max-width: 160px;
   text-align: center;
 }
+
 .btn-modelo:hover {
   transform: scale(1.05);
   background-color: var(--verde-menta);
 }
+
 .btn-modelo.activo {
   background-color: var(--salmon-resalte);
 }
 
-/* Feedback (correcto o error) */
+/* MENSAJE FEEDBACK */
 .mensaje-feedback {
   position: absolute;
   top: 80px;
@@ -161,14 +168,14 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   transform: translateX(-50%);
   font-size: 1.2rem;
   font-weight: bold;
-  background-color: rgba(255,255,255,0.85);
+  background-color: rgba(255, 255, 255, 0.85);
   padding: 10px 20px;
-  border-radius: 12px;
+  border-radius: var(--borde-suave);
   z-index: 999;
   color: var(--texto-principal);
 }
 
-/* Celebración tipo mensaje */
+/* CELEBRACIÓN MENSAJE */
 .celebracion-mensaje {
   position: absolute;
   top: 140px;

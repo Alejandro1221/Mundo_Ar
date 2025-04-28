@@ -1,70 +1,74 @@
-/* 🔹 Contenedor principal */
+/* Contenedor principal */
 .tablero-container {
-    text-align: center;
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    padding: 20px;
-    background-color: var(--fondo-claro);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* Para que el contenido arranque arriba */
-  }
-  
-  /* 🔹 Encabezado: botón volver + título */
-  .encabezado-casilla {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 10px 20px;
-  }
-  
-  .volver-esquina-superior {
-    position: absolute;
-    left: 20px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-  }
-  
-  /* 🔹 Contenedor del camino */
-  .camino-container {
-    position: relative;
-    width: 90%;
-    max-width: 600px;
-  }
-  
-  /* 🔹 Imagen de fondo */
-  .fondo-camino {
-    width: 100%;
-    border-radius: 16px;
-    display: block;
-  }
-  
-  /* 🔹 Casillas */
-  .casilla {
-    position: absolute;
-    width: 6%;
-    height: 6%;
-    background-color: var(--salmon-resalte);
-    border-radius: 50%;
-    color: var(--texto-blanco);
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.3s ease;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-  }
-  
-  /* 🔹 Hover en casilla */
-  .casilla:hover {
-    transform: scale(1.2);
-    background-color: var(--azul-suave);
-    color: var(--texto-principal);
-  }
-  
+  text-align: center;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+  background-color: var(--fondo-claro);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Encabezado: botón volver + título */
+.encabezado-casilla {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 20px;
+}
+
+.volver-esquina-superior {
+  position: absolute;
+  left: 20px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.volver-esquina-superior:hover {
+  transform: scale(1.1);
+}
+
+/* contenedor del camino */
+.camino-container {
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+}
+
+/* Imagen de fondo */
+.fondo-camino {
+  width: 100%;
+  border-radius: 16px;
+  display: block;
+}
+
+/* Casillas */
+.casilla {
+  position: absolute;
+  width: 6%;
+  height: 6%;
+  background-color: var(--pastel-rosa); 
+  border-radius: 50%;
+  color: var(--texto-blanco);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+}
+
+/* Hover en casilla */
+.casilla:hover {
+  transform: scale(1.2);
+  background-color: var(--pastel-azul); 
+  color: var(--texto-principal);
+}
