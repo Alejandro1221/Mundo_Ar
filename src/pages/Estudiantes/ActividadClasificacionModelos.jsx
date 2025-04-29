@@ -5,7 +5,7 @@ import { db } from "../../services/firebaseConfig";
 import { useAR } from "../../hooks/useAR";
 import "../../assets/styles/estudiante/ActividadClasificacionModelos.css";
 import HeaderActividad from "../../components/Estudiante/HeaderActividad";
-
+import { CELEBRACIONES } from "../../utils/celebraciones";
 import "../../aframe/seleccionable";
 
 const ActividadClasificacionModelos = () => {
@@ -15,6 +15,8 @@ const ActividadClasificacionModelos = () => {
   const [grupos, setGrupos] = useState([]);
   const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
   const [modeloActivo, setModeloActivo] = useState(null);
+  const [modelosClasificados, setModelosClasificados] = useState([]);
+
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
@@ -62,7 +64,7 @@ const ActividadClasificacionModelos = () => {
         zona.object3D.getWorldPosition(posicionZona);
 
         const distancia = posicionModelo.distanceTo(posicionZona);
-        if (distancia < 0.6 && categoriaModelo === categoriaZona) {
+        if (distancia < 0.2 && categoriaModelo === categoriaZona) {
           zona.setAttribute("material", "color:rgb(90, 216, 199); opacity: 0.9; transparent: true");
 
           modeloEl.setAttribute("position", {
@@ -75,6 +77,15 @@ const ActividadClasificacionModelos = () => {
           modeloEl.removeAttribute("seleccionable");
 
           mostrarFeedback("¡Correcto!");
+          setModelosClasificados((prev) => {
+            const nuevosClasificados = [...prev, modeloEl.getAttribute("data-modelo-url")];
+            if (nuevosClasificados.length === modelos.length) {
+              mostrarCelebracion(); 
+            }
+            return nuevosClasificados;
+          });
+
+
         }
       });
     };
@@ -83,17 +94,18 @@ const ActividadClasificacionModelos = () => {
   const mostrarFeedback = (texto) => {
     const prev = document.getElementById("mensaje-feedback");
     if (prev) prev.remove();
-  
+    
+    
     const mensaje = document.createElement("a-text");
     mensaje.setAttribute("value", texto);
-    mensaje.setAttribute("color", "blue");
+    mensaje.setAttribute("color", "#63CEE0");
     mensaje.setAttribute("position", "0 -0.2 -1"); 
     mensaje.setAttribute("align", "center");
     mensaje.setAttribute("scale", "0.3 0.3 0.3");
     mensaje.setAttribute("id", "mensaje-feedback");
     mensaje.setAttribute("side", "double");
     mensaje.setAttribute("look-at", "[camera]");
-  
+    
     const cam = document.querySelector("a-entity[camera]");
     if (cam) {
       cam.appendChild(mensaje);
@@ -103,6 +115,18 @@ const ActividadClasificacionModelos = () => {
       if (mensaje && mensaje.parentNode) mensaje.remove();
     }, 2000);
   };
+
+  const mostrarCelebracion = () => {
+    const tipo = celebracion?.tipo;
+    const opciones = celebracion?.opciones || {};
+  
+    if (CELEBRACIONES[tipo] && typeof CELEBRACIONES[tipo].render === "function") {
+      CELEBRACIONES[tipo].render(opciones);
+    } else {
+      console.warn("❗ Tipo de celebración no reconocido:", tipo);
+    }
+  };
+  
 
   return (
     <div className="actividad-ra-container">
@@ -143,7 +167,7 @@ const ActividadClasificacionModelos = () => {
             key={index}
             gltf-model={modelo.url}
             position={`0 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
-            scale="0.25 0.25 0.25"
+            scale="1 1 1"
             grupo={modelo.grupo}
             seleccionable
             data-modelo-url={modelo.url}

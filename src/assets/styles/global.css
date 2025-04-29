@@ -13,15 +13,6 @@
   --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Source Sans Pro', 'Lato', sans-serif;
-}
 
 /* ENCABEZADOS */
 h1, h2, h3, h4 {
@@ -32,6 +23,8 @@ h1, h2, h3, h4 {
 
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
+
+
 
 
 /* ESTILOS A-FRAME */
@@ -56,4 +49,35 @@ a-scene, a-scene .a-canvas, a-scene canvas {
     transform: translateX(-50%) scale(1);
     opacity: 1;
   }
+}
+
+/* CELEBRACIÓN MENSAJE */
+.celebracion-mensaje {
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.8rem;
+  color: var(--pastel-indigo);
+  background-color: var(--fondo-claro);
+  padding: 12px 28px;
+  border-radius: 15px;
+  animation: aparecer 1s ease-in-out;
+  font-weight: bold;
+  z-index: 999;
+  text-align: center;
+}
+
+.mensaje-feedback {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: rgba(255, 14, 14, 0.85);
+  padding: 10px 20px;
+  border-radius: var(--borde-suave);
+  z-index: 999;
+  color: var(--texto-principal);
 }

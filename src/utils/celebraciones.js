@@ -4,6 +4,22 @@ export const CELEBRACIONES = {
   mensaje: {
     label: "Mensaje en pantalla",
     render: (opciones) => {
+      const div = document.createElement("div");
+      div.innerText = opciones?.mensaje || "¡Buen trabajo!";
+      div.style.position = "fixed";
+      div.style.top = "50%";
+      div.style.left = "50%";
+      div.style.transform = "translate(-50%, -50%)";
+      div.style.padding = "20px 40px";
+      div.style.backgroundColor = "#4CAF50";
+      div.style.color = "#fff";
+      div.style.fontSize = "24px";
+      div.style.borderRadius = "12px";
+      div.style.zIndex = "9999";
+      div.style.boxShadow = "0 0 20px rgba(0,0,0,0.3)";
+      document.body.appendChild(div);
+  
+      setTimeout(() => div.remove(), 3000);
     }
   },
   confeti: {
