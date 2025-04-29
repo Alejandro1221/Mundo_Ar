@@ -1,138 +1,128 @@
-/* ==========================
-   Estilos Autenticación Docente
-   ========================== */
+.auth-container {
+  background-color: var(--pastel-azul);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
 
-   .auth-container {
-    background-color: var(--docente-fondo-claro); /* Fondo profesional */
-    min-height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.auth-box {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  border-radius: var(--borde-suave);
+  padding: 30px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: var(--sombra-suave);
+  position: relative;
+  z-index: 1;
+  margin-top: 50px;
+}
+
+.auth-box h1 {
+  color: var(--texto-principal);
+  font-size: 2rem;
+  margin-bottom: 20px;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* ========== Inputs ========== */
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid var(--pastel-azul);
+  border-radius: var(--borde-suave);
+  background-color: #ffffff;
+  color: var(--texto-principal);
+  font-size: 1rem;
+  font-family: 'Lato', sans-serif;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.auth-box input:focus {
+  border-color: var(--pastel-verde);
+  box-shadow: 0 0 0 2px rgba(179, 225, 143, 0.3);
+}
+
+.auth-box input::placeholder {
+  color: #999999;
+}
+
+.auth-button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.primary-btn {
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: var(--pastel-amarillo);
+  transform: scale(1.05);
+}
+
+.secondary-btn {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.secondary-btn:hover {
+  background-color: var(--pastel-indigo);
+  transform: scale(1.05);
+}
+
+.auth-links {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 0;
+}
+
+.auth-links a {
+  color: var(--pastel-indigo);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: 'Lato', sans-serif;
+}
+
+.auth-links a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .auth-box {
+    width: 90%;
     padding: 20px;
   }
-  
-  .auth-box {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(12px);
-    border-radius: var(--borde-suave);
-    padding: 30px;
-    width: 100%;
-    max-width: 420px;
-    text-align: center;
-    box-shadow: var(--sombra-suave);
-    position: relative;
-    z-index: 1;
-  }
-  
-  .auth-box h1 {
-    color: var(--texto-principal);
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  /* ========== Inputs ========== */
-  .auth-box input {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0;
-    border: 1px solid var(--docente-secundario);
-    border-radius: var(--borde-suave);
-    background-color: #ffffff;
-    color: var(--texto-principal);
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s, box-shadow 0.3s;
-  }
-  
-  .auth-box input:focus {
-    border-color: var(--docente-primario);
-    box-shadow: 0 0 0 2px rgba(33, 112, 161, 0.2);
-  }
-  
-  .auth-box input::placeholder {
-    color: #999999;
-  }
-  
-  /* ========== Botones generales ========== */
-  .auth-button {
-    width: 100%;
-    margin-top: 8px;
-  }
-  
-  /* Botones especiales para docente */
-  .primary-btn {
-    background-color: var(--docente-primario);
-    color: var(--texto-blanco);
-    border: none;
-    border-radius: var(--borde-suave);
-    padding: 10px 16px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .primary-btn:hover {
-    background-color: #18577f;
-  }
-  
-  .secondary-btn {
-    background-color: var(--docente-secundario);
-    color: var(--texto-principal);
-    border: none;
-    border-radius: var(--borde-suave);
-    padding: 10px 16px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .secondary-btn:hover {
-    background-color: #90bada;
-    transform: scale(1.02);
-  }
-  
-  /* ========== Grupo de botones ========== */
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  /* ========== Enlaces ========== */
-  .auth-links {
-    display: flex;
-    justify-content: space-between;
-    margin: 12px 0;
-  }
-  
-  .auth-links a {
-    color: var(--texto-secundario);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  
-  .auth-links a:hover {
-    text-decoration: underline;
-  }
-  
-  /* ========== Errores ========== */
-  .error-message {
-    background-color: #ffe6e6;
-    color: #cc0000;
-    padding: 10px;
-    border-radius: var(--borde-suave);
-    margin-bottom: 12px;
-    font-size: 0.9rem;
-  }
-  
-  /* ========== Responsive ========== */
-  @media (max-width: 600px) {
-    .auth-box {
-      width: 90%;
-      padding: 20px;
-    }
-  }
-  
+}

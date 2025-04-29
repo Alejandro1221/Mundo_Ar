@@ -6,6 +6,7 @@ import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
 import {crearJuegoEnFirestore,actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
 import { doc, getDoc } from "firebase/firestore";
+import { eliminarJuegoPorId } from "../../services/juegosService";
 import "../../assets/styles/docente/dashboardDocente.css";
 
 const DashboardDocente = () => {
@@ -26,8 +27,7 @@ const DashboardDocente = () => {
       }
   
       const nombre = await obtenerNombreDocente(user.uid);
-  setUsuario({ ...user, nombre }); // agregamos el nombre al objeto user
-
+  setUsuario({ ...user, nombre }); 
   cargarJuegos(user.uid);
 });
   
@@ -48,7 +48,6 @@ const DashboardDocente = () => {
     }
   };
   
-
   // Cargar juegos creados por el docente
   const cargarJuegos = async (uid) => {
     try {
@@ -126,13 +125,26 @@ const DashboardDocente = () => {
     }
   };
 
+  
+const eliminarJuego = async (juegoId) => {
+  try {
+    await eliminarJuegoPorId(juegoId);
+    setJuegos((prevJuegos) => prevJuegos.filter((juego) => juego.id !== juegoId));
+    alert("Juego eliminado exitosamente.");
+  } catch (error) {
+    console.error("Error al eliminar el juego:", error);
+    alert("Hubo un problema al eliminar el juego.");
+  }
+};
+
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>
           {usuario?.nombre
-            ? `Bienvenido profe ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
-            : "Bienvenido profe"}
+            ? `Hola, profesor ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
+            : "Hola, profesor"}
         </h1>
         <button className="boton-logout" onClick={handleCerrarSesion}>
           <FiLogOut />
@@ -170,8 +182,8 @@ const DashboardDocente = () => {
         )}
   
         <button
-          type="button"
-          className="boton"
+          type="button-crear-juego"
+          className="boton-dashboard"
           onClick={() => {
             if (!mostrarInput) {
               setMostrarInput(true);
@@ -185,7 +197,7 @@ const DashboardDocente = () => {
         </button>
       </div>
   
-      {/* Lista de Juegos como bloque estilizado */}
+      {/* Lista de Juegos */}
       <div className="bloque-juegos">
         <h3>Lista de Juegos Creados</h3>
         <div className="lista-juegos">
@@ -193,7 +205,10 @@ const DashboardDocente = () => {
             <p>No tienes juegos creados aún.</p>
           ) : (
             juegos.map((juego) => (
-              <div key={juego.id} className="juego-item">
+              <div
+                key={juego.id}
+                className={`juego-item ${juego.publico ? 'juego-publico' : 'juego-privado'}`}
+              >
                 <div className="juego-nombre">{juego.nombre}</div>
   
                 <div className="switch-container">
@@ -220,16 +235,23 @@ const DashboardDocente = () => {
                 >
                   <FiEdit />
                 </button>
+                <button
+            className="icono-btn eliminar-btn"
+            onClick={() => eliminarJuego(juego.id)}
+            aria-label="Eliminar juego"
+          >
+            🗑️
+          </button>
               </div>
             ))
           )}
         </div>
       </div>
   
-      {/* Opciones finales */}
+      {/* Opciones adicionales */}
       <div className="opciones-bancos">
         <button
-          className="boton"
+          className="boton-modelos"
           onClick={() => {
             sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
             navigate("/docente/banco-modelos", { state: { desdePlantilla: false } });
@@ -239,7 +261,7 @@ const DashboardDocente = () => {
         </button>
   
         <button
-          className="boton"
+          className="boton-sonidos"
           onClick={() => {
             sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
             navigate("/docente/banco-sonidos", { state: { desdePlantilla: false } });
@@ -249,7 +271,7 @@ const DashboardDocente = () => {
         </button>
       </div>
     </div>
-  );
+  );  
 }
 
 export default DashboardDocente;

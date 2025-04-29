@@ -5,7 +5,6 @@
   --pastel-verde: #B3E18F;
   --pastel-indigo: #8686BA;
 
-
   --fondo-claro: #ffffff;
   --texto-principal: #59595B;
   --texto-blanco: #ffffff;
@@ -18,7 +17,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Poppins', sans-serif;
+  font-family: 'Source Sans Pro', 'Lato', sans-serif;
 }
 
 html, body {
@@ -35,8 +34,9 @@ html, body {
 
 /* ENCABEZADOS */
 h1, h2, h3, h4 {
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 
 h1 { font-size: 2rem; }
@@ -44,44 +44,46 @@ h2 { font-size: 1.5rem; }
 
 /* ESTILOS COMUNES */
 .boton {
-  background-color: var(--azul-suave);
+  background-color: var(--pastel-azul);
   color: var(--texto-blanco);
   padding: 10px 16px;
   border: none;
   border-radius: var(--borde-suave);
   font-size: 1rem;
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s;
 }
 
-.boton:hover {
-  background-color: var(--verde-menta);
-  transform: scale(1.05);
-}
 
+/* Botones especiales */
 .boton-resalte {
-  background-color: var(--salmon-resalte);
+  background-color: var(--pastel-rosa);
   color: var(--texto-blanco);
 }
 
 .boton-correcto {
-  background-color: var(--verde-menta);
-  color: var(--texto-blanco);
+  background-color: var(--pastel-verde);
+  color: var(--texto-principal);
 }
 
+/* INPUTS */
 .input {
   padding: 10px;
-  border: 1px solid var(--azul-suave);
+  border: 1px solid var(--pastel-azul);
   border-radius: var(--borde-suave);
   width: 100%;
   font-size: 1rem;
+  font-family: 'Lato', sans-serif;
   margin-bottom: 12px;
 }
 
 .label {
   margin-bottom: 4px;
   display: block;
-  font-weight: bold;
+  font-weight: 600;
+  font-family: 'Lato', sans-serif;
 }
 
 /* ESTILOS A-FRAME */
@@ -137,7 +139,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
 
 /* BOTÓN INDIVIDUAL MODELO */
 .btn-modelo {
-  background-color: var(--azul-suave);
+  background-color: var(--pastel-azul);
   color: var(--texto-blanco);
   border: none;
   border-radius: var(--borde-suave);
@@ -153,11 +155,11 @@ a-scene, a-scene .a-canvas, a-scene canvas {
 
 .btn-modelo:hover {
   transform: scale(1.05);
-  background-color: var(--verde-menta);
+  background-color: var(--pastel-verde);
 }
 
 .btn-modelo.activo {
-  background-color: var(--salmon-resalte);
+  background-color: var(--pastel-rosa);
 }
 
 /* MENSAJE FEEDBACK */
@@ -182,7 +184,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   left: 50%;
   transform: translateX(-50%);
   font-size: 1.8rem;
-  color: var(--texto-secundario);
+  color: var(--pastel-indigo);
   background-color: var(--fondo-claro);
   padding: 12px 28px;
   border-radius: 15px;

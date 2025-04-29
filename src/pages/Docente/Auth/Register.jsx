@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../../services/firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
 
 const RegisterDocente = () => {
@@ -51,7 +52,14 @@ const RegisterDocente = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-container"
+    style={{
+      backgroundImage: `url(${fondoAutenticacion})`,
+      backgroundSize: "cover", 
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      backgroundColor: "var(--pastel-azul)", 
+    }}>
       <div className="auth-box register-box">
         <h1>Registro Docente</h1>
         {error && <p className="error-message">{error}</p>}
@@ -80,12 +88,12 @@ const RegisterDocente = () => {
           />
 
           <div className="button-group">
-            <button type="submit" className="auth-button primary-btn">
+            <button type="submit" className="auth-button secondary-btn">
               Registrarse
             </button>
             <button
               type="button"
-              className="auth-button secondary-btn"
+              className="auth-button primary-btn"
               onClick={() => navigate("/login")}
             >
               Ingresar

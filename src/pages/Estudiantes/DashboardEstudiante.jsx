@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { obtenerJuegosPublicos } from "../../services/juegosService";
 import "../../assets/styles/estudiante/dashboardEstudiante.css"; 
 
-
 const DashboardEstudiante = () => {
   const navigate = useNavigate();
   const [juegos, setJuegos] = useState([]);

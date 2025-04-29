@@ -27,7 +27,7 @@ const LoginEstudiante = () => {
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
-        backgroundColor: "var(--pastel-azul)", // Fallback
+        backgroundColor: "var(--pastel-azul)", 
       }}
     >
       <div className="login-content">

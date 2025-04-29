@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { collection, query, where, getDocs, doc, addDoc, updateDoc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, addDoc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 
 // Crear juego
 export const crearJuegoEnFirestore = async (nuevoJuego) => {
@@ -32,3 +32,10 @@ export const crearJuegoEnFirestore = async (nuevoJuego) => {
     const docSnap = await getDoc(juegoRef);
     return docSnap.exists() ? docSnap.data() : null;
   };
+
+  
+// Eliminar un juego
+export const eliminarJuegoPorId = async (juegoId) => {
+  const juegoRef = doc(db, "juegos", juegoId);
+  await deleteDoc(juegoRef);
+};

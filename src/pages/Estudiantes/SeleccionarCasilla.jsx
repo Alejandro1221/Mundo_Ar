@@ -33,7 +33,7 @@ const SeleccionarCasilla = () => {
       cargarCasillas();
     }, [navigate]);
 
-  // 🔹 Posiciones ajustadas para que las casillas sigan el camino
+  // Posiciones ajustadas para que las casillas sigan el camino
   const posiciones = [
     { top: "90%", left: "38%" }, // 1
     { top: "88%", left: "50%" }, // 2

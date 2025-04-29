@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { auth } from "../../../services/firebaseConfig"; // Importar Firebase
+import { auth } from "../../../services/firebaseConfig"; 
 import { signInWithEmailAndPassword } from "firebase/auth";
+import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
 
 
@@ -9,7 +10,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate(); // Para redirigir después del login
+  const navigate = useNavigate(); 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -45,8 +46,18 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-box login-box">
+    <div className="auth-container"
+    
+      style={{
+              backgroundImage: `url(${fondoAutenticacion})`,
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              backgroundColor: "var(--pastel-azul)", 
+            }}
+    >      
+
+      <div className="auth-box login-box">        
         <h1>Ingreso Docente</h1>
         {error && <p className="error-message">{error}</p>}
 
