@@ -104,3 +104,74 @@
 .btn-volver svg {
   color: var(--texto-blanco);
 }
+
+/* Selector de categoría */
+.banco-sonidos .selector-categoria {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  margin-left: 20px;
+}
+
+.banco-sonidos .selector-categoria select {
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  border: 1px solid var(--pastel-azul);
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  color: var(--texto-principal);
+  width: 500px;
+  
+}
+
+/* Botón para mostrar/ocultar eliminación */
+.banco-sonidos .btn-toggle-eliminar-categoria {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  font-weight: bold;
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  margin-left: auto;
+}
+
+.banco-sonidos .btn-toggle-eliminar-categoria:hover {
+  transform: scale(1.05);
+}
+
+/* Campo de eliminación */
+.campo-eliminar-categoria {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.banco-sonidos .campo-eliminar-categoria input {
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  border: 1px solid var(--pastel-azul);
+  font-size: 1rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* Botón confirmar eliminación */
+.banco-sonidos .btn-eliminar-categoria {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  font-weight: bold;
+  border: none;
+  padding: 10px 16px;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.banco-sonidos .btn-eliminar-categoria:hover {
+  transform: scale(1.05);
+}

@@ -87,3 +87,9 @@ export const eliminarSonido = async (id, url) => {
     throw new Error("Error al eliminar el sonido: " + error.message);
   }
 };
+
+export const eliminarCategoria = async (nombre) => {
+  const snapshot = await getDocs(query(collection(db, "categoriasSonidos"), where("nombre", "==", nombre.trim().toLowerCase())));
+  if (snapshot.empty) throw new Error("Categoría no encontrada.");
+  await deleteDoc(snapshot.docs[0].ref);
+};
