@@ -127,8 +127,6 @@ const manejarEliminacionCategoria = async () => {
 
   return (
     <div className="banco-modelos">
-
-      {/* 🔥 Nuevo encabezado: Botón Volver + Título */}
       <div className="encabezado-pagina">
         <button
           className="btn-volver"
@@ -137,7 +135,7 @@ const manejarEliminacionCategoria = async () => {
             navigate(paginaAnterior);
           }}
         >
-          Volver
+        <FiArrowLeft /> 
         </button>
         <h1>Banco de Modelos</h1>
       </div>

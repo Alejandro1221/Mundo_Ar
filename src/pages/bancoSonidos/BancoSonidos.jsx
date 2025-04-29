@@ -4,6 +4,7 @@ import { obtenerSonidos } from "../../services/sonidoService";
 import FormularioSubidaSonidos from "./FormularioSubidaSonidos";
 import SonidoItem from "../../components/SonidoItem";
 import BancoSonidosSeleccion from "./BancoSonidosSeleccion";
+import { FiArrowLeft } from "react-icons/fi";
 import "../../assets/styles/bancoSonidos/bancoSonidos.css";
 
 
@@ -26,9 +27,22 @@ const BancoSonidos = () => {
     cargarSonidos();
   }, []); 
 
-  return (
+return (
     <div className="banco-sonidos">
-      <h2>{desdePlantilla ? "Seleccionar Sonido" : "Banco de Sonidos"}</h2>
+      <div className="encabezado-pagina">
+        <button
+          className="btn-volver"
+          onClick={() => {
+            const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+            navigate(paginaAnterior);
+          }}
+        >
+         <FiArrowLeft /> 
+        </button>
+        <h2>{desdePlantilla ? "Seleccionar Sonido" : "Banco de Sonidos"}</h2>
+      </div>
+  
+      {/* Contenido de la página */}
       {desdePlantilla ? (
         <BancoSonidosSeleccion onSeleccionar={(sonido) => {
           sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonido));
@@ -48,14 +62,6 @@ const BancoSonidos = () => {
           </div>
         </>
       )}
-
-        {/* Botón para volver a la página anterior */}
-        <button className="volver-btn" onClick={() => {
-        const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
-        navigate(paginaAnterior);
-      }}>
-        ⬅️ Volver
-      </button>
       
     </div>
   );
