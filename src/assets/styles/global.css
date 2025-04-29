@@ -44,7 +44,6 @@ h2 { font-size: 1.5rem; }
 
 /* ESTILOS COMUNES */
 .boton {
-  background-color: var(--pastel-azul);
   color: var(--texto-blanco);
   padding: 10px 16px;
   border: none;
