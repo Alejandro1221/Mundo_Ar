@@ -1,49 +1,31 @@
-/* ===================================
-   PLANTILLA CLASIFICACIÓN DE MODELOS
-   =================================== */
 
    .docente-clasificacion-container {
     max-width: 1100px;
     margin: 40px auto;
-    background-color: var(--docente-fondo-claro);
+    background-color: var(--fondo-claro);
     padding: 30px;
     border-radius: var(--borde-suave);
     box-shadow: var(--sombra-suave);
     font-family: 'Segoe UI', sans-serif;
+    color: var(--texto-principal);
+    overflow: hidden; 
   }
   
   .docente-clasificacion-container h2 {
     text-align: center;
     font-size: 1.8rem;
     margin-bottom: 25px;
-    color: var(--texto-principal);
+    color: var(--pastel-azul);
   }
-  
-  .mensaje {
-    padding: 12px;
-    border-radius: var(--borde-suave);
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .mensaje.success { background-color: #e6fff1; color: #009e5f; }
-  .mensaje.error { background-color: #ffe6e6; color: #b00020; }
-  
-  /* =============================
-     GRUPOS DE CLASIFICACIÓN
-     ============================= */
+
   .grupos-config {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 20px;
-    border: 2px solid var(--docente-secundario);
+    border: 2px solid var(--pastel-rosa);
     border-radius: var(--borde-suave);
     margin-bottom: 30px;
-  }
-  
-  .grupos-config h3 {
-    font-size: 1.2rem;
-    margin-bottom: 12px;
+    max-height: 300px; 
+    overflow-y: auto; 
   }
   
   .grupos-config ul {
@@ -59,49 +41,22 @@
     margin-bottom: 8px;
   }
   
-  .grupos-config input {
-    flex: 1;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  .grupos-config button {
-    background-color: var(--docente-peligro);
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .grupos-config button:hover {
-    background-color: #a33636;
-  }
-  
-  .grupos-config > button {
-    background-color: var(--docente-primario);
-    padding: 10px 14px;
-    margin-top: 10px;
-  }
-  
-  /* =============================
-     MODELOS SELECCIONADOS
-     ============================= */
+
   .modelos-config {
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
     justify-content: center;
     margin-bottom: 30px;
+    max-height: 400px; 
+    overflow-y: auto; 
   }
   
   .modelo-item {
     width: 240px;
-    background-color: #fff;
-    border-radius: 12px;
-    border: 2px solid var(--docente-secundario);
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--borde-suave);
+    border: 2px solid var(--pastel-azul);
     box-shadow: var(--sombra-suave);
     padding: 16px;
     display: flex;
@@ -110,75 +65,19 @@
     text-align: center;
   }
   
-  modelo-viewer {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 10px;
-  }
-  
-  .modelo-item p {
-    font-weight: 600;
-    color: var(--texto-principal);
-    margin: 10px 0 8px;
-  }
-  
-  .modelo-info {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .modelo-info select {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 0.95rem;
-  }
-  
-  .eliminar-modelo-btn {
-    background-color: var(--docente-peligro);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .eliminar-modelo-btn:hover {
-    background-color: #912f2f;
-  }
-  
-  /* =============================
-     CELEBRACIÓN
-     ============================= */
+
   .seccion-celebracion {
     padding: 20px;
-    background-color: #fff;
-    border: 2px solid var(--docente-secundario);
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 2px solid var(--pastel-amarillo);
     border-radius: var(--borde-suave);
     box-shadow: var(--sombra-suave);
     margin-bottom: 30px;
+    max-height: 300px; 
+    overflow-y: auto; 
   }
   
-  .seccion-celebracion h3 {
-    margin-bottom: 12px;
-  }
-  
-  .seccion-celebracion select,
-  .seccion-celebracion input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 1rem;
-  }
-  
-  /* =============================
-     ACCIONES PLANTILLA
-     ============================= */
+ 
   .acciones-plantilla {
     display: flex;
     flex-wrap: wrap;
@@ -186,19 +85,3 @@
     gap: 14px;
     margin-top: 20px;
   }
-  
-  .acciones-plantilla button {
-    background-color: var(--docente-primario);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: var(--borde-suave);
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .acciones-plantilla button:hover {
-    background-color: #18577f;
-  }
-  

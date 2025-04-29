@@ -118,7 +118,7 @@ const DashboardDocente = () => {
   const handleCerrarSesion = async () => {
     try {
       await signOut(auth);
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);
       alert("Hubo un problema al cerrar sesión.");
@@ -136,7 +136,6 @@ const eliminarJuego = async (juegoId) => {
     alert("Hubo un problema al eliminar el juego.");
   }
 };
-
 
   return (
     <div className="dashboard-container">

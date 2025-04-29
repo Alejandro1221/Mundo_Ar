@@ -1,53 +1,71 @@
 .banco-sonidos {
-    max-width: 600px;
-    margin: auto;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .lista-sonidos {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 15px;
-  }
-  
-  .sonido-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .sonido-item p {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .sonido-item audio {
-    width: 100%;
-    max-width: 300px;
-    margin-bottom: 10px;
-  }
-  
-  .sonido-item button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .sonido-item button:hover {
-    background-color: #0056b3;
-  }
-  
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: var(--fondo-claro);
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Lista de sonidos */
+.lista-sonidos {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 20px;
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Sonido individual */
+.sonido-item {
+  background-color: #ffffff;
+  padding: 16px;
+  border-radius: var(--borde-suave);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.sonido-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Texto del nombre */
+.sonido-item p {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+  margin-bottom: 8px;
+}
+
+/* Reproductor */
+.sonido-item audio {
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 10px;
+}
+
+/* Botón seleccionar */
+.sonido-item button {
+  background-color: var(--pastel-indigo);
+  color: var(--texto-blanco);
+  border: none;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sonido-item button:hover {
+  background-color: #6b63d9;
+  transform: scale(1.05);
+}

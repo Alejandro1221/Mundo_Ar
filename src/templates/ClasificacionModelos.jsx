@@ -22,6 +22,8 @@ const ClasificacionModelos = () => {
       alert("Error: No se encontró el juego o la casilla.");
       navigate("/docente/configurar-casillas");
     } else {
+      const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+      console.log("Modelos en sessionStorage:", modelosGuardados); // Depuración
       cargarConfiguracion();
     }
   }, [juegoId, casillaId, navigate]);

@@ -49,7 +49,7 @@ const BancoSonidos = () => {
         </>
       )}
 
-        {/* 🔹 Botón para volver a la página anterior */}
+        {/* Botón para volver a la página anterior */}
         <button className="volver-btn" onClick={() => {
         const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
         navigate(paginaAnterior);

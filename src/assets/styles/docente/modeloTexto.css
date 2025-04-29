@@ -1,108 +1,101 @@
+.modelo-texto-container {
+  padding: 20px;
+  background-color: var(--fondo-claro);
+  color: var(--texto-principal);
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
 
-   .modelo-texto-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    background-color: var(--docente-fondo-claro);
-    padding: 30px;
-    border-radius: var(--borde-suave);
-    box-shadow: var(--sombra-suave);
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .modelo-texto-container h2 {
-    text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 25px;
-    color: var(--texto-principal);
-  }
-  
-  /* ✅ Mensajes de alerta */
-  .mensaje {
-    padding: 12px;
-    border-radius: var(--borde-suave);
-    margin-bottom: 20px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  .mensaje.success {
-    background-color: #e6fff1;
-    color: #009e5f;
-  }
-  
-  .mensaje.error {
-    background-color: #ffe6e6;
-    color: #b00020;
-  }
-  
-  /* ✅ Contenedor de modelos */
-  .modelos-lista {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
-  
-  .modelo-item {
-    width: 240px;
-    background-color: #fff;
-    border-radius: 12px;
-    border: 2px solid var(--docente-secundario);
-    box-shadow: var(--sombra-suave);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  
-  model-viewer {
-    width: 200px;
-    height: 200px;
-    margin-bottom: 10px;
-  }
-  
-  .modelo-item p {
-    font-weight: 600;
-    color: var(--texto-principal);
-    margin: 10px 0 8px;
-  }
-  
-  /* ✅ Área para escribir el concepto */
-  .modelo-item textarea {
-    width: 100%;
-    min-height: 100px;
-    resize: vertical;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    font-size: 0.95rem;
-    margin-top: 8px;
-    font-family: inherit;
-  }
-  
-  /* ✅ Botones inferiores */
-  .acciones-plantilla {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 20px;
-  }
-  
-  .acciones-plantilla button {
-    background-color: var(--docente-primario);
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: var(--borde-suave);
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .acciones-plantilla button:hover {
-    background-color: #18577f;
-  }
-  
+.modelo-texto-container h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--pastel-azul);
+  margin-bottom: 20px;
+}
+
+.mensaje {
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.mensaje.info {
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
+}
+
+.mensaje.success {
+  background-color: var(--pastel-verde);
+  color: var(--texto-blanco);
+}
+
+.modelos-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.modelo-item {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  padding: 15px;
+  text-align: center;
+  width: 220px;
+}
+
+.modelo-item p {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--texto-principal);
+  margin: 10px 0;
+}
+
+.modelo-item textarea {
+  width: 100%;
+  height: 80px;
+  border: 1px solid var(--pastel-rosa);
+  border-radius: var(--borde-suave);
+  padding: 10px;
+  font-size: 0.9rem;
+  resize: none;
+  margin-top: 10px;
+}
+
+.modelo-item textarea:focus {
+  outline: 2px solid var(--pastel-verde);
+}
+
+.acciones-plantilla {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.acciones-plantilla button {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.acciones-plantilla button:hover {
+  background-color: var(--pastel-amarillo);
+  transform: scale(1.05);
+}
+
+.acciones-plantilla button:focus {
+  outline: 2px solid var(--pastel-verde);
+}

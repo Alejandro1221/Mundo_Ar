@@ -1,145 +1,143 @@
-/* =============================
-   CONTENEDOR PRINCIPAL
-   ============================= */
-   .banco-sonidos {
-    width: 100%;
-    max-width: 600px;
-    min-height: 550px;
-    margin: 50px auto;
-    padding: 30px;
-    background: var(--docente-fondo-claro);
-    border-radius: var(--borde-suave);
-    box-shadow: var(--sombra-suave);
-    text-align: center;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  /* =============================
-     TÍTULO
-     ============================= */
-  .banco-sonidos h2 {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--texto-principal);
-    margin-bottom: 24px;
-  }
-  
-  /* =============================
-     FORMULARIO DE SUBIDA
-     ============================= */
-  .form-subida-sonidos {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .form-subida-sonidos input,
-  .form-subida-sonidos select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid var(--docente-secundario);
-    border-radius: var(--borde-suave);
-    font-size: 1rem;
-  }
-  
-  /* Botón para nueva categoría */
-  .form-subida-sonidos .nueva-categoria {
-    background: var(--menta);
-    color: var(--texto-claro);
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: var(--borde-suave);
-    padding: 10px 16px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .form-subida-sonidos .nueva-categoria:hover {
-    background-color: #6da574;
-    transform: scale(1.03);
-  }
-  
-  /* =============================
-     LISTA DE SONIDOS
-     ============================= */
-  .lista-sonidos {
-    margin-top: 16px;
-    max-height: 300px;
-    overflow-y: auto;
-    padding-right: 6px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
-  /* =============================
-     ITEM DE SONIDO
-     ============================= */
-  .sonido-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #f0f4f8;
-    padding: 12px 14px;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
-  }
-  
-  .sonido-item:hover {
-    background: #e3eaf0;
-    transform: scale(1.02);
-  }
-  
-  .sonido-item p {
-    flex: 1;
-    text-align: left;
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--texto-principal);
-  }
-  
-  .sonido-item audio {
-    margin: 0 12px;
-  }
-  
-  /* Botón eliminar */
-  .sonido-item button {
-    background: var(--docente-peligro);
-    border: none;
-    color: white;
-    padding: 8px 12px;
-    border-radius: var(--borde-suave);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-  
-  .sonido-item button:hover {
-    background: #b03030;
-    transform: scale(1.05);
-  }
-  
-  /* =============================
-     BOTÓN VOLVER
-     ============================= */
-  .volver-btn {
-    margin-top: 24px;
-    padding: 10px 18px;
-    background-color: var(--naranja);
-    color: white;
-    border: none;
-    border-radius: var(--borde-suave);
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  
-  .volver-btn:hover {
-    background-color: #e67e22;
-    transform: scale(1.05);
-  }
-  
+/* CONTENEDOR PRINCIPAL */
+.banco-sonidos {
+  width: 100%;
+  max-width: 700px;
+  min-height: 550px;
+  margin: 50px auto;
+  padding: 30px;
+  background: var(--fondo-claro);
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* TÍTULO */
+.banco-sonidos h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--texto-principal);
+  margin-bottom: 24px;
+}
+
+/* FORMULARIO DE SUBIDA */
+.form-subida-sonidos {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.form-subida-sonidos input,
+.form-subida-sonidos select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--pastel-azul);
+  border-radius: var(--borde-suave);
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+.form-subida-sonidos input:focus,
+.form-subida-sonidos select:focus {
+  outline: none;
+  border-color: var(--pastel-verde);
+  box-shadow: 0 0 5px rgba(0, 91, 112, 0.2);
+}
+
+/* BOTÓN NUEVA CATEGORÍA */
+.form-subida-sonidos .nueva-categoria {
+  background-color: var(--pastel-verde);
+  color: var(--texto-principal);
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.form-subida-sonidos .nueva-categoria:hover {
+  background-color: #6da574;
+  transform: scale(1.03);
+}
+
+/* LISTA DE SONIDOS */
+.lista-sonidos {
+  margin-top: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ITEM SONIDO */
+.sonido-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f0f4f8;
+  padding: 12px 14px;
+  border-radius: var(--borde-suave);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.sonido-item:hover {
+  transform: scale(1.02);
+  background-color: #e8eef4;
+}
+
+.sonido-item p {
+  flex: 1;
+  text-align: left;
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+
+.sonido-item audio {
+  margin: 0 12px;
+  max-width: 150px;
+}
+
+/* BOTÓN SELECCIONAR / ELIMINAR */
+.sonido-item button {
+  background: var(--pastel-rosa);
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  border-radius: var(--borde-suave);
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.sonido-item button:hover {
+  background: #b03030;
+  transform: scale(1.05);
+}
+
+/* BOTÓN VOLVER */
+.banco-sonidos .volver-btn {
+  margin-top: 24px;
+  padding: 10px 20px;
+  background-color: var(--pastel-verde) ;
+  color: var(--texto-blanco);
+  border: none;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.banco-sonidos .volver-btn:hover {
+  background-color: var(--pastel-verde)!important; /* Verde más oscuro al pasar el cursor */
+  transform: scale(1.08);
+}
+

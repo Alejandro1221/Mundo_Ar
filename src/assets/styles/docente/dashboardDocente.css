@@ -1,3 +1,4 @@
+/* Contenedor Principal */
 .dashboard-container {
   min-height: 100vh;
   width: 100%;
@@ -46,7 +47,7 @@
   transform: scale(1.05);
 }
 
-.boton-logout:focus {
+.boton-logout:focus-visible {
   outline: 2px solid var(--pastel-rosa);
 }
 
@@ -77,14 +78,13 @@
   margin-bottom: 12px;
 }
 
-.input:focus {
+.input:focus-visible {
   outline: 2px solid var(--pastel-verde);
 }
 
 /* Switch */
 .switch-container {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin: 10px 0 20px 0;
 }
 
 .switch-label {
@@ -110,7 +110,10 @@
 .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: #dfe0eb;
   border-radius: 26px;
   transition: background-color 0.4s;
@@ -128,7 +131,6 @@
   transition: transform 0.4s;
 }
 
-
 input:checked + .slider {
   background-color: #d9dae2;
 }
@@ -137,7 +139,7 @@ input:checked + .slider::before {
   transform: translateX(26px);
 }
 
-/* Botón principal */
+/* Botón Crear Juego */
 .boton-dashboard {
   background-color: var(--pastel-rosa);
   color: var(--texto-blanco);
@@ -147,17 +149,20 @@ input:checked + .slider::before {
   font-weight: bold;
   border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--sombra-suave);
   transition: background-color 0.3s, transform 0.2s;
   margin: 0 auto;
 }
 
 .boton-dashboard:hover {
-  transform: scale(1.20);
+  transform: scale(1.2);
 }
 
+.boton-dashboard:focus-visible {
+  outline: 2px solid var(--pastel-verde);
+}
 
-/* Bloque de juegos */
+/* Bloque Juegos */
 .bloque-juegos {
   width: 100%;
   max-width: 800px;
@@ -165,8 +170,8 @@ input:checked + .slider::before {
 }
 
 .bloque-juegos h3 {
-  margin-bottom: 40px; 
-} 
+  margin-bottom: 40px;
+}
 
 .lista-juegos {
   display: flex;
@@ -175,14 +180,14 @@ input:checked + .slider::before {
   margin-top: 20px;
 }
 
-/* Tarjeta de juego */
+/* Tarjetas Juego */
 .juego-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 20px;
   border-radius: var(--borde-suave);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--sombra-suave);
   width: 100%;
   gap: 12px;
   transition: transform 0.2s, box-shadow 0.3s;
@@ -192,33 +197,34 @@ input:checked + .slider::before {
   transform: scale(1.02);
 }
 
-.juego-item:focus {
+.juego-item:focus-visible {
   outline: 2px solid var(--pastel-rosa);
 }
 
-/* Estado del juego */
-.juego-publico {
-  background-color: var(--pastel-amarillo) !important;
+
+.juego-item.juego-privado:hover {
+  background-color: var(--pastel-amarillo);
+  transform: scale(1.04);
 }
 
-.juego-privado:hover {
-  background-color: var(--pastel-azul) !important; 
-  transform: scale(1.04)!important; 
+
+.juego-item.juego-publico:hover {
+  background-color: var(--pastel-azul);
+  transform: scale(1.04);
 }
 
-/* Nombre del juego */
 .juego-nombre {
   flex: 1;
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--texto-blanco);
+  color: var(--texto-principal);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Botón editar */
+/* Botón de Iconos */
 .icono-btn {
   background-color: rgba(255, 255, 255, 0.2);
   color: rgb(46, 62, 207);
@@ -235,46 +241,22 @@ input:checked + .slider::before {
   transform: scale(1.1);
 }
 
-.icono-btn:focus {
+.icono-btn:focus-visible {
   outline: 2px solid var(--pastel-verde);
 }
 
-/* Slider personalizado en tarjeta */
-.juego-publico .slider,
-.juego-privado .slider {
-  background-color: rgba(255, 255, 255, 0.6);
-}
-
-.juego-publico input:checked + .slider,
-.juego-privado input:checked + .slider {
-  background-color: var(--fondo-claro);
-}
-
-/* Botones Banco Modelos/Sonidos */
+/* Opciones Bancos */
 .opciones-bancos {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
-  max-width: 400px;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  margin-top: 30px;
 }
-.opciones-bancos .boton-banco {
-  background-color: var(--pastel-amarillo);
-  color: var(--texto-blanco);
-  border: none;
-  padding: 12px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: var(--borde-suave);
-  cursor: pointer;
-  box-shadow: var(--sombra-suave);
-  transition: background-color 0.3s, transform 0.2s;
-}
-.opciones-bancos .boton-banco:hover {
-  background-color: var(--pastel-verde);
-  transform: scale(1.05);
-}
-.boton-modelos {
+
+.boton-modelos,
+.boton-sonidos {
   background-color: var(--pastel-verde);
   color: var(--texto-blanco);
   padding: 10px 24px;
@@ -284,49 +266,70 @@ input:checked + .slider::before {
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--sombra-suave);
 }
 
-.boton-modelos:hover {
+.boton-modelos:hover,
+.boton-sonidos:hover {
   transform: scale(1.09);
 }
 
 .boton-sonidos {
   background-color: var(--pastel-indigo);
-  color: var(--texto-blanco);
-  padding: 10px 24px;
-  border: none;
-  border-radius: 999px;
-  font-weight: bold;
-  font-size: 1.0rem;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.boton-sonidos:hover {
-  transform: scale(1.09);
-}
-
-.opciones-bancos {
-  display: flex;
-  flex-direction: row; 
-  justify-content: center; 
-  align-items: center;
-  gap: 50px; 
-  margin-top: 30px;
-}
-
-/* Slider personalizado en tarjeta */
+/* Slider en estado de juego */
 .juego-publico .slider {
-  background-color: rgba(255, 255, 255, 0.6); /* Fondo del slider */
+  background-color: rgba(255, 255, 255, 0.6); 
 }
 
 .juego-publico input:checked + .slider::before {
-  background-color: var(--pastel-amarillo); /* Bolita amarilla cuando es público */
+  background-color: var(--pastel-azul); 
 }
 
 .juego-privado .slider {
-  background-color: rgba(255, 255, 255, 0.6); /* Fondo del slider */
+  background-color: rgba(255, 255, 255, 0.6); 
 }
 
+.juego-privado input:checked + .slider::before {
+  background-color: var(--pastel-amarillo); 
+}
+
+/* Fondo por defecto: switch desactivado (Privado) */
+.switch .slider {
+  background-color: #dfe0eb;
+}
+
+/* Bolita por defecto: gris */
+.switch .slider::before {
+  background-color: #bfc0c9;
+}
+
+/* Cuando está activado: juego público */
+.switch input:checked + .slider {
+  background-color: #e0e0e0; 
+}
+
+.switch input:checked + .slider::before {
+  background-color: var(--pastel-azul); 
+}
+
+/* Fondo AZUL cuando es público */
+.juego-item.juego-publico {
+  background-color: var(--pastel-azul);
+}
+
+/* Fondo AMARILLO cuando es privado */
+.juego-item.juego-privado {
+  background-color: var(--pastel-amarillo);
+}
+
+/* Bolita amarilla cuando está desactivado (privado) */
+.juego-item input + .slider::before {
+  background-color: var(--pastel-amarillo);
+}
+
+/* Bolita azul cuando está activado (público) */
+.juego-item input:checked + .slider::before {
+  background-color: var(--pastel-azul);
+}
