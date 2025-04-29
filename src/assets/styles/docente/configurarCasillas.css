@@ -1,4 +1,3 @@
-
 /* Contenedor principal */
 .configurar-casillas-container {
   display: flex;
@@ -6,7 +5,7 @@
   align-items: center;
   text-align: center;
   padding: 20px;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   position: relative;
   min-height: 100vh;
   background-color: var(--docente-fondo-claro);
@@ -14,11 +13,13 @@
 
 /* Botón volver */
 .configurar-casillas-container__btn-volver {
-  all: unset;
+  background: none;
+  border: none;
+  outline: none;
   position: absolute;
   top: 20px;
   left: 20px;
-  background-color: var(--docente-primario);
+  background-color: var(--pastel-rosa);
   color: var(--texto-blanco);
   padding: 10px;
   border-radius: 50%;
@@ -49,7 +50,7 @@
 .configurar-casillas-container__tablero {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 12px;
+  gap: 16px;
   width: 100%;
   max-width: 600px;
   padding: 20px;
@@ -68,7 +69,7 @@
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 900;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   border-radius: 8px;
@@ -81,9 +82,8 @@
 }
 
 .configurar-casillas-container__casilla.configurada {
-  background-color: var(--docente-secundario);
-  color: var(--texto-principal);
-  border: 2px solid var(--docente-primario);
+  color: var(--texto-blanco);
+  font-weight: bold; 
 }
 
 /* Modal */
@@ -121,8 +121,8 @@
 }
 
 @keyframes fadeInScale {
-  0% { opacity: 0; transform: scale(0.8); }
-  100% { opacity: 1; transform: scale(1); }
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
 /* Título modal */
@@ -173,13 +173,13 @@
 }
 
 .configurar-casillas-container__modal-buttons .editar-btn {
-  background-color: var(--docente-primario);
-  color: #fff;
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
 }
 
 .configurar-casillas-container__modal-buttons .eliminar-btn {
-  background-color: var(--docente-peligro);
-  color: white;
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
 }
 
 .configurar-casillas-container__modal-buttons .cancelar-btn {
@@ -188,13 +188,14 @@
 }
 
 .configurar-casillas-container__modal-buttons .guardar-btn {
-  background-color: var(--docente-primario);
+  background-color: var(--pastel-verde);
   color: var(--texto-blanco);
 }
 
 .configurar-casillas-container__modal-buttons button:hover {
   opacity: 0.9;
 }
+
 .configurar-casillas-container__plantilla {
   font-size: 0.80rem;
   font-weight: normal;
@@ -232,3 +233,21 @@
     font-size: 1rem;
   }
 }
+
+
+.configurar-casillas-container__casilla.plantilla-modelo-sonido {
+  background-color: var(--pastel-azul);
+}
+
+.configurar-casillas-container__casilla.plantilla-clasificacion-modelos {
+  background-color: var(--pastel-verde);
+}
+
+.configurar-casillas-container__casilla.plantilla-rompecabezas-modelo {
+  background-color: var(--pastel-amarillo);
+}
+
+.configurar-casillas-container__casilla.plantilla-modelo-texto {
+  background-color: var(--pastel-rosa);
+}
+

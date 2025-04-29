@@ -51,7 +51,8 @@ const ConfigurarCasillas = () => {
         {casillas.map((casilla, index) => (
           <div
             key={index}
-            className={`configurar-casillas-container__casilla ${casilla.plantilla ? "configurada" : ""}`}
+            //className={`configurar-casillas-container__casilla ${casilla.plantilla ? "configurada" : ""}`}
+            className={`configurar-casillas-container__casilla ${casilla.plantilla ? `configurada plantilla-${casilla.plantilla}` : ""}`}
             onClick={() => abrirModal(index, casilla.plantilla)}
           >
             <span>{index + 1}</span>

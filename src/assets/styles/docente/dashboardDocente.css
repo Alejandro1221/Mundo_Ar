@@ -92,6 +92,7 @@
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
+  gap: 10px;
 }
 
 .switch {
@@ -105,6 +106,11 @@
   opacity: 0;
   width: 0;
   height: 0;
+}
+
+.switch-label span {
+  font-size: 1rem; 
+  color: var(--texto-blanco); 
 }
 
 .slider {
@@ -178,6 +184,7 @@ input:checked + .slider::before {
   flex-direction: column;
   gap: 20px;
   margin-top: 20px;
+  max-width: 69px;
 }
 
 /* Tarjetas Juego */
@@ -188,9 +195,11 @@ input:checked + .slider::before {
   padding: 16px 20px;
   border-radius: var(--borde-suave);
   box-shadow: var(--sombra-suave);
-  width: 100%;
+  width: 80%;
+  margin: 0 auto;
   gap: 12px;
   transition: transform 0.2s, box-shadow 0.3s;
+  max-width: 600px;
 }
 
 .juego-item:hover {
@@ -215,9 +224,9 @@ input:checked + .slider::before {
 
 .juego-nombre {
   flex: 1;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: bold;
-  color: var(--texto-principal);
+  color: var(--texto-blanco);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -251,7 +260,7 @@ input:checked + .slider::before {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 80px;
   margin-top: 30px;
 }
 
@@ -259,14 +268,15 @@ input:checked + .slider::before {
 .boton-sonidos {
   background-color: var(--pastel-verde);
   color: var(--texto-blanco);
-  padding: 10px 24px;
+  padding: 20px 60px;
   border: none;
-  border-radius: 999px;
+  border-radius: 16px;
   font-weight: bold;
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
   box-shadow: var(--sombra-suave);
+  
 }
 
 .boton-modelos:hover,
