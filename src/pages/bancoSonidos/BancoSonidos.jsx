@@ -8,7 +8,7 @@ import {
 import FormularioSubidaSonidos from "./FormularioSubidaSonidos";
 import SonidoItem from "../../components/SonidoItem";
 import BancoSonidosSeleccion from "./BancoSonidosSeleccion";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowLeft, FiPlus } from "react-icons/fi";
 import "../../assets/styles/bancoSonidos/bancoSonidos.css";
 
 const BancoSonidos = () => {
@@ -22,6 +22,7 @@ const BancoSonidos = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -50,16 +51,10 @@ const BancoSonidos = () => {
       return;
     }
 
-    if (
-      window.confirm(
-        `¿Seguro que deseas eliminar la categoría "${categoriaAEliminar}"?`
-      )
-    ) {
+    if (window.confirm(`¿Seguro que deseas eliminar la categoría "${categoriaAEliminar}"?`)) {
       try {
         await eliminarCategoria(categoriaAEliminar);
-        setCategorias((prev) =>
-          prev.filter((cat) => cat !== categoriaAEliminar)
-        );
+        setCategorias((prev) => prev.filter((cat) => cat !== categoriaAEliminar));
         setCategoriaSeleccionada("Todos");
         setCategoriaAEliminar("");
         alert(`✅ Categoría "${categoriaAEliminar}" eliminada.`);
@@ -70,8 +65,7 @@ const BancoSonidos = () => {
   };
 
   const sonidosFiltrados = sonidos.filter(
-    (s) =>
-      categoriaSeleccionada === "Todos" || s.categoria === categoriaSeleccionada
+    (s) => categoriaSeleccionada === "Todos" || s.categoria === categoriaSeleccionada
   );
 
   return (
@@ -80,8 +74,7 @@ const BancoSonidos = () => {
         <button
           className="btn-volver"
           onClick={() => {
-            const paginaAnterior =
-              sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+            const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
             navigate(paginaAnterior);
           }}
         >
@@ -92,16 +85,24 @@ const BancoSonidos = () => {
 
       {!desdePlantilla && (
         <>
-          {/* Selector + eliminar categoría */}
+          <button
+            className="btn-toggle-formulario"
+            onClick={() => setMostrarFormulario(!mostrarFormulario)}
+          >
+            {mostrarFormulario ? "◀ Ocultar Formulario" : "➕ Subir Sonido"}
+          </button>
+
+          {mostrarFormulario && (
+            <FormularioSubidaSonidos setSonidos={setSonidos} />
+          )}
+
           <div className="selector-categoria">
             <select
               value={categoriaSeleccionada}
               onChange={(e) => setCategoriaSeleccionada(e.target.value)}
             >
               {categorias.map((cat, index) => (
-                <option key={index} value={cat}>
-                  {cat}
-                </option>
+                <option key={index} value={cat}>{cat}</option>
               ))}
             </select>
 
@@ -109,9 +110,7 @@ const BancoSonidos = () => {
               className="btn-toggle-eliminar-categoria"
               onClick={() => setMostrarCampoEliminar((prev) => !prev)}
             >
-              {mostrarCampoEliminar
-                ? "Cancelar Eliminación"
-                : "🗑️ Eliminar Categoría"}
+              {mostrarCampoEliminar ? "Cancelar Eliminación" : "🗑️ Eliminar Categoría"}
             </button>
           </div>
 
@@ -125,11 +124,9 @@ const BancoSonidos = () => {
                 onChange={(e) => setCategoriaAEliminar(e.target.value)}
               />
               <datalist id="categorias-lista">
-                {categorias
-                  .filter((cat) => cat !== "Todos")
-                  .map((cat, index) => (
-                    <option key={index} value={cat} />
-                  ))}
+                {categorias.filter((cat) => cat !== "Todos").map((cat, index) => (
+                  <option key={index} value={cat} />
+                ))}
               </datalist>
               <button
                 className="btn-eliminar-categoria"
@@ -141,8 +138,6 @@ const BancoSonidos = () => {
             </div>
           )}
 
-          {/* Formulario y lista de sonidos */}
-          <FormularioSubidaSonidos setSonidos={setSonidos} />
           <div className="lista-sonidos">
             {sonidosFiltrados.length > 0 ? (
               sonidosFiltrados.map((sonido) => (
@@ -162,10 +157,7 @@ const BancoSonidos = () => {
       {desdePlantilla && (
         <BancoSonidosSeleccion
           onSeleccionar={(sonido) => {
-            sessionStorage.setItem(
-              "sonidoSeleccionado",
-              JSON.stringify(sonido)
-            );
+            sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonido));
             window.history.back();
           }}
         />
@@ -175,3 +167,4 @@ const BancoSonidos = () => {
 };
 
 export default BancoSonidos;
+

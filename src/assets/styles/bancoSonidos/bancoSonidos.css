@@ -23,12 +23,12 @@
 /* LISTA DE SONIDOS */
 .lista-sonidos {
   margin-top: 16px;
-  max-height: 300px;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
   padding-right: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  max-height: 550px;
+  overflow-y: auto;
 }
 
 /* ITEM SONIDO */
@@ -122,7 +122,6 @@
   background-color: #f9f9f9;
   color: var(--texto-principal);
   width: 500px;
-  
 }
 
 /* Botón para mostrar/ocultar eliminación */
@@ -174,4 +173,17 @@
 
 .banco-sonidos .btn-eliminar-categoria:hover {
   transform: scale(1.05);
+}
+
+.lista-sonidos::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lista-sonidos::-webkit-scrollbar-thumb {
+  background-color: var(--pastel-azul);
+  border-radius: 10px;
+}
+
+.lista-sonidos::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
 }

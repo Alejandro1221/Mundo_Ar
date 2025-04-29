@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { subirSonido, obtenerCategorias, crearCategoria } from "../../services/sonidoService";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  subirSonido,
+  obtenerCategorias,
+  crearCategoria,
+} from "../../services/sonidoService";
 import "../../assets/styles/bancoSonidos/formularioSubidaSonidos.css";
 
 const FormularioSubidaSonidos = ({ setSonidos }) => {
@@ -9,6 +13,13 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
   const [categorias, setCategorias] = useState([]);
   const [progreso, setProgreso] = useState(0);
   const [subiendo, setSubiendo] = useState(false);
+
+  const [mostrarCampoNuevaCategoria, setMostrarCampoNuevaCategoria] =
+    useState(false);
+  const [nuevaCategoria, setNuevaCategoria] = useState("");
+
+  // Ref para limpiar el input de archivo
+  const inputFileRef = useRef(null);
 
   useEffect(() => {
     const cargarCategorias = async () => {
@@ -24,6 +35,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
 
   const handleSubir = async (e) => {
     e.preventDefault();
+
     if (!archivo || !nombre || !categoria) {
       alert("⚠️ Todos los campos son obligatorios.");
       return;
@@ -31,12 +43,21 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
 
     setSubiendo(true);
     try {
-      const nuevoSonido = await subirSonido(archivo, nombre, categoria, setProgreso);
+      const nuevoSonido = await subirSonido(
+        archivo,
+        nombre,
+        categoria,
+        setProgreso
+      );
       setSonidos((prev) => [...prev, nuevoSonido]);
+
+      // Limpiar todo después de subir
       setArchivo(null);
       setNombre("");
       setCategoria("");
       setProgreso(0);
+      if (inputFileRef.current) inputFileRef.current.value = ""; // ✅ Limpiar input file
+
       alert("✅ Sonido subido exitosamente.");
     } catch (error) {
       alert("❌ Error al subir el sonido: " + error.message);
@@ -45,19 +66,22 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
   };
 
   const handleCrearCategoria = async () => {
-    const nuevaCategoria = prompt("📝 Ingrese el nombre de la nueva categoría:");
-    if (nuevaCategoria?.trim()) {
-      try {
-        await crearCategoria(nuevaCategoria);
-        setCategorias((prev) => [...prev, { nombre: nuevaCategoria }]);
-        setCategoria(nuevaCategoria);
-        alert("✅ Categoría creada exitosamente.");
-      } catch (error) {
-        alert("❌ Error al crear categoría: " + error.message);
-      }
+    if (!nuevaCategoria.trim()) {
+      alert("⚠️ Ingresa un nombre de categoría.");
+      return;
+    }
+
+    try {
+      await crearCategoria(nuevaCategoria);
+      setCategorias((prev) => [...prev, { nombre: nuevaCategoria }]);
+      setCategoria(nuevaCategoria);
+      setNuevaCategoria("");
+      setMostrarCampoNuevaCategoria(false);
+      alert("✅ Categoría creada exitosamente.");
+    } catch (error) {
+      alert("❌ Error al crear categoría: " + error.message);
     }
   };
-
 
   return (
     <form onSubmit={handleSubir} className="form-subida-sonidos">
@@ -66,21 +90,50 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
         placeholder="Nombre del sonido"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
-        required
       />
 
-      <select value={categoria} onChange={(e) => setCategoria(e.target.value)} required>
+      <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
         <option value="">Selecciona una categoría</option>
         {categorias.map((cat, index) => (
-          <option key={index} value={cat.nombre}>{cat.nombre}</option>
+          <option key={index} value={cat.nombre}>
+            {cat.nombre}
+          </option>
         ))}
       </select>
 
-      <button type="button" className="btn-nueva-categoria" onClick={handleCrearCategoria}>
-        ➕ Nueva Categoría
+      <button
+        type="button"
+        className="btn-nueva-categoria"
+        onClick={() => setMostrarCampoNuevaCategoria((prev) => !prev)}
+      >
+        {mostrarCampoNuevaCategoria ? "Cancelar" : "➕ Nueva Categoría"}
       </button>
 
-      <input type="file" accept="audio/mp3,audio/wav" onChange={handleArchivo} required />
+      {mostrarCampoNuevaCategoria && (
+        <div className="campo-nueva-categoria">
+          <input
+            type="text"
+            placeholder="Nombre de nueva categoría"
+            value={nuevaCategoria}
+            onChange={(e) => setNuevaCategoria(e.target.value)}
+          />
+          <button
+            type="button"
+            className="btn-confirmar-categoria"
+            onClick={handleCrearCategoria}
+          >
+            Crear Categoría
+          </button>
+        </div>
+      )}
+
+      <input
+        ref={inputFileRef}
+        type="file"
+        accept="audio/mp3,audio/wav"
+        onChange={handleArchivo}
+        required
+      />
 
       {subiendo && (
         <div className="progreso-container">

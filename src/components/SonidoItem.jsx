@@ -17,17 +17,18 @@ const SonidoItem = ({ sonido, setSonidos }) => {
   };
 
   return (
-    <div className="sonido-item">
-      <div className="info-sonido">
-        <p className="nombre-sonido">
-          🎵 <strong>{sonido.nombre}</strong> <span className="categoria-sonido">({sonido.categoria})</span>
-        </p>
-        <audio controls>
-          <source src={sonido.url} type="audio/mp3" />
-          Tu navegador no soporta el elemento de audio.
-        </audio>
+    <div className="sonido-card">
+      <div className="sonido-card-header">
+        <strong>{sonido.nombre}</strong>
+        <span className="sonido-categoria">{sonido.categoria}</span>
       </div>
-      <button className="btn-eliminar-sonido" onClick={handleEliminar}>🗑️ Eliminar</button>
+      <audio controls className="sonido-audio">
+        <source src={sonido.url} type="audio/mp3" />
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+      <button className="btn-eliminar-sonido" onClick={handleEliminar}>
+        🗑️ Eliminar
+      </button>
     </div>
   );
 };

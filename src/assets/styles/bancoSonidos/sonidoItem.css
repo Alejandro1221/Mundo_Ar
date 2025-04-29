@@ -1,102 +1,44 @@
-.sonido-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--blanco);
-  border-radius: 10px;
-  padding: 16px 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin-bottom: 14px;
-  transition: transform 0.2s ease;
-  flex-wrap: wrap;
-  gap: 10px;
-}
 
-.sonido-item:hover {
-  transform: scale(1.01);
-}
-
-/* 🎵 Info del sonido */
-.info-sonido {
-  flex: 1;
+.sonido-card {
+  background: var(--fondo-claro);
+  border-radius: 12px;
+  box-shadow: var(--sombra-suave);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  gap: 12px;
+  width: 280px;
 }
 
-.nombre-sonido {
-  font-size: 1rem;
-  font-weight: bold;
-  color: var(--texto-oscuro);
-  margin-bottom: 6px;
+
+.sonido-card-header {
+  text-align: center;
 }
 
-.categoria-sonido {
+.sonido-categoria {
+  display: block;
   font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--gris);
+  color: var(--texto-principal);
+  margin-top: 4px;
 }
 
-/* 🎧 Reproductor */
-.sonido-item audio {
+.sonido-audio {
   width: 100%;
-  max-width: 280px;
-  border-radius: 4px;
+  max-width: 240px;
 }
 
-/* 🗑️ Botón de eliminar */
 .btn-eliminar-sonido {
-  background-color: var(--rojo);
-  color: var(--texto-claro);
-  padding: 10px 14px;
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
   border: none;
-  border-radius: 6px;
-  font-weight: bold;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: transform 0.2s ease;
+  font-weight: bold;
 }
 
 .btn-eliminar-sonido:hover {
-  background-color: #b02a37;
-}
-
-/* ℹ️ Mensajes */
-.mensaje {
-  padding: 10px;
-  border-radius: 8px;
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: bold;
-}
-
-.mensaje.info {
-  background-color: var(--azul-claro);
-  color: #31708f;
-}
-
-.mensaje.success {
-  background-color: var(--verde-suave);
-  color: #3c763d;
-}
-
-.mensaje.error {
-  background-color: #f2dede;
-  color: #a94442;
-}
-
-/* 📱 Responsive */
-@media (max-width: 480px) {
-  .sonido-item {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .info-sonido {
-    align-items: center;
-    text-align: center;
-  }
-
-  .btn-eliminar-sonido {
-    width: 100%;
-  }
+  transform: scale(1.05);
 }
