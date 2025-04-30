@@ -142,14 +142,14 @@ const ActividadClasificacionModelos = () => {
           <a-entity key={index}>
             <a-box
               categoria={grupo}
-              position={`${(index - (grupos.length - 1) / 2) * 1} 0 -3`}
+              position={`${(index - (grupos.length - 1) / 2) * 1} -0.6 -3`}
               depth="0.3" height="0.3" width="0.3"
               color="#4CAF50"
               material="opacity: 0.5; transparent: true"
             ></a-box>
             <a-text
               value={grupo}
-              position={`${(index - (grupos.length - 1) / 1.9) * 2.3} 0.85 -8`}
+              position={`${(index - (grupos.length - 1) / 1.9) * 2.3} -0.60 -8`}
               align="center"
               anchor="center"
               baseline="top"
@@ -162,18 +162,29 @@ const ActividadClasificacionModelos = () => {
           </a-entity>
         ))}
 
-        {modelos.map((modelo, index) => (
-          <a-entity
-            key={index}
-            gltf-model={modelo.url}
-            position={`0 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
-            scale="1 1 1"
-            grupo={modelo.grupo}
-            seleccionable
-            data-modelo-url={modelo.url}
-          ></a-entity>
-        ))}
+        {modelos.map((modelo, index) => {
+          const columnas = 3;
+          const espaciado = 0.5;
+          const vertical = 1.0; 
+          const fila = Math.floor(index / columnas);
+          const col = index % columnas;
 
+          const x = (col - (columnas - 1) / 2) * espaciado; // centrado horizontal
+          const y = 0.5 - fila * 1.5; // espacio vertical entre filas
+          const z = -3;
+
+          return (
+            <a-entity
+              key={index}
+              gltf-model={modelo.url}
+              position={`${x} ${y} ${z}`}
+              scale="1 1 1"
+              grupo={modelo.grupo}
+              seleccionable
+              data-modelo-url={modelo.url}
+            ></a-entity>
+          );
+        })}
         <a-entity camera="fov: 95" position="0 0 0"></a-entity>
       </a-scene>
 
