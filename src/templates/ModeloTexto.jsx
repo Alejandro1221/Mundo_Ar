@@ -15,6 +15,7 @@ const ModeloTexto = () => {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [asignaciones, setAsignaciones] = useState({});
 
+
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
@@ -32,21 +33,32 @@ const ModeloTexto = () => {
         setModelosSeleccionados(modelos);
         return;
       }
-
+  
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
+  
       if (juegoSnap.exists()) {
-        const casilla = juegoSnap.data().casillas[casillaId];
+        const dataJuego = juegoSnap.data();
+        const casilla = dataJuego.casillas[casillaId]; // ✅ Solo se usa dentro del if
+  
         if (casilla?.configuracion) {
-          setModelosSeleccionados(casilla.configuracion.modelos || []);
-          setAsignaciones(casilla.configuracion.asignaciones || {});
+          const modelos = casilla.configuracion.modelos || [];
+          setModelosSeleccionados(modelos);
+  
+          const nuevasAsignaciones = {};
+          modelos.forEach((modelo) => {
+            if (modelo.texto) {
+              nuevasAsignaciones[modelo.url] = modelo.texto;
+            }
+          });
+          setAsignaciones(nuevasAsignaciones);
         }
       }
     } catch (error) {
       console.error("Error al cargar configuración:", error);
     }
   };
-
+  
   const guardarConfiguracion = async () => {
     const modelosConTexto = modelosSeleccionados.map((modelo) => ({
       ...modelo,
@@ -67,6 +79,7 @@ const ModeloTexto = () => {
       };
 
       await updateDoc(juegoRef, { casillas: casillasActuales });
+      sessionStorage.removeItem("modelosSeleccionados");
       mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
     }
   };
@@ -79,6 +92,7 @@ const ModeloTexto = () => {
   const asignarTexto = (modeloUrl, texto) => {
     setAsignaciones((prev) => ({ ...prev, [modeloUrl]: texto }));
   };
+
 
   return (
     <div className="modelo-texto-container">
