@@ -330,6 +330,7 @@ const eliminarModelo = async (urlModelo) => {
 
         <button
           className="vista-previa-btn"
+          disabled
           onClick={() => {
             // Guarda los datos actuales en sessionStorage para simular la ejecución
             sessionStorage.setItem("modoVistaPrevia", "true");
@@ -340,6 +341,7 @@ const eliminarModelo = async (urlModelo) => {
             // Navega a la plantilla de estudiante
             navigate("/estudiante/vista-previa-modelo-sonido");
           }}
+          
         >
           👁️ Vista previa como estudiante
         </button>

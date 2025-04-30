@@ -157,18 +157,26 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
           style={{ display: "none" }} 
         />
 
-        {modelos.map((modelo, index) => (
-          <a-entity
-            key={index}
-            gltf-model={modelo.url}
-            position={`-0.5 ${(index - (modelos.length - 1) / 2) * -1.2} -3`}
+          {modelos.map((modelo, index) => {
+           const espaciado = 0.5; // Espaciado vertical entre los modelos
+           const x = -0.5; // Mantén todos los modelos alineados a la izquierda
+           const y = 0.3 - index * espaciado; // Apila los modelos verticalmente
+           const z = -3; // Mantén la misma profundidad
 
-            scale="0.25 0.25 0.25"
-            seleccionable
-            colisionable
-            data-modelo-url={modelo.url}
-          ></a-entity>
-        ))}
+            return (
+              <a-entity
+                key={index}
+                gltf-model={modelo.url}
+                position={`${x} ${y} ${z}`}
+                scale="1 1 1"
+                seleccionable
+                colisionable
+                data-modelo-url={modelo.url}
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear" // Rotación continua
+              ></a-entity>
+            );
+          })}
+
 
       <a-entity camera="fov: 95" position="0 0 0"></a-entity>
       </a-scene>
