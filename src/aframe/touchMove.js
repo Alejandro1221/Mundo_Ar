@@ -15,7 +15,7 @@ if (!AFRAME.components["touch-move"]) {
       el.sceneEl.canvas.addEventListener("touchmove", (e) => {
         if (!startTouch || fichaId !== window.cuboActivoIndex) return;
         const touch = e.touches[0];
-        const dx = (touch.clientX - startTouch.clientX) * 0.002;
+        const dx = (touch.clientX - startTouch.clientX) * 0.005;
         const dy = (touch.clientY - startTouch.clientY) * 0.002;
         const pos = el.getAttribute("position");
         el.setAttribute("position", { x: pos.x + dx, y: pos.y - dy, z: pos.z });

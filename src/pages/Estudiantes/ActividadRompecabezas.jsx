@@ -165,27 +165,27 @@ const ActividadRompecabezas = () => {
         🔁 Cambiar cubo
       </button>
       <a-scene
-        embedded
         arjs="sourceType: webcam;"
         vr-mode-ui="enabled: false"
         renderer="antialias: true; alpha: true"
       >
-        <a-entity camera></a-entity>
+        <a-entity camera position="0 0 1"></a-entity>
 
         <a-plane
-          color="#D3D3D3"
+          color="transparent"
           width="0.6"
           height="0.9"
           position="-0.6 0 -2"
-          opacity="0.3"
+          opacity="0"
           className="tablero tablero-izquierdo"
         ></a-plane>
 
         <a-plane
-          color="#A9CCE3"
-          width="0.7"
+          color="transparent"
+          width="0.1"
           height="0.1"
           className="tablero tablero-derecho"
+           opacity="0"
         ></a-plane>
 
         <a-entity id="zonas">

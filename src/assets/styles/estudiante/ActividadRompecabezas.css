@@ -54,12 +54,9 @@ canvas {
   opacity: 0.25;
 }
 
-.tablero-izquierdo {
-  color: #d6d6d6;
-}
-
+.tablero-izquierdo,
 .tablero-derecho {
-  color: #90BFC3;
+  display: none; 
 }
 
 /* Zonas objetivo */
