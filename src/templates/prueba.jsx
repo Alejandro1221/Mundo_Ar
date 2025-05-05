@@ -1,31 +1,34 @@
-.encabezado-pagina {
-    position: relative;
-    margin-bottom: 20px;
-    height: 50px; /* puedes ajustar si necesitas más espacio */
-  }
-  
-  /* Botón Volver */
-  .btn-volver {
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    margin-top: 0;
-    background-color: var(--azul-profundo);
-    color: var(--texto-claro);
-    padding: 8px 14px;
-    border-radius: 8px;
-    font-weight: bold;
-    font-size: 0.9rem;
-  }
-  
-  /* Título Banco de Modelos */
-  .encabezado-pagina h1 {
-    margin: 0;
-    font-size: 1.8rem;
-    color: var(--texto-oscuro);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
-    top: 50%;
-  }
+{modelos.map((modelo, i) => {
+  const textoSeguro = modelo.texto?.trim();
+  if (!textoSeguro) return null;
+
+  const posX = -0.2 + i * 0.5;
+
+  return (
+    <a-entity
+      key={`texto-${i}`}
+      position={`${posX} 0.4 -2`}
+      arrastrable-texto={`index: ${i}`}
+    >
+      {/* Fondo tipo tarjeta */}
+      <a-plane
+        width="0.8"
+        height="0.25"
+        color="#ffffff"
+        opacity="0.95"
+        material="shader: flat"
+        position="0 0 0"
+      ></a-plane>
+
+      {/* Texto encima */}
+      <a-text
+        value={textoSeguro}
+        align="center"
+        color="#0000cc"
+        width="1.6"
+        position="0 0 0.01"
+        texto-meta={textoSeguro}
+      ></a-text>
+    </a-entity>
+  );
+})}

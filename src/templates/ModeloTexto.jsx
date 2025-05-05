@@ -60,29 +60,44 @@ const ModeloTexto = () => {
   };
   
   const guardarConfiguracion = async () => {
+    const faltanTextos = modelosSeleccionados.some(
+      (modelo) => !asignaciones[modelo.url]?.trim()
+    );
+    
+    if (faltanTextos) {
+      mostrarMensaje("⚠️ Todos los modelos deben tener un concepto escrito.", "error");
+      return;
+    }
+    
+    // Construye modelos completos
     const modelosConTexto = modelosSeleccionados.map((modelo) => ({
       ...modelo,
-      texto: asignaciones[modelo.url] || "",
+      texto: asignaciones[modelo.url].trim(),
     }));
-
+  
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
-
+  
     if (juegoSnap.exists()) {
       const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-
+  
       casillasActuales[casillaId] = {
         plantilla: "modelo-texto",
         configuracion: {
           modelos: modelosConTexto,
         },
       };
+  
+      console.log("📝 Modelos que se van a guardar:", modelosConTexto);
+      console.log("📤 Casillas que se van a actualizar:", casillasActuales);
+      console.log("✅ Guardado en casilla:", casillaId);
 
       await updateDoc(juegoRef, { casillas: casillasActuales });
       sessionStorage.removeItem("modelosSeleccionados");
       mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
     }
   };
+  
 
   const mostrarMensaje = (texto, tipo = "info") => {
     setMensaje({ texto, tipo });

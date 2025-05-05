@@ -1,57 +1,30 @@
-/* Contenedor principal */
-.actividad-ra-container {
-  position: fixed;
-  inset: 0;
-  width: 100%;
+html, body {
+  margin: 0;
+  padding: 0;
   height: 100%;
   overflow: hidden;
-  font-family: 'Source Sans Pro', sans-serif;
-  background-color: transparent;
+  touch-action: none;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* Tarjetas flotantes de texto */
+.zona-movimiento {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: #fafafa;
+}
+
 .card {
   position: absolute;
-  width: 120px;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 2px solid var(--pastel-azul);
-  border-radius: var(--borde-suave);
-  font-size: 16px;
-  font-weight: bold;
+  width: 130px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #000;
+  border-radius: 8px;
   text-align: center;
+  font-weight: bold;
+  z-index: 10;
   user-select: none;
   touch-action: none;
-  z-index: 999;
-  box-shadow: var(--sombra-suave);
-  transition: transform 0.2s ease;
-}
-
-/* Cuando se pega correctamente al modelo */
-.card.correcta {
-  background-color: var(--pastel-verde);
-  color: var(--texto-principal);
-  pointer-events: none;
-}
-
-/* Escena AR */
-a-scene,
-a-scene .a-canvas,
-a-scene canvas {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  object-fit: cover !important;
-  z-index: 0;
-}
-
-/* Variables CSS base */
-:root {
-  --pastel-azul: #63CEE0;
-  --pastel-verde: #B3E18F;
-  --borde-suave: 10px;
-  --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.15);
-  --texto-principal: #59595B;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }

@@ -1,72 +1,112 @@
-/*import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
-import HeaderActividad from "../../components/Estudiante/HeaderActividad";
+import "../../assets/styles/estudiante/actividadModeloTexto.css";
+import "../../aframe/arrastrable-texto";
 
 const ActividadModeloTexto = () => {
   const navigate = useNavigate();
-  const { casillaId } = useParams();
+  const casillaId = sessionStorage.getItem("casillaId");
   const juegoId = sessionStorage.getItem("juegoId");
-
   const [modelos, setModelos] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!juegoId || !casillaId) return navigate("/estudiante/dashboard");
+    const cargarModelos = async () => {
+      if (!juegoId || casillaId === null) {
+        console.warn("❌ No hay juegoId o casillaId");
+        navigate("/estudiante/dashboard");
+        return;
+      }
 
-    const cargarDatos = async () => {
       try {
+        const index = parseInt(casillaId);
         const juegoRef = doc(db, "juegos", juegoId);
         const juegoSnap = await getDoc(juegoRef);
-        if (juegoSnap.exists()) {
-          const casilla = juegoSnap.data().casillas[casillaId];
-          const modelosCargados = casilla?.configuracion?.modelos || [];
-          setModelos(modelosCargados);
-        } else {
-          console.warn("❌ No se encontró el documento del juego en Firestore");
+
+        if (!juegoSnap.exists()) {
+          console.error("❌ El documento del juego no existe.");
+          return;
         }
+
+        const data = juegoSnap.data();
+        const casilla = data.casillas[index];
+
+        if (!casilla?.configuracion?.modelos) {
+          console.warn("⚠️ Esta casilla no tiene modelos configurados.");
+          return;
+        }
+
+        const modelosCargados = casilla.configuracion.modelos.filter(
+          (m) => m && m.url && m.texto && m.texto.trim() !== ""
+        );
+
+        setModelos(modelosCargados);
+        console.log("🧮 Total de tarjetas generadas:", modelosCargados.length);
+
       } catch (error) {
-        console.error("❌ Error al cargar los datos del juego:", error);
-      } finally {
-        setLoading(false);
+        console.error("❌ Error al cargar los modelos:", error);
       }
     };
 
-    cargarDatos();
-  }, [juegoId, casillaId, navigate]);
+    cargarModelos();
+  }, [casillaId, juegoId, navigate]);
 
   return (
-    <div className="actividad-ra-container">
-      <HeaderActividad titulo="Modelos y conceptos asociados" />
+    <div className="actividad-modelo-texto">
+      <a-scene
+        arjs="sourceType: webcam;"
+        vr-mode-ui="enabled: false"
+        renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+        background="transparent: true"
+      >
+        {/* Modelos 3D */}
+        {modelos.map((modelo, i) => (
+          <a-entity
+            key={`modelo-${i}`}
+            gltf-model={modelo.url}
+            position={`${-0.4 + i * 0.6} 0 -2`}
+            scale=" 0.5 0.5 0.5"
+            modelo-meta={modelo.texto}
+          ></a-entity>
+        ))}
 
-      {loading ? (
-        <p>Cargando...</p>
-      ) : (
-        <div className="modelos-lista">
-          {modelos.length > 0 ? (
-            modelos.map((modelo, index) => (
-              <div key={index} className="modelo-texto-card">
-                <model-viewer
-                  src={modelo.url}
-                  alt={modelo.nombre}
-                  camera-controls
-                  auto-rotate
-                  shadow-intensity="1"
-                  style={{ width: "200px", height: "200px" }}
-                ></model-viewer>
-                <p><strong>{modelo.nombre}</strong></p>
-                <p className="texto-concepto">📝 {modelo.texto || "Sin texto asociado"}</p>
-              </div>
-            ))
-          ) : (
-            <p>No hay modelos configurados para esta casilla.</p>
-          )}
-        </div>
-      )}
+        {/* Tarjetas de texto */}
+        {modelos.map((modelo, i) => {
+          const texto = modelo.texto.trim();
+          const posX = -0.4 + i * 0.8;
+          
+          return (
+            <a-entity
+              key={`texto-${i}`}
+              position={`${posX} 0.5 -2`}
+              data-index={i}
+              arrastrable-texto={`index: ${i}`}
+            >
+              <a-plane
+                width="0.1"
+                height="0.1"
+                color="transparent"
+                material="shader: flat"
+                position="0 0 0"
+                opacity="0.8"
+              ></a-plane>
+              <a-text
+                value={texto}
+                align="center"
+                color="black"
+                width="0.9"
+                position="0 0.08 0.02"
+                texto-meta={texto}
+              ></a-text>
+            </a-entity>
+          );
+        })}
+
+        <a-entity camera="fov: 95" position="0 0 0"></a-entity>
+      </a-scene>
     </div>
   );
 };
 
 export default ActividadModeloTexto;
-*/
