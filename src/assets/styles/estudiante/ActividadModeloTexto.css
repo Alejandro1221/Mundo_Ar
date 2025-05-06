@@ -1,30 +1,75 @@
+/* 🧱 Reset */
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
   overflow: hidden;
-  touch-action: none;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-.zona-movimiento {
-  position: relative;
   width: 100%;
-  height: 100vh;
-  background: #fafafa;
+  height: 100%;
+  touch-action: none;
+  font-family: Arial, sans-serif;
+  background-color: transparent;
 }
 
-.card {
+/* 🎯 Contenedor general */
+.actividad-ra-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  background: transparent;
+}
+
+/* 🎮 Escena A-Frame */
+a-scene {
   position: absolute;
-  width: 130px;
-  padding: 12px;
-  background: white;
-  border: 2px solid #000;
-  border-radius: 8px;
-  text-align: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* 📷 Asegurar que el canvas se escale bien en pantalla completa */
+canvas {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* 🧊 Estilo para tarjetas de texto */
+a-plane {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ✏️ Texto dentro de las tarjetas */
+a-text {
   font-weight: bold;
-  z-index: 10;
-  user-select: none;
-  touch-action: none;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+/* 🎉 Mensaje flotante (feedback correcto) */
+a-text.feedback {
+  color: green;
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 24px;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 999;
+  animation: aparecer 0.5s ease-out;
+}
+
+/* ✨ Animación */
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
 }

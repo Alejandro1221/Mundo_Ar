@@ -11,8 +11,7 @@ const ModeloSonido = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // 🔹 Estados
-   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
+  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
    const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
    const [juegoId] = useState(sessionStorage.getItem("juegoId"));
    const [casillaId] = useState(sessionStorage.getItem("casillaId"));

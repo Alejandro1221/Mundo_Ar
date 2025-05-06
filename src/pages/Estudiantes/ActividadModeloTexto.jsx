@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
+import HeaderActividad from "../../components/Estudiante/HeaderActividad";
 import "../../assets/styles/estudiante/actividadModeloTexto.css";
 import "../../aframe/arrastrable-texto";
+
 
 const ActividadModeloTexto = () => {
   const navigate = useNavigate();
@@ -53,7 +55,8 @@ const ActividadModeloTexto = () => {
   }, [casillaId, juegoId, navigate]);
 
   return (
-    <div className="actividad-modelo-texto">
+    <div className="actividad-ra-container">
+    <HeaderActividad titulo="Identifica el texto con el modelo" />
       <a-scene
         arjs="sourceType: webcam;"
         vr-mode-ui="enabled: false"
@@ -65,8 +68,8 @@ const ActividadModeloTexto = () => {
           <a-entity
             key={`modelo-${i}`}
             gltf-model={modelo.url}
-            position={`${-0.4 + i * 0.6} 0 -2`}
-            scale=" 0.5 0.5 0.5"
+            position={`${-0.3 + i * 0.6} -0.5 -2`}
+            scale=" 0.6 0.6 0.6"
             modelo-meta={modelo.texto}
           ></a-entity>
         ))}
@@ -74,12 +77,12 @@ const ActividadModeloTexto = () => {
         {/* Tarjetas de texto */}
         {modelos.map((modelo, i) => {
           const texto = modelo.texto.trim();
-          const posX = -0.4 + i * 0.8;
+          const posX = -0.3 + i * 0.6;
           
           return (
             <a-entity
               key={`texto-${i}`}
-              position={`${posX} 0.5 -2`}
+              position={`${posX} 0.4 -2`}
               data-index={i}
               arrastrable-texto={`index: ${i}`}
             >

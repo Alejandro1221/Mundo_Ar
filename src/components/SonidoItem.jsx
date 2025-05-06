@@ -5,7 +5,7 @@ import "../assets/styles/bancoSonidos/sonidoItem.css";
 const SonidoItem = ({ sonido, setSonidos }) => {
   const handleEliminar = async () => {
     const confirmar = window.confirm(`¿Seguro que deseas eliminar "${sonido.nombre}"?`);
-    if (!confirmar) return;
+    if (!confirmar) return
 
     try {
       await eliminarSonido(sonido.id, sonido.url);
