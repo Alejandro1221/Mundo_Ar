@@ -40,11 +40,12 @@
   align-items: center;
   gap: 8px;
   transition: background-color 0.3s, transform 0.2s;
+  margin: 0px 50px 0 0;
+  
 }
 
 .boton-logout:hover {
-  background-color: #6c78e2;
-  transform: scale(1.05);
+  transform: scale(1.15);
 }
 
 .boton-logout:focus-visible {
@@ -110,7 +111,7 @@
 
 .switch-label span {
   font-size: 1rem; 
-  color: var(--texto-blanco); 
+  color: var(--texto-principal); 
 }
 
 .slider {

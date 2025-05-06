@@ -130,7 +130,7 @@ const ActividadClasificacionModelos = () => {
 
   return (
     <div className="actividad-ra-container">
-      <HeaderActividad titulo="Clasifica los modelos" />
+      <HeaderActividad titulo="Clasifica los modelos en la categoria correspondiente" />
 
       <a-scene
         arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
@@ -178,7 +178,7 @@ const ActividadClasificacionModelos = () => {
               key={index}
               gltf-model={modelo.url}
               position={`${x} ${y} ${z}`}
-              scale="1 1 1"
+              scale="3 3 3"
               grupo={modelo.grupo}
               seleccionable
               data-modelo-url={modelo.url}
@@ -204,3 +204,4 @@ const ActividadClasificacionModelos = () => {
 }
 
 export default ActividadClasificacionModelos;
+

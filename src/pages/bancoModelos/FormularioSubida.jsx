@@ -132,7 +132,7 @@ const FormularioSubida = ({ setModelos }) => {
         )}
 
         <button type="submit" className="btn-subir" disabled={subiendo}>
-          {subiendo ? "Subiendo..." : "📤 Subir Modelo"}
+          {subiendo ? "Subiendo..." : "Subir Modelo"}
         </button>
       </fieldset>
     </form>

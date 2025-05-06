@@ -24,7 +24,7 @@
 .lista-sonidos {
   margin-top: 16px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   padding-right: 6px;
   max-height: 550px;
@@ -134,12 +134,14 @@
   padding: 10px 16px;
   cursor: pointer;
   transition: transform 0.2s ease, background-color 0.3s ease;
-  margin-left: auto;
+  margin-left: 330px;
+  display: block;
 }
 
 .banco-sonidos .btn-toggle-eliminar-categoria:hover {
   transform: scale(1.05);
 }
+
 
 /* Campo de eliminación */
 .campo-eliminar-categoria {
@@ -186,4 +188,25 @@
 
 .lista-sonidos::-webkit-scrollbar-track {
   background-color: #f0f0f0;
+}
+
+.btn-toggle-formulario {
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
+  font-weight: bold;
+  border: none;
+  border-radius: var(--borde-suave);
+  padding: 10px 16px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.btn-toggle-formulario:hover {
+  transform: scale(1.05);
+}
+
+.btn-toggle-formulario.activo {
+  background-color: var(--pastel-amarillo);
+  color: var(--texto-principal);
 }

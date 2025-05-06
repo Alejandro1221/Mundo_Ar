@@ -100,7 +100,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
 
   return (
     <div className="actividad-ra-container">
-      <HeaderActividad titulo="Actividad: Escucha y selecciona" />
+      <HeaderActividad titulo="Escucha y arrasta el moodelo hasta el sonido correspondiente" />
   
       {sonido?.url && (
        <button
