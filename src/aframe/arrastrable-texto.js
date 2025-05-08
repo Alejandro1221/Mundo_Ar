@@ -38,8 +38,8 @@ if (!AFRAME.components["arrastrable-texto"]) {
         canvas.addEventListener("touchmove", (e) => {
           if (!startTouch || !estaActiva) return;
           const touch = e.touches[0];
-          const dx = (touch.clientX - startTouch.clientX) * 0.005;
-          const dy = (touch.clientY - startTouch.clientY) * 0.005;
+          const dx = (touch.clientX - startTouch.clientX) * 0.05;
+          const dy = (touch.clientY - startTouch.clientY) * 0.02;
           const pos = texto.getAttribute("position");
           texto.setAttribute("position", {
             x: pos.x + dx,
@@ -64,13 +64,9 @@ if (!AFRAME.components["arrastrable-texto"]) {
         });
       };
     
-      if (!texto.sceneEl.hasLoaded) {
-        texto.sceneEl.addEventListener("loaded", () => {
-          registrarEventos(texto.sceneEl.canvas);
-        });
-      } else {
+      texto.sceneEl.addEventListener("render-target-loaded", () => {
         registrarEventos(texto.sceneEl.canvas);
-      }
+      });
     }
     
   });
@@ -103,7 +99,7 @@ if (!AFRAME.components["arrastrable-texto"]) {
       const distancia = posicionTexto.distanceTo(posicionModelo);
       console.log("👀 Comparando:", textoValor, "vs", esperado, "→ Distancia:", distancia);
 
-      if (distancia < 0.3 && textoValor?.toLowerCase().trim() === esperado?.toLowerCase().trim()) {
+      if (distancia < 0.20 && textoValor?.toLowerCase().trim() === esperado?.toLowerCase().trim()) {
 
       //if (distancia < 0.5 && textoValor === esperado) {
         textoEl.setAttribute("position", {

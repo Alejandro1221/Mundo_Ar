@@ -69,7 +69,7 @@ const ActividadModeloTexto = () => {
             key={`modelo-${i}`}
             gltf-model={modelo.url}
             position={`${-0.3 + i * 0.6} -0.5 -2`}
-            scale=" 0.6 0.6 0.6"
+            scale=" 2 2 2"
             modelo-meta={modelo.texto}
           ></a-entity>
         ))}
@@ -98,8 +98,8 @@ const ActividadModeloTexto = () => {
                 value={texto}
                 align="center"
                 color="black"
-                width="0.9"
-                position="0 0.08 0.02"
+                width="2"
+                position="0 0.09 0.02"
                 texto-meta={texto}
               ></a-text>
             </a-entity>
