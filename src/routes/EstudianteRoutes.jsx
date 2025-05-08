@@ -8,9 +8,9 @@ import VistaPreviaModeloSonido from "../pages/Estudiantes/VistaPreviaModeloSonid
 import ActividadClasificacionModelos from "../pages/Estudiantes/ActividadClasificacionModelos"; 
 import ActividadRompecabezas from "../pages/Estudiantes/ActividadRompecabezas";
 import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
-/*import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
-      <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
-*/
+
+import VerificarCasilla from "../pages/Estudiantes/VerificarCasilla";
+import DesdeMarcador from "../pages/Estudiantes/DesdeMarcador";
 
 const EstudianteRoutes = () => {
   return (
@@ -23,6 +23,9 @@ const EstudianteRoutes = () => {
       <Route path="actividad-clasificacion-modelos/:casillaId" element={<ActividadClasificacionModelos />} />
       <Route path="actividad-rompecabezas/:casillaId" element={<ActividadRompecabezas />} />
       <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
+
+      <Route path="verificar-casilla" element={<VerificarCasilla />} />           
+      <Route path="desde-marcador" element={<DesdeMarcador />} /> 
     </Routes>
   );
 };

@@ -5,7 +5,6 @@ import volverIcono from "../../assets/images/volver.png";
 import caminoImg from "../../assets/images/imag1.jpeg"; 
 import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
 
-
 const SeleccionarCasilla = () => {
   const navigate = useNavigate();
   const [casillas, setCasillas] = useState([]);
@@ -115,8 +114,11 @@ const SeleccionarCasilla = () => {
             key={index} 
             className="casilla"
             style={{ top: posiciones[index].top, left: posiciones[index].left }}
-            onClick={() => irAPlantilla(index)} 
-            title={casilla.plantilla || "Sin plantilla asignada"}
+            onClick={() => {
+              sessionStorage.setItem("casillaId", index);
+              navigate("/estudiante/verificar-casilla");
+            }}
+            title={casilla.plantilla || "Sin marcador asignado"}
           >
             {index + 1}
           </div>
