@@ -32,7 +32,8 @@ const VerificarCasilla = () => {
     <>
     <button
         className="btn-volver-casilla"
-        onClick={() => navigate("/estudiante/seleccionar-casilla")}
+        //onClick={() => navigate("/estudiante/seleccionar-casilla")}
+        onClick={() => (window.location.href = "/estudiante/seleccionar-casilla")}
       >
         ⬅️ Volver al tablero
       </button>
@@ -50,7 +51,7 @@ const VerificarCasilla = () => {
       >
         <a-marker
           type="pattern"
-          url={`/marcadores/pattern${casillaId + 1}.patt`}
+          url={`/marcadores/pattern-${casillaId + 1}.patt`}
           id="marker-arjs"
         >
           <a-box color="blue" position="0 0.5 0"></a-box>
