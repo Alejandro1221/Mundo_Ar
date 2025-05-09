@@ -68,37 +68,7 @@ const SeleccionarCasilla = () => {
 
   ];
 
-  // Función para redirigir a la plantilla correspondiente según la casilla seleccionada
-  const irAPlantilla = (index) => {
-    const casillaSeleccionada = casillas[index];
-  
-    if (!casillaSeleccionada || !casillaSeleccionada.plantilla) {
-      alert("⚠️ Esta casilla no tiene una plantilla configurada.");
-      return;
-    }
-  
-    console.log(`🎯 Casilla seleccionada: ${index + 1}, Plantilla asignada: ${casillaSeleccionada.plantilla}`);
-  
-    sessionStorage.setItem("casillaId", index);
-  
-    const rutasPlantillas = {
-      "modelo-sonido": `/estudiante/actividad-modelo-sonidos/${index + 1}`,
-      "clasificacion-modelos": `/estudiante/actividad-clasificacion-modelos/${index + 1}`,
-      "rompecabezas-modelo": `/estudiante/actividad-rompecabezas/${index + 1}`,
-      "modelo-texto": `/estudiante/actividad-modelo-texto/${index + 1}` 
-     
-    };
-  
-    const ruta = rutasPlantillas[casillaSeleccionada.plantilla];
-  
-    if (ruta) {
-      console.log(`🚀 Redirigiendo a: ${ruta}`);
-      navigate(ruta);
-    } else {
-      alert("⚠️ La plantilla seleccionada no está disponible.");
-    }
-  };
-
+ 
   return (
     <div className="tablero-container">
       <div className="encabezado-casilla">

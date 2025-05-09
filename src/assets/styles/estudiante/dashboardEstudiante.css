@@ -59,7 +59,7 @@
   align-items: center;
   gap: 24px;
   width: 100%;
-  max-width: 700px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
@@ -73,12 +73,13 @@
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   text-align: center;
+  width: 90%; /* Cambia el ancho al 90% del contenedor */
+  max-width: 500px; /* Establece un ancho máximo */
 }
 
 .juego-item:hover {
-  transform: translateY(-4px);
+  transform: scale(1.1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  background-color: var(--verde-menta);
 }
 
 .juego-item h3 {
