@@ -34,10 +34,27 @@
     background-color: rgba(0, 0, 0, 0.9);
   }
 
+/* Reset y configuración básica */
   html, body {
-    touch-action: none; /* Deshabilita el zoom táctil */
-    overflow: hidden; /* Evita el desplazamiento de la página */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: transparent;
+    touch-action: none;
   }
+
+  a-scene {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 0;
+  }
+  
   
   
   @keyframes parpadeo {
