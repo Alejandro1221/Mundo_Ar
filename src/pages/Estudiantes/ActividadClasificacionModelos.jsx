@@ -187,7 +187,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
               key={index}
               gltf-model={modelo.url}
               position={`${x} ${y} ${z}`}
-              scale="3 3 3"
+              scale="1 1 1"
               grupo={modelo.grupo}
               seleccionable
               data-modelo-url={modelo.url}
