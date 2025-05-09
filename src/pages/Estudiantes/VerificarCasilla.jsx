@@ -41,8 +41,10 @@ const VerificarCasilla = () => {
 
 
       <a-scene
-        arjs="sourceType: webcam; debugUIEnabled: false"
+        arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
+        renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+        background="transparent: true"
       >
         <a-marker
           type="pattern"
