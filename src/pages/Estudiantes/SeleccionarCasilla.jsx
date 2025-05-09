@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerCasillasPorJuego } from "../../services/databaseService";
 import volverIcono from "../../assets/images/volver.png";
-import caminoImg from "../../assets/images/imag1.jpeg"; 
+//import caminoImg from "../../assets/images/imag1.jpeg"; 
+import caminoImg from "../../assets/images/image1.png"; 
 import "../../assets/styles/estudiante/SeleccionarCasilla.css"; 
 
 const SeleccionarCasilla = () => {

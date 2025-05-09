@@ -42,7 +42,6 @@ const VerificarCasilla = () => {
         📷 Enfoca el marcador para continuar...
       </div>
 
-
       <a-scene
         arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"
