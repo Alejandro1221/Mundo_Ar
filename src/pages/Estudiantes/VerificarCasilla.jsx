@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAR } from "../../hooks/useAR";
 import "../../assets/styles/estudiante/verificarCasilla.css";
 
 const VerificarCasilla = () => {
+  useAR();
   const navigate = useNavigate();
   const casillaId = parseInt(sessionStorage.getItem("casillaId"));
   const juegoId = sessionStorage.getItem("juegoId");
