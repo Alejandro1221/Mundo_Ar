@@ -8,8 +8,7 @@ import "../../aframe/touchMove";
 import { CELEBRACIONES } from "../../utils/celebraciones";
 import HeaderActividad from "../../components/Estudiante/HeaderActividad";
 
-
-const ActividadRompecabezas = () => {
+const ActividadRompecabezas = ({ vistaPrevia = false }) => { 
   useAR();
   const navigate = useNavigate();
   const [imagenUrl, setImagenUrl] = useState(null);
@@ -44,6 +43,15 @@ const ActividadRompecabezas = () => {
   const posicionesAleatorias = useRef(shuffleArray(posicionesBase));
 
   useEffect(() => {
+    if (vistaPrevia) {
+      const imagen = sessionStorage.getItem("imagenRompecabezas");
+      const celebracionGuardada = JSON.parse(sessionStorage.getItem("celebracionSeleccionada") || "{}");
+  
+      if (imagen) setImagenUrl(imagen);
+      setCelebracion(celebracionGuardada);
+  
+      return; 
+    }
     const juegoId = sessionStorage.getItem("juegoId");
     const casillaId = sessionStorage.getItem("casillaId");
 
@@ -64,7 +72,7 @@ const ActividadRompecabezas = () => {
     };
 
     cargarConfiguracion();
-  }, [navigate]);
+  }, [vistaPrevia,navigate]);
 
   useEffect(() => {
     window.encajados = encajados;

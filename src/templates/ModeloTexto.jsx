@@ -27,37 +27,42 @@ const ModeloTexto = () => {
 
   const cargarConfiguracion = async () => {
     try {
+      let modelos = [];
+  
+      // 1. Intenta cargar desde sessionStorage (solo para mantener lo que estaba seleccionado)
       const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
       if (modelosGuardados) {
-        const modelos = JSON.parse(modelosGuardados);
-        setModelosSeleccionados(modelos);
-        return;
+        modelos = JSON.parse(modelosGuardados);
       }
   
+      // 2. Luego sobreescribe con lo que haya en Firestore (más confiable)
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
   
       if (juegoSnap.exists()) {
         const dataJuego = juegoSnap.data();
-        const casilla = dataJuego.casillas[casillaId]; // ✅ Solo se usa dentro del if
+        const casilla = dataJuego.casillas[casillaId];
   
         if (casilla?.configuracion) {
-          const modelos = casilla.configuracion.modelos || [];
-          setModelosSeleccionados(modelos);
-  
-          const nuevasAsignaciones = {};
-          modelos.forEach((modelo) => {
-            if (modelo.texto) {
-              nuevasAsignaciones[modelo.url] = modelo.texto;
-            }
-          });
-          setAsignaciones(nuevasAsignaciones);
+          modelos = casilla.configuracion.modelos || [];
         }
       }
+  
+      // 3. Carga los textos en asignaciones y actualiza modelos
+      const nuevasAsignaciones = {};
+      const modelosConTexto = modelos.map((modelo) => {
+        const texto = modelo.texto || "";
+        nuevasAsignaciones[modelo.url] = texto;
+        return { ...modelo, texto };
+      });
+  
+      setModelosSeleccionados(modelosConTexto);
+      setAsignaciones(nuevasAsignaciones);
     } catch (error) {
       console.error("Error al cargar configuración:", error);
     }
   };
+  
   
   const guardarConfiguracion = async () => {
     const faltanTextos = modelosSeleccionados.some(
@@ -93,7 +98,6 @@ const ModeloTexto = () => {
       console.log("✅ Guardado en casilla:", casillaId);
 
       await updateDoc(juegoRef, { casillas: casillasActuales });
-      sessionStorage.removeItem("modelosSeleccionados");
       mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
     }
   };
@@ -111,48 +115,63 @@ const ModeloTexto = () => {
 
   return (
     <div className="modelo-texto-container">
-      <h2>Plantilla: Modelo con Texto</h2>
+       <div className="contenido-scrollable">
+        <h2>Plantilla: Modelo con Texto</h2>
 
-      {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
+        {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
-      <div className="modelos-lista">
-        {modelosSeleccionados.length > 0 ? (
-          modelosSeleccionados.map((modelo, index) => (
-            <div key={index} className="modelo-item">
-              <model-viewer
-                src={modelo.url}
-                alt={modelo.nombre}
-                camera-controls
-                auto-rotate
-                shadow-intensity="1"
-                style={{ width: "200px", height: "200px" }}
-              ></model-viewer>
-              <p>{modelo.nombre}</p>
-              <textarea
-                placeholder="Escribe aquí el concepto del modelo"
-                value={asignaciones[modelo.url] || ""}
-                onChange={(e) => asignarTexto(modelo.url, e.target.value)}
-              ></textarea>
-            </div>
-          ))
-        ) : (
-          <p>No hay modelos seleccionados.</p>
-        )}
-      </div>
+        <div className="modelos-lista">
+          {modelosSeleccionados.length > 0 ? (
+            modelosSeleccionados.map((modelo, index) => (
+              <div key={index} className="modelo-item">
+                <model-viewer
+                  src={modelo.url}
+                  alt={modelo.nombre}
+                  camera-controls
+                  auto-rotate
+                  shadow-intensity="1"
+                  style={{ width: "200px", height: "200px" }}
+                ></model-viewer>
+                <p>{modelo.nombre}</p>
+                <textarea
+                  placeholder="Escribe aquí el concepto del modelo"
+                  value={asignaciones[modelo.url] || ""}
+                  onChange={(e) => asignarTexto(modelo.url, e.target.value)}
+                ></textarea>
+              </div>
+            ))
+          ) : (
+            <p>No hay modelos seleccionados.</p>
+          )}
+        </div>
 
-      <div className="acciones-plantilla">
-        <button onClick={guardarConfiguracion}>💾 Guardar</button>
         <button
+          className="vista-previa-btn"
           onClick={() => {
+            sessionStorage.setItem("modoVistaPrevia", "true");
             sessionStorage.setItem("paginaAnterior", window.location.pathname);
             sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-            navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+            sessionStorage.setItem("asignacionesTexto", JSON.stringify(asignaciones));
+            navigate("/estudiante/vista-previa-modelo-texto");
           }}
         >
-          ➕ Agregar Modelos
+          vista previa
         </button>
-        <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>⬅️ Volver</button>
-      </div>
+
+        <div className="acciones-plantilla">
+          <button onClick={guardarConfiguracion}>💾 Guardar</button>
+          <button
+            onClick={() => {
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+              navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+            }}
+          >
+            Seleccionar Modelos
+          </button>
+          <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>⬅️ Volver</button>
+        </div>
+        </div>
     </div>
   );
 };

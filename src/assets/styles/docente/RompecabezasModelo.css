@@ -226,3 +226,21 @@
     cursor: not-allowed;
     transform: none;
   }
+
+  .vista-previa-btn {
+    background-color: var(--pastel-azul);
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: var(--borde-suave);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.2s ease, background-color 0.3s ease;
+  }
+  
+  .vista-previa-btn:hover {
+    transform: scale(1.05);
+    background-color: #50bdd3; /* tono más oscuro para hover */
+  }

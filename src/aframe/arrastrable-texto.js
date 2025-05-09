@@ -65,6 +65,7 @@ if (!AFRAME.components["arrastrable-texto"]) {
       };
     
       texto.sceneEl.addEventListener("render-target-loaded", () => {
+        console.log("🎯 A-Frame renderizado, registrando eventos táctiles");
         registrarEventos(texto.sceneEl.canvas);
       });
     }
@@ -103,9 +104,8 @@ if (!AFRAME.components["arrastrable-texto"]) {
 
       //if (distancia < 0.5 && textoValor === esperado) {
         textoEl.setAttribute("position", {
-          x: posicionModelo.x + 0,
-          y: posicionModelo.y + 0,
-          z: posicionModelo.z,
+          x: posicionModelo.x,
+          y: posicionModelo.y + 0.30,
         });
   
         const aText = textoEl.querySelector("a-text");

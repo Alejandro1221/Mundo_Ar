@@ -328,13 +328,11 @@ const eliminarModelo = async (urlModelo) => {
         <button
           className="vista-previa-btn"
           onClick={() => {
-            // Guarda los datos actuales en sessionStorage para simular la ejecución
             sessionStorage.setItem("modoVistaPrevia", "true");
             sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
             sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonidoSeleccionado));
             sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
             
-            // Navega a la plantilla de estudiante
             navigate("/estudiante/vista-previa-modelo-sonido");
           }}
           

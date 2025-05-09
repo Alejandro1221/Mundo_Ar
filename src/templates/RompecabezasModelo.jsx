@@ -135,29 +135,28 @@ const RompecabezasModelo = () => {
       </button>
     </div>
 
-    {/* 🧊 Vista en cubos */}
+    {/*Vista en cubos */}
     <div className="preview-cubos-3d">
-      {[0, 1, 2, 3, 4, 5].map((i) => {
-        const row = Math.floor(i / 2);
-        const col = i % 2;
-        const position = `${col * 50}% ${row * 33.33}%`;
-        return (
-          <div className="cubo-3d" key={i}>
-            <div className="cara cara-front" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-            <div className="cara cara-back" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-            <div className="cara cara-right" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-            <div className="cara cara-left" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-            <div className="cara cara-top" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-            <div className="cara cara-bottom" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+            {[0, 1, 2, 3, 4, 5].map((i) => {
+              const row = Math.floor(i / 2);
+              const col = i % 2;
+              const position = `${col * 50}% ${row * 33.33}%`;
+              return (
+                <div className="cubo-3d" key={i}>
+                  <div className="cara cara-front" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                  <div className="cara cara-back" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                  <div className="cara cara-right" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                  <div className="cara cara-left" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                  <div className="cara cara-top" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                  <div className="cara cara-bottom" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+                </div>
+              );
+            })}
           </div>
-        );
-      })}
-    </div>
-  </>
-)}
-
-        </div>
-      </div>
+        </>
+      )}
+       </div>
+       </div>
 
       <section className="seccion-celebracion">
         <label htmlFor="tipoCelebracion">Tipo de Celebración:</label>
@@ -202,6 +201,19 @@ const RompecabezasModelo = () => {
           />
         )}
       </section>
+
+      <button
+        className="vista-previa-btn"
+        onClick={() => {
+          sessionStorage.setItem("modoVistaPrevia", "true");
+          sessionStorage.setItem("paginaAnterior", window.location.pathname);
+          sessionStorage.setItem("imagenRompecabezas", previewUrl);
+          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+          navigate("/estudiante/vista-previa-rompecabezas");
+        }}
+      >
+        Vista previa como estudiante
+      </button>
 
       <div className="acciones-finales">
         <button className="guardar-btn" onClick={guardarConfiguracion} disabled={guardando}>

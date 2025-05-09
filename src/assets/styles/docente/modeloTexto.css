@@ -7,7 +7,19 @@
   max-width: 800px;
   margin: 0 auto;
   text-align: center;
+
+    /* 🔥 agrega esto */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
+.contenido-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
 
 .modelo-texto-container h2 {
   font-size: 1.8rem;

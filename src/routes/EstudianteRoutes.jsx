@@ -8,7 +8,9 @@ import VistaPreviaModeloSonido from "../pages/Estudiantes/VistaPreviaModeloSonid
 import ActividadClasificacionModelos from "../pages/Estudiantes/ActividadClasificacionModelos"; 
 import VistaPreviaClasificacionModelos from "../pages/Estudiantes/VistaPreviaClasificacionModelos";
 import ActividadRompecabezas from "../pages/Estudiantes/ActividadRompecabezas";
+import VistaPreviaRompecabezas from "../pages/Estudiantes/VistaPreviaRompecabezas";
 import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
+import VistaPreviaModeloTexto from "../pages/Estudiantes/VistaPreviaModeloTexto";
 
 import VerificarCasilla from "../pages/Estudiantes/VerificarCasilla";
 import DesdeMarcador from "../pages/Estudiantes/DesdeMarcador";
@@ -19,13 +21,19 @@ const EstudianteRoutes = () => {
       <Route path="login" element={<LoginEstudiante />} /> 
       <Route path="dashboard" element={<DashboardEstudiante />} />  
       <Route path="seleccionar-casilla" element={<SeleccionarCasilla />} />
+
       <Route path="actividad-modelo-sonidos/:casillaId" element={<ActividadModeloSonido />} />
       <Route path="vista-previa-modelo-sonido" element={<VistaPreviaModeloSonido />} />
+
       <Route path="actividad-clasificacion-modelos/:casillaId" element={<ActividadClasificacionModelos />} />
       <Route path="vista-previa-clasificacion-modelos" element={<VistaPreviaClasificacionModelos />} />
-
+      
       <Route path="actividad-rompecabezas/:casillaId" element={<ActividadRompecabezas />} />
+      <Route path="vista-previa-rompecabezas" element={<VistaPreviaRompecabezas />} />
+
       <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
+      <Route path="vista-previa-modelo-texto" element={<VistaPreviaModeloTexto />} />
+
 
       <Route path="verificar-casilla" element={<VerificarCasilla />} />           
       <Route path="desde-marcador" element={<DesdeMarcador />} /> 
