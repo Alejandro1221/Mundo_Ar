@@ -198,6 +198,23 @@ const ClasificacionModelos = () => {
         )}
       </div>
 
+      <button
+        className="vista-previa-btn"
+        onClick={() => {
+          // Guardar los datos necesarios para la vista previa
+          sessionStorage.setItem("modoVistaPrevia", "true");
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
+          sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+
+          // Ir a la vista previa como estudiante
+          navigate("/estudiante/vista-previa-clasificacion-modelos");
+        }}
+      >
+        Vista previa como estudiante
+      </button>
+
       <div className="acciones-plantilla">
         <button onClick={guardarConfiguracion}>💾 Guardar configuración</button>
         <button onClick={() => {

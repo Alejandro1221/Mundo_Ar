@@ -6,6 +6,7 @@ import SeleccionarCasilla from "../pages/Estudiantes/SeleccionarCasilla";
 import ActividadModeloSonido from "../pages/Estudiantes/ActividadModeloSonido";
 import VistaPreviaModeloSonido from "../pages/Estudiantes/VistaPreviaModeloSonido"; 
 import ActividadClasificacionModelos from "../pages/Estudiantes/ActividadClasificacionModelos"; 
+import VistaPreviaClasificacionModelos from "../pages/Estudiantes/VistaPreviaClasificacionModelos";
 import ActividadRompecabezas from "../pages/Estudiantes/ActividadRompecabezas";
 import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
 
@@ -21,6 +22,8 @@ const EstudianteRoutes = () => {
       <Route path="actividad-modelo-sonidos/:casillaId" element={<ActividadModeloSonido />} />
       <Route path="vista-previa-modelo-sonido" element={<VistaPreviaModeloSonido />} />
       <Route path="actividad-clasificacion-modelos/:casillaId" element={<ActividadClasificacionModelos />} />
+      <Route path="vista-previa-clasificacion-modelos" element={<VistaPreviaClasificacionModelos />} />
+
       <Route path="actividad-rompecabezas/:casillaId" element={<ActividadRompecabezas />} />
       <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
 

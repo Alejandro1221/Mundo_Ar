@@ -9,13 +9,12 @@ import "../assets/styles/docente/modeloSonido.css";
 
 const ModeloSonido = () => {
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
-   const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
    const [juegoId] = useState(sessionStorage.getItem("juegoId"));
    const [casillaId] = useState(sessionStorage.getItem("casillaId"));
    const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
+   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
+   const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
   
    
    const [celebracion, setCelebracion] = useState({
@@ -23,7 +22,6 @@ const ModeloSonido = () => {
     opciones: {}
   });
 
-   const [reproduciendo, setReproduciendo] = useState(false);
    const audioRef = useRef(null);
 
    const celebracionesDisponibles = [
@@ -329,7 +327,6 @@ const eliminarModelo = async (urlModelo) => {
 
         <button
           className="vista-previa-btn"
-          disabled
           onClick={() => {
             // Guarda los datos actuales en sessionStorage para simular la ejecución
             sessionStorage.setItem("modoVistaPrevia", "true");
@@ -342,7 +339,7 @@ const eliminarModelo = async (urlModelo) => {
           }}
           
         >
-          👁️ Vista previa como estudiante
+          Vista previa como estudiante
         </button>
     
         <button className="guardar-btn" onClick={sincronizarModelos}>

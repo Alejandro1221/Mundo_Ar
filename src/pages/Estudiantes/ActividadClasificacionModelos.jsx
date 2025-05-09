@@ -8,15 +8,13 @@ import HeaderActividad from "../../components/Estudiante/HeaderActividad";
 import { CELEBRACIONES } from "../../utils/celebraciones";
 import "../../aframe/seleccionable";
 
-const ActividadClasificacionModelos = () => {
+const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   useAR();
   const navigate = useNavigate();
   const [modelos, setModelos] = useState([]);
   const [grupos, setGrupos] = useState([]);
   const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
   const [modeloActivo, setModeloActivo] = useState(null);
-  const [modelosClasificados, setModelosClasificados] = useState([]);
-
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
@@ -26,6 +24,17 @@ const ActividadClasificacionModelos = () => {
   }, [modeloActivo]);
 
   useEffect(() => {
+    if (vistaPrevia) {
+      const modelos = JSON.parse(sessionStorage.getItem("modelosSeleccionados") || "[]");
+      const grupos = modelos.map((m) => m.grupo).filter((g, i, arr) => arr.indexOf(g) === i);
+      const celebracion = JSON.parse(sessionStorage.getItem("celebracionSeleccionada") || "{}");
+    
+      setModelos(modelos);
+      setGrupos(grupos);
+      setCelebracion(celebracion);
+      return;
+    }
+
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
       navigate("/estudiante/dashboard");
