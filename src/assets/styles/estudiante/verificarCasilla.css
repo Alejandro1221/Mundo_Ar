@@ -33,6 +33,11 @@
   .btn-volver-casilla:hover {
     background-color: rgba(0, 0, 0, 0.9);
   }
+
+  html, body {
+    touch-action: none; /* Deshabilita el zoom táctil */
+    overflow: hidden; /* Evita el desplazamiento de la página */
+  }
   
   
   @keyframes parpadeo {

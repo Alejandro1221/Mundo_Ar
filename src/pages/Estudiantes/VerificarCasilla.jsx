@@ -41,7 +41,6 @@ const VerificarCasilla = () => {
 
 
       <a-scene
-        embedded
         arjs="sourceType: webcam; debugUIEnabled: false"
         vr-mode-ui="enabled: false"
       >
@@ -52,7 +51,8 @@ const VerificarCasilla = () => {
         >
           <a-box color="blue" position="0 0.5 0"></a-box>
         </a-marker>
-        <a-entity camera></a-entity>
+        <a-entity camera="fov: 80" position="0 0 0"></a-entity>
+
       </a-scene>
     </>
   );
