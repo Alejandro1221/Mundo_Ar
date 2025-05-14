@@ -93,6 +93,11 @@
   transform: scale(1.05);
 }
 
+.btn-toggle-formulario
+{
+  background-color: var(--pastel-azul)!important;
+}
+
 .selector-categoria,
 .campo-eliminar-categoria {
   display: flex;

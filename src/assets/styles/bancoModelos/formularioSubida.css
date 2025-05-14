@@ -1,9 +1,10 @@
+/* Contenedor general del formulario */
 .form-subida {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
   background: #ffffff;
-  padding: 25px 30px;
+  padding: 28px 32px;
   border-radius: 16px;
   box-shadow: var(--sombra-suave);
   max-width: 480px;
@@ -12,16 +13,20 @@
   border: 1px solid #eee;
 }
 
+/* Inputs de texto y select */
 .form-subida input,
 .form-subida select {
-  padding: 12px;
+  padding: 12px 14px;
   border: 1.5px solid #ccc;
   border-radius: 10px;
   font-size: 15px;
   background: #f9f9f9;
-  transition: 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  max-width: 80%;
+  margin-bottom: 10px;
 }
 
+/* Foco de los inputs */
 .form-subida input:focus,
 .form-subida select:focus {
   border-color: var(--pastel-azul);
@@ -30,16 +35,32 @@
   box-shadow: 0 0 6px rgba(0, 91, 112, 0.25);
 }
 
+/* Etiquetas */
 .form-subida label {
   font-weight: 600;
-  text-align: left;
   font-size: 14px;
-  margin-bottom: -8px;
-  margin-top: 6px;
   color: #333;
+  margin-top: 4px;
+  margin-bottom:8px;
+  text-align: left;
+  display: block;
 }
+
+/* Input de archivos */
+.form-subida input[type="file"] {
+  background: #f3f3f3;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  display: block;
+  width: 80%;
+  margin-bottom: 16px;
+  border: 1.5px solid #ccc;
+}
+
+/* Botón para añadir categoría */
 .btn-nueva-categoria {
-  background-color: var(--pastel-amarillo) ; 
+  background-color: var(--pastel-amarillo);
   color: var(--texto-blanco);
   padding: 10px 16px;
   font-size: 1rem;
@@ -48,15 +69,13 @@
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
-  margin-top: 15px;
-}
-.btn-nueva-categoria:hover {
-  background-color: #e6c84e; /* Un amarillo más oscuro al pasar el cursor */
-  transform: scale(1.03);
+  margin-top: 6px;
+ 
 }
 
+/* Botón principal (subir modelo) */
 .form-subida button {
-  background: var(--pastel-azul);
+  background: var(--pastel-verde) !important;
   color: var(--texto-blanco);
   padding: 12px;
   font-size: 15px;
@@ -68,31 +87,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 400px;
 }
+
 
 .form-subida button:hover,
 .btn-nueva-categoria:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 .form-subida button:disabled {
-  background: gray;
+  background: gray !important;
   cursor: not-allowed;
 }
 
-.form-subida input[type="file"] {
-  background: #f3f3f3;
-  border-radius: 10px;
-  padding: 10px;
-  font-size: 14px;
-  border: 1.5px solid #ccc;
-}
-
+/* Contenedor para nueva categoría */
 .nueva-categoria-container {
   display: flex;
   gap: 10px;
   align-items: center;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .nueva-categoria-container input {
@@ -103,6 +118,18 @@
   border: 1.5px solid #ccc;
 }
 
+/* Cuando está en modo columna */
+.nueva-categoria-container.columna {
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 12px;
+}
+
+.nueva-categoria-container.columna .btn-nueva-categoria {
+  width: 80%;
+}
+
+/*Indicador de progreso */
 .progreso-container {
   margin-top: 10px;
   text-align: center;
@@ -125,13 +152,17 @@
   transition: width 0.4s ease-in-out;
 }
 
+
+/*Adaptación móvil */
 @media (max-width: 480px) {
   .form-subida {
     padding: 20px;
   }
+
   .nueva-categoria-container {
     flex-direction: column;
   }
+
   .btn-nueva-categoria {
     width: 100%;
   }

@@ -89,7 +89,8 @@ const FormularioSubida = ({ setModelos }) => {
           ))}
         </select>
 
-        <div className="nueva-categoria-container">
+        {/* 🔧 Aquí está el ajuste con clase condicional */}
+        <div className={`nueva-categoria-container ${mostrarInputCategoria ? "columna" : ""}`}>
           {mostrarInputCategoria && (
             <input
               type="text"
@@ -106,15 +107,16 @@ const FormularioSubida = ({ setModelos }) => {
             {mostrarInputCategoria ? "✔ Agregar" : "➕ Nueva Categoría"}
           </button>
         </div>
-        
-        <label>Subir Modelo (.glb)</label>
+
+        <label>Modelo (.glb)</label>
         <input
           type="file"
           accept=".glb"
           onChange={(e) => setArchivo(e.target.files[0])}
           required
         />
-        <label>Subir Miniatura (Imagen PNG)</label>
+
+        <label>Miniatura (Imagen PNG)</label>
         <input
           type="file"
           accept="image/*"

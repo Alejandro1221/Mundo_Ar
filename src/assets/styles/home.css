@@ -83,3 +83,47 @@
   height: auto;
   margin-bottom: 295px;
 }
+
+/* Estilos para pantallas grandes (escritorio) */
+@media (min-width: 1024px) {
+  .home-container {
+    background-position: center center;
+    background-size: cover; 
+    background-repeat: no-repeat;
+    max-width: 1200px; 
+    margin: 0 auto; 
+  }
+
+  .home-content {
+    flex: 1;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px;
+    text-align: left;
+    max-width: 800px;
+    
+  }
+
+  .logo-home {
+    width: 200px;
+    margin-bottom: 40px;
+  }
+
+  .home-buttons {
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
+  .role-btn {
+    padding: 18px 36px;
+    font-size: 1.2rem;
+  }
+
+  .home-footer {
+    font-size: 0.9rem;
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
+    text-align: right;
+  }
+}
