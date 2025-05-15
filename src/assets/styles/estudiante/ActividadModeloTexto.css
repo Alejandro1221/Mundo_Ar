@@ -1,24 +1,25 @@
-/* 🧱 Reset */
+/* Reset global */
 html, body {
   margin: 0;
   padding: 0;
   overflow: hidden;
   width: 100%;
   height: 100%;
-  touch-action: none;
   font-family: Arial, sans-serif;
   background-color: transparent;
+  touch-action: none; 
 }
 
-/* 🎯 Contenedor general */
+/* Contenedor principal */
 .actividad-ra-container {
   position: fixed;
   inset: 0;
   z-index: 1;
   background: transparent;
+  overflow: hidden;
 }
 
-/* 🎮 Escena A-Frame */
+/* Escena de realidad aumentada (A-Frame) */
 a-scene {
   position: absolute;
   top: 0;
@@ -28,41 +29,65 @@ a-scene {
   z-index: 0;
 }
 
-/* 📷 Asegurar que el canvas se escale bien en pantalla completa */
+/* Canvas debe ocupar toda la pantalla y ser táctil */
 canvas {
   object-fit: cover;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none !important;
 }
 
-/* 🧊 Estilo para tarjetas de texto */
+/* Tarjetas de texto */
 a-plane {
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
 }
 
-/* ✏️ Texto dentro de las tarjetas */
+/* Texto contenido en las tarjetas */
 a-text {
   font-weight: bold;
   letter-spacing: 0.5px;
+  line-height: 1.2;
+  white-space: pre-line;
 }
 
-/* 🎉 Mensaje flotante (feedback correcto) */
+/* Feedback flotante cuando se acierta */
 a-text.feedback {
   color: green;
   position: fixed;
-  top: 100px;
+  top: 80px;
   left: 50%;
   transform: translateX(-50%);
   font-size: 24px;
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 10px 20px;
-  border-radius: 10px;
+  border-radius: 12px;
   z-index: 999;
   animation: aparecer 0.5s ease-out;
 }
 
-/* ✨ Animación */
+.btn-cambiar-modelo {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  padding: 10px 18px;
+  background-color: var(--pastel-azul);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.btn-cambiar-modelo:hover {
+  background-color: var(--pastel-azul);
+}
+
+/* ✨ Animación para feedback */
 @keyframes aparecer {
   from {
     opacity: 0;
@@ -73,5 +98,3 @@ a-text.feedback {
     transform: translateX(-50%) scale(1);
   }
 }
-
-
