@@ -80,3 +80,39 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   z-index: 999;
   color: var(--texto-principal);
 }
+
+.Toastify__toast {
+  border-radius: var(--borde-suave);
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  box-shadow: var(--sombra-suave);
+}
+
+.Toastify__toast--success {
+  background-color: var(--pastel-verde);
+  color: var(--texto-principal);
+}
+
+.Toastify__toast--error {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-principal);
+}
+
+.Toastify__toast--info {
+  background-color: var(--pastel-azul);
+  color: var(--texto-principal);
+}
+
+.Toastify__toast--warning {
+  background-color: var(--pastel-amarillo);
+  color: var(--texto-principal);
+}
+
+.Toastify__close-button {
+  color: var(--texto-principal);
+}
+
+.Toastify__progress-bar {
+  background: var(--pastel-indigo);
+}

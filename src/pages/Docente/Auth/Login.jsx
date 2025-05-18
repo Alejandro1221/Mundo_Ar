@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../../services/firebaseConfig";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
 
@@ -17,9 +19,9 @@ const Login = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
-      console.log("✅ Usuario autenticado:", userCredential.user);
-      alert("¡Inicio de sesión exitoso!");
-      navigate("/docente/dashboard");
+      console.log("Usuario autenticado:", userCredential.user);
+      toast.success("¡✅ Inicio de sesión exitoso!");
+      setTimeout(() => navigate("/docente/dashboard"), 1500);
     } catch (error) {
       console.error("❌ Error durante el inicio de sesión:", error);
       let mensajeError = "Error al iniciar sesión.";
@@ -51,7 +53,7 @@ const Login = () => {
       const usuario = resultado.user;
 
       console.log("✅ Sesión con Google:", usuario);
-      alert("¡Inicio de sesión exitoso con Google!");
+      toast.success("¡Inicio de sesión exitoso con Google!");
       navigate("/docente/dashboard");
     } catch (error) {
       console.error("❌ Error al iniciar sesión con Google:", error);
@@ -90,6 +92,7 @@ const Login = () => {
           </button>
         </div>
       </div>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };

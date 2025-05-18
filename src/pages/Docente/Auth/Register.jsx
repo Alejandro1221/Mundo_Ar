@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../../services/firebaseConfig";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
 
@@ -26,9 +28,9 @@ const RegisterDocente = () => {
         email: email.trim(),
       });
 
-      console.log("✅ Usuario registrado:", usuario);
-      alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
-      navigate("/login");
+      console.log("Usuario registrado:", usuario);
+      toast.success("¡✅ Registro exitoso! Ahora puedes iniciar sesión.");
+      setTimeout(() => navigate("/login"),1500);
     } catch (error) {
       console.error("❌ Error en el registro:", error);
       let mensajeError = "Error al registrarse.";
@@ -64,8 +66,8 @@ const RegisterDocente = () => {
         email: usuario.email,
       }, { merge: true });
 
-      console.log("✅ Registro con Google exitoso:", usuario);
-      alert("¡Registro exitoso con Google!");
+      console.log("Registro con Google exitoso:", usuario);
+      toast.success("¡✅ Registro exitoso con Google!");
       navigate("/login");
     } catch (error) {
       console.error("❌ Error al registrarse con Google:", error);
@@ -103,6 +105,7 @@ const RegisterDocente = () => {
           </button>
         </div>
       </div>
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 };

@@ -6,6 +6,8 @@ import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
 import {crearJuegoEnFirestore,actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
 import { doc, getDoc } from "firebase/firestore";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { eliminarJuegoPorId } from "../../services/juegosService";
 import "../../assets/styles/docente/dashboardDocente.css";
 
@@ -17,7 +19,6 @@ const DashboardDocente = () => {
   const [mostrarInput, setMostrarInput] = useState(false);
   const [publico, setPublico] = useState(false);
   
-
   // Detectar usuario autenticado
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -66,7 +67,7 @@ const DashboardDocente = () => {
     }
   
     if (!nombreJuego.trim()) {
-      alert("El nombre del juego es obligatorio.");
+      toast.warning("⚠️ El nombre del juego es obligatorio.");
       return;
     }
   
@@ -81,17 +82,17 @@ const DashboardDocente = () => {
   
       const juegosExistentes = juegos.map(j => j.nombre.toLowerCase());
       if (juegosExistentes.includes(nombreJuego.toLowerCase())) {
-        alert("⚠️ Ya existe un juego con ese nombre.");
+        toast.warning(`⚠️ Ya existe un juego con ese nombre.`);
         return;
       }
   
       await crearJuegoEnFirestore(nuevoJuego);
-      alert(`Juego "${nombreJuego}" creado exitosamente.`);
+      toast.success(`🎉 Juego "${nombreJuego}" creado exitosamente.`);
       setNombreJuego("");
       cargarJuegos(usuario.uid);
     } catch (error) {
       console.error("Error al crear el juego:", error);
-      alert("Hubo un error al crear el juego.");
+      toast.error("❌ Hubo un error al crear el juego.");
     }
   };
   
@@ -100,20 +101,20 @@ const DashboardDocente = () => {
     try {
       await actualizarJuego(juegoId, { publico: nuevoEstado });
   
-      // 🔄 Actualizar estado local
+      // Actualizar estado local
       setJuegos(prev =>
         prev.map(j =>
           j.id === juegoId ? { ...j, publico: nuevoEstado } : j
         )
       );
   
-      console.log(`✅ Visibilidad del juego actualizada: ${nuevoEstado}`);
+      toast.info(`Cambiaste el juego a modo ${nuevoEstado ? "público" : "privado"}`);
     } catch (error) {
       console.error("❌ Error al actualizar visibilidad:", error);
-      alert("No se pudo actualizar la visibilidad.");
+      toast.error("⚠️ No se pudo actualizar la visibilidad.");
     }
   };
-  
+
   // Cerrar sesión
   const handleCerrarSesion = async () => {
     try {
@@ -166,7 +167,7 @@ const eliminarJuego = async (juegoId) => {
             {/* Switch público */}
             <div className="switch-container">
               <label className="switch-label">
-                <span>Juego Público</span>
+                <span>{publico ? "Juego Público" : "Juego Privado"}</span>
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -181,12 +182,16 @@ const eliminarJuego = async (juegoId) => {
         )}
   
         <button
-          type="button-crear-juego"
+          type="button"
           className="boton-dashboard"
           onClick={() => {
             if (!mostrarInput) {
               setMostrarInput(true);
-            } else if (nombreJuego.trim() !== "") {
+            } else {
+              if (!nombreJuego.trim()) {
+                toast.warning("⚠️ El nombre del juego es obligatorio.");
+                return;
+              }
               crearJuego();
               setMostrarInput(false);
             }
@@ -212,7 +217,7 @@ const eliminarJuego = async (juegoId) => {
   
                 <div className="switch-container">
                   <label className="switch-label">
-                    <span>Público</span>
+                    <span>{juego.publico ? "Juego Público" : "Juego Privado"}</span>
                     <label className="switch">
                       <input
                         type="checkbox"
@@ -269,6 +274,7 @@ const eliminarJuego = async (juegoId) => {
           Banco de Sonidos
         </button>
       </div>
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );  
 }
