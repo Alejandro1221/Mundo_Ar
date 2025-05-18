@@ -1,9 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { getStorage } from "firebase/storage"; // 🔹 IMPORTAR STORAGE
+import { getStorage } from "firebase/storage"; 
 
-// 🔹 Configuración de Firebase (usa la misma que tenías)
 const firebaseConfig = {
   apiKey: "AIzaSyDfkayuiS5PKsnI8wsDNO53xxdd5GTbV7c",
   authDomain: "mundoar-146fb.firebaseapp.com",

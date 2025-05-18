@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../../services/firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
@@ -51,55 +51,57 @@ const RegisterDocente = () => {
     }
   };
 
+  const registrarseConGoogle = async () => {
+    setError("");
+    const provider = new GoogleAuthProvider();
+
+    try {
+      const resultado = await signInWithPopup(auth, provider);
+      const usuario = resultado.user;
+
+      await setDoc(doc(db, "docentes", usuario.uid), {
+        nombre: usuario.displayName || "Sin nombre",
+        email: usuario.email,
+      }, { merge: true });
+
+      console.log("✅ Registro con Google exitoso:", usuario);
+      alert("¡Registro exitoso con Google!");
+      navigate("/login");
+    } catch (error) {
+      console.error("❌ Error al registrarse con Google:", error);
+      setError("⚠️ Ocurrió un error con Google Sign-In.");
+    }
+  };
+
   return (
-    <div className="auth-container"
-    style={{
+    <div className="auth-container" style={{
       backgroundImage: `url(${fondoAutenticacion})`,
-      backgroundSize: "cover", 
+      backgroundSize: "cover",
       backgroundRepeat: "no-repeat",
       backgroundPosition: "center",
-      backgroundColor: "var(--pastel-azul)", 
+      backgroundColor: "var(--pastel-azul)"
     }}>
       <div className="auth-box register-box">
         <h1>Registro Docente</h1>
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleRegister}>
-          <input
-            type="text"
-            placeholder="Nombre Completo"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Correo Electrónico"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <input type="text"  placeholder="Nombre Completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+          <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
           <div className="button-group">
-            <button type="submit" className="auth-button secondary-btn">
-              Registrarse
-            </button>
-            <button
-              type="button"
-              className="auth-button primary-btn"
-              onClick={() => navigate("/login")}
-            >
-              Ingresar
-            </button>
+            <button type="submit" className="auth-button secondary-btn">Registrarse</button>
+            <button type="button" className="auth-button primary-btn" onClick={() => navigate("/login")}>Ingresar</button>
           </div>
         </form>
+
+        <div className="button-group">
+          <button type="button" className="auth-button google-signin-btn" onClick={registrarseConGoogle}>
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google icon" style={{ width: "20px", marginRight: "10px" }} />
+            Registrarse con Google
+          </button>
+        </div>
       </div>
     </div>
   );

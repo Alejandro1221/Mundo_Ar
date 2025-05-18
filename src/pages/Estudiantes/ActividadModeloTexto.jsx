@@ -17,11 +17,7 @@ const ActividadModeloTexto = ({ vistaPrevia = false }) => {
   const [modeloActivoIndex, setModeloActivoIndex] = useState(0);
 
 useEffect(() => {
-  const inicioCarga = performance.now();
   const establecerModeloActivo = (modelos) => {
-    
-    const finCarga = performance.now();
-    console.log(`⏱Tiempo de carga de modelos: ${(finCarga - inicioCarga).toFixed(2)} ms`);
     setModelos(modelos);
     if (modelos.length > 0) {
       setModeloActivoIndex(0);

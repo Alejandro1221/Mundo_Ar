@@ -13,7 +13,6 @@
   backdrop-filter: blur(12px);
   border-radius: var(--borde-suave);
   padding: 30px;
-  width: 100%;
   max-width: 420px;
   text-align: center;
   box-shadow: var(--sombra-suave);
@@ -29,9 +28,8 @@
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-/* ========== Inputs ========== */
 .auth-box input {
-  width: 100%;
+  width: 75%;
   padding: 12px;
   margin: 10px 0;
   border: 1px solid var(--pastel-azul);
@@ -54,7 +52,7 @@
 }
 
 .auth-button {
-  width: 100%;
+  width: 80%;
   margin-top: 8px;
 }
 
@@ -72,7 +70,6 @@
 }
 
 .primary-btn:hover {
-  background-color: var(--pastel-amarillo);
   transform: scale(1.05);
 }
 
@@ -88,7 +85,6 @@
 }
 
 .secondary-btn:hover {
-  background-color: var(--pastel-indigo);
   transform: scale(1.05);
 }
 
@@ -120,9 +116,32 @@
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+.google-signin-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  color: #444;
+  font-weight: 500;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px 16px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.google-signin-btn:hover {
+  background-color: #f7f7f7;
+  transform: scale(1.05);
+}
+
 @media (max-width: 600px) {
-  .auth-box {
-    width: 90%;
+  .auth-box.register-box {
     padding: 20px;
+  }
+
+  .auth-button {
+    margin: 10px 0;
   }
 }
