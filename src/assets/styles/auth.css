@@ -90,8 +90,10 @@
 
 .auth-links {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;  
+  gap: 80px;                 
   margin: 12px 0;
+  flex-wrap: wrap;
 }
 
 .auth-links a {
@@ -117,24 +119,38 @@
 }
 
 .google-signin-btn {
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   background-color: #ffffff;
   color: #444;
   font-weight: 500;
   border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px 16px;
+  border-radius: var(--borde-suave);
+  padding: 12px;
   margin-top: 10px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s;
+  box-sizing: border-box;
+}
+
+.google-signin-btn img {
+  width: 20px;
+  height: 20px;
 }
 
 .google-signin-btn:hover {
-  background-color: #f7f7f7;
   transform: scale(1.05);
 }
+
+
+.button-group .google-signin-btn {
+  margin: 10px auto 0 auto; 
+  width: 80%;
+}
+
 
 @media (max-width: 600px) {
   .auth-box.register-box {
