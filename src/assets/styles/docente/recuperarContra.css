@@ -1,0 +1,109 @@
+.auth-container {
+  background-color: var(--pastel-azul);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  background-image: url('../../../assets/images/autenticacion.png'); /* solo si no lo estás aplicando con style={} */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.auth-box {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  border-radius: var(--borde-suave);
+  padding: 30px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: var(--sombra-suave);
+}
+
+.auth-box h1 {
+  color: var(--texto-principal);
+  font-size: 2rem;
+  font-family: 'Source Sans Pro', sans-serif;
+  margin-bottom: 20px;
+}
+
+.auth-box input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid var(--pastel-verde);
+  border-radius: 16px;
+  background-color: #ffffff;
+  color: var(--texto-principal);
+  font-size: 1rem;
+  font-family: 'Lato', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.auth-box input:focus {
+  border-color: var(--pastel-verde);
+  box-shadow: 0 0 0 2px rgba(179, 225, 143, 0.3);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px 16px;
+  margin-top: 12px;
+  font-size: 1rem;
+  font-family: 'Lato', sans-serif;
+  font-weight: bold;
+  border: none;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.primary-btn {
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
+}
+
+.secondary-btn {
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+}
+
+.auth-button:hover {
+  transform: scale(1.05);
+}
+
+.success-message {
+  background-color: #e6ffea;
+  color: #2e7d32;
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #cc0000;
+  padding: 10px;
+  border-radius: var(--borde-suave);
+  margin-bottom: 12px;
+  font-size: 0.9rem;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+@media (max-width: 600px) {
+  .auth-box {
+    padding: 20px;
+  }
+
+  .auth-button {
+    width: 100%;
+    margin: 10px 0;
+  }
+}

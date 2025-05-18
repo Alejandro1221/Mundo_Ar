@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import RecuperarContrasena from '../pages/Docente/Auth/RecuperarContrasena';
 import DashboardDocente from "../pages/Docente/DashboardDocente";
 import BancoModelos from "../pages/bancoModelos/BancoModelos.jsx";
 import BancoSonidos from "../pages/bancoSonidos/BancoSonidos.jsx";
@@ -11,6 +12,7 @@ import ModeloTexto from "../templates/ModeloTexto";
 const DocenteRoutes = () => {
   return (
     <Routes>
+        <Route path="recuperar" element={<RecuperarContrasena />} />
         <Route path="dashboard" element={<DashboardDocente />} /> 
         <Route path="configurar-casillas/:juegoId" element={<ConfigurarCasillas />} />
         <Route path="banco-modelos" element={<BancoModelos />} />

@@ -77,7 +77,7 @@ const Login = () => {
 
           <div className="auth-links">
             <Link to="/register">Registrarse</Link>
-            <Link to="/recuperar">¿Olvidaste tu contraseña?</Link>
+            <Link to="/docente/recuperar">¿Olvidaste tu contraseña?</Link>
           </div>
 
           <button type="submit" className="auth-button primary-btn">Ingresar</button>
