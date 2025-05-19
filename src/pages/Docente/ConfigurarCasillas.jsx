@@ -35,17 +35,19 @@ const ConfigurarCasillas = () => {
 
   return (
     <div className="configurar-casillas-container">
-      {/*Botón Volver con ícono */}
-      <button
-        className="configurar-casillas-container__btn-volver"
-        onClick={() => navigate("/docente/dashboard")}
-        aria-label="Volver al dashboard"
-      >
-        <FiArrowLeft />
-      </button>
+      <div className="encabezado-horizontal">
+        <button
+          className="configurar-casillas-container__btn-volver"
+          onClick={() => navigate("/docente/dashboard")}
+          aria-label="Volver al dashboard"
+        >
+          <FiArrowLeft />
+        </button>
 
-      <h2 className="configurar-casillas-container__titulo">Configurar Casillas del Juego</h2>
-
+        <h2 className="configurar-casillas-container__titulo">
+          Configurar Casillas del Juego
+        </h2>
+      </div>
       {/* Tablero de casillas */}
       <div className="configurar-casillas-container__tablero">
         {casillas.map((casilla, index) => (

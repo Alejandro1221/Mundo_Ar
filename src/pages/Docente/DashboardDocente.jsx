@@ -138,6 +138,33 @@ const eliminarJuego = async (juegoId) => {
   }
 };
 
+const confirmarEliminacion = (juegoId, nombreJuego) => {
+    toast.info(
+      <div className="toast-confirmation">
+        <p>¿Seguro que deseas eliminar el juego <strong>{nombreJuego}</strong>?</p>
+        <div className="toast-buttons">
+          <button
+            className="toast-btn-confirm"
+            onClick={async () => {
+              await eliminarJuego(juegoId);
+              toast.dismiss();
+            }}
+          >
+            Sí, eliminar
+          </button>
+          <button className="toast-btn-cancel" onClick={() => toast.dismiss()}>
+            Cancelar
+          </button>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        icon: "❓"
+      }
+    );
+  };
+
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -241,7 +268,7 @@ const eliminarJuego = async (juegoId) => {
                 </button>
                 <button
             className="icono-btn eliminar-btn"
-            onClick={() => eliminarJuego(juego.id)}
+            onClick={() => confirmarEliminacion(juego.id, juego.nombre)}
             aria-label="Eliminar juego"
           >
             🗑️
@@ -274,7 +301,7 @@ const eliminarJuego = async (juegoId) => {
           Banco de Sonidos
         </button>
       </div>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer position="top-center" autoClose={1000} />
     </div>
   );  
 }

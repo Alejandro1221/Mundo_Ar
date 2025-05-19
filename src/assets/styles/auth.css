@@ -9,16 +9,10 @@
 }
 
 .auth-box {
-  background: rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(12px);
   border-radius: var(--borde-suave);
-  padding: 30px;
-  max-width: 420px;
-  text-align: center;
-  box-shadow: var(--sombra-suave);
-  position: relative;
-  z-index: 1;
-  margin-top: 50px;
+  padding: 32px 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  margin-top: 90px; 
 }
 
 .auth-box h1 {
@@ -28,10 +22,9 @@
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-.auth-box input {
-  width: 75%;
+.auth-box.register-box input {
   padding: 12px;
-  margin: 10px 0;
+  margin: 10px;
   border: 1px solid var(--pastel-azul);
   border-radius: var(--borde-suave);
   background-color: #ffffff;
@@ -151,42 +144,6 @@
   width: 80%;
 }
 
-.Toastify__toast {
-  border-radius: var(--borde-suave);
-  font-family: 'Lato', sans-serif;
-  font-weight: 500;
-  font-size: 1rem;
-  box-shadow: var(--sombra-suave);
-}
-
-.Toastify__toast--success {
-  background-color: var(--pastel-verde);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--error {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--info {
-  background-color: var(--pastel-azul);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--warning {
-  background-color: var(--pastel-amarillo);
-  color: var(--texto-principal);
-}
-
-.Toastify__close-button {
-  color: var(--texto-principal);
-}
-
-.Toastify__progress-bar {
-  background: var(--pastel-indigo);
-}
-
 @media (max-width: 600px) {
   .auth-box.register-box {
     padding: 20px;
@@ -194,5 +151,9 @@
 
   .auth-button {
     margin: 10px 0;
+  }
+
+  .auth-box {
+    margin-top: 40px;
   }
 }

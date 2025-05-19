@@ -88,7 +88,7 @@ const RegisterDocente = () => {
         {error && <p className="error-message">{error}</p>}
 
         <form onSubmit={handleRegister}>
-          <input type="text"  placeholder="Nombre Completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+          <input type="text" placeholder="Nombre Completo" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
           <input type="email" placeholder="Correo Electrónico" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
