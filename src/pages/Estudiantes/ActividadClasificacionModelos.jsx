@@ -14,6 +14,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   const [modelos, setModelos] = useState([]);
   const [grupos, setGrupos] = useState([]);
   const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
+  const [modelosClasificados, setModelosClasificados] = useState([]);
   const [modeloActivo, setModeloActivo] = useState(null);
 
   const juegoId = sessionStorage.getItem("juegoId");
@@ -62,7 +63,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
 
   useEffect(() => {
     window.verificarClasificacion = (modeloEl) => {
-      console.log("🟡 Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); // DEBUG
+      console.log("Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); // DEBUG
       const categoriaModelo = modeloEl.getAttribute("grupo");
       const posicionModelo = new THREE.Vector3();
       modeloEl.object3D.getWorldPosition(posicionModelo);
@@ -125,17 +126,19 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     }, 2000);
   };
 
-  const mostrarCelebracion = () => {
-    const tipo = celebracion?.tipo;
-    const opciones = celebracion?.opciones || {};
-  
-    if (CELEBRACIONES[tipo] && typeof CELEBRACIONES[tipo].render === "function") {
-      CELEBRACIONES[tipo].render(opciones);
-    } else {
-      console.warn("❗ Tipo de celebración no reconocido:", tipo);
-    }
-  };
-  
+ const mostrarCelebracion = () => {
+  const tipo = celebracion?.tipo;
+  const opciones = celebracion?.opciones || {};
+
+  console.log("🔥 Tipo de celebración:", tipo, opciones);
+
+  if (CELEBRACIONES[tipo] && typeof CELEBRACIONES[tipo].render === "function") {
+    CELEBRACIONES[tipo].render(opciones);
+  } else {
+    console.warn("❗ Tipo de celebración no reconocido:", tipo);
+  }
+};
+
 
   return (
     <div className="actividad-ra-container">
@@ -178,8 +181,8 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
           const fila = Math.floor(index / columnas);
           const col = index % columnas;
 
-          const x = (col - (columnas - 1) / 2) * espaciado; // centrado horizontal
-          const y = 0.5 - fila * 1.5; // espacio vertical entre filas
+          const x = (col - (columnas - 1) / 2) * espaciado; 
+          const y = 0.5 - fila * 1.5; 
           const z = -3;
 
           return (
