@@ -36,7 +36,8 @@ export const CELEBRACIONES = {
     label: "GIF animado",
     render: (opciones) => {
       const gif = document.createElement("img");
-      gif.src = opciones?.url || "/default-celebration.gif";
+      //gif.src = opciones?.url || "/default-celebration.gif";
+      gif.src = opciones?.gifUrl || "/default-celebration.gif";
       gif.className = "gif-celebracion";
       gif.style.position = "fixed";
       gif.style.top = "50%";
