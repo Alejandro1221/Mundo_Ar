@@ -104,6 +104,10 @@ const ModeloSonido = () => {
   };
   
   const sincronizarModelos = async () => {
+     if (!sonidoSeleccionado || !sonidoSeleccionado.url) {
+      mostrarMensaje("⚠️ Debes asignar un sonido antes de guardar.", "error");
+      return;
+    }
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);

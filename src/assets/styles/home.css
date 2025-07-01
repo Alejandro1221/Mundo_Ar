@@ -12,6 +12,13 @@
   overflow: hidden;
 }
 
+.home-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
 .home-content {
   flex: 1;
   display: flex;
@@ -84,24 +91,18 @@
   margin-bottom: 295px;
 }
 
-/* Estilos para pantallas grandes (escritorio) */
 @media (min-width: 1024px) {
-  .home-container {
-    background-position: center center;
-    background-size: cover; 
-    background-repeat: no-repeat;
-    max-width: 1200px; 
-    margin: 0 auto; 
-  }
-
   .home-content {
-    flex: 1;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
     padding: 40px;
-    text-align: left;
-    max-width: 800px;
-    
+    text-align: center;
+  }
+
+  .home-buttons {
+    flex-direction: row;
+    justify-content: center;
   }
 
   .logo-home {
@@ -109,21 +110,17 @@
     margin-bottom: 40px;
   }
 
-  .home-buttons {
-    flex-direction: row;
-    justify-content: flex-start;
-  }
-
   .role-btn {
     padding: 18px 36px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   .home-footer {
     font-size: 0.9rem;
+    text-align: right;
     position: absolute;
     bottom: 20px;
     right: 40px;
-    text-align: right;
   }
 }
+

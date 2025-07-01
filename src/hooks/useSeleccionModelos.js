@@ -20,5 +20,9 @@ export const useSeleccionModelos = () => {
     }
   }, []);
 
+  useEffect(() => {
+    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+  }, [modelosSeleccionados]);
+
   return { modelosSeleccionados, setModelosSeleccionados };
 };

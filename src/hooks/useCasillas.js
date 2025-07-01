@@ -27,6 +27,7 @@ export const useCasillas = (juegoId) => {
     "clasificacion-modelos": "/docente/clasificacion-modelos",
     "rompecabezas-modelo":"/docente/rompecabezas-modelo",
     "modelo-texto": "/docente/modelo-texto",
+    "casilla-sorpresa": "/docente/casilla-sorpresa"
   };
 
   const abrirModal = (index, plantillaActual) => {
@@ -45,7 +46,7 @@ export const useCasillas = (juegoId) => {
     const nuevasCasillas = [...casillas];
     nuevasCasillas[casillaSeleccionada] = { plantilla: plantillaSeleccionada };
 
-    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); // 🔹 Solo actualiza una casilla
+    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); //Solo actualiza una casilla
     setCasillas(nuevasCasillas);
     setModalVisible(false);
 

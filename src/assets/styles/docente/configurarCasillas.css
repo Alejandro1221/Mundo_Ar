@@ -12,7 +12,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center; /* centrado real */
+  justify-content: center; 
   padding: 12px 0;
   margin-bottom: 60px;
 }
@@ -267,4 +267,10 @@
 .configurar-casillas-container__casilla.plantilla-modelo-texto {
   background-color: var(--pastel-rosa);
 }
+
+.configurar-casillas-container__casilla.plantilla-casilla-sorpresa {
+  background-color: var(--pastel-indigo); /
+}
+
+
 

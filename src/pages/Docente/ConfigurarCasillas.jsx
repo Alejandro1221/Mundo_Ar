@@ -25,7 +25,8 @@ const ConfigurarCasillas = () => {
     "modelo-sonido": "/docente/plantilla-sonido-modelo",
     "clasificacion-modelos": "/docente/clasificacion-modelos",
     "rompecabezas-modelo": "/docente/rompecabezas-modelo",
-    "modelo-texto": "/docente/modelo-texto"
+    "modelo-texto": "/docente/modelo-texto",
+    "casilla-sorpresa": "/docente/casilla-sorpresa"
   };
 
   useEffect(() => {
@@ -120,6 +121,7 @@ const ConfigurarCasillas = () => {
                   <option value="clasificacion-modelos">Clasificar Modelos</option>
                   <option value="rompecabezas-modelo">Rompecabezas Modelo</option>
                   <option value="modelo-texto">Modelo texto</option>
+                  <option value="casilla-sorpresa">Casilla Sorpresa</option>
                 </select>
                 <div className="configurar-casillas-container__modal-buttons">
                   <button className="cancelar-btn"  onClick={() => setModalVisible(false)}>Cancelar</button>

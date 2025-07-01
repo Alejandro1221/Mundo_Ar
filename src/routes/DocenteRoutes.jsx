@@ -8,6 +8,8 @@ import ModeloSonido from "../templates/ModeloSonido";
 import ClasificacionModelos from "../templates/ClasificacionModelos";
 import RompecabezasModelo from "../templates/RompecabezasModelo";
 import ModeloTexto from "../templates/ModeloTexto"; 
+import CasillaSorpresa from "../templates/CasillaSorpresa";
+
 
 const DocenteRoutes = () => {
   return (
@@ -21,6 +23,8 @@ const DocenteRoutes = () => {
         <Route path="clasificacion-modelos" element={<ClasificacionModelos />} />
         <Route path="rompecabezas-modelo" element={<RompecabezasModelo/>}/>
         <Route path="modelo-texto" element={<ModeloTexto />} />
+        <Route path="casilla-sorpresa" element={<CasillaSorpresa />} />
+
     </Routes>
   );
 };
