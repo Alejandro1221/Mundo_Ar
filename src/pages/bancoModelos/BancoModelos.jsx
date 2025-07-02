@@ -17,6 +17,8 @@ const BancoModelos = () => {
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
   const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
+  //const [modeloEnVista, setModeloEnVista] = useState(null);
+
 
   const location = useLocation();
   const navigate = useNavigate();
