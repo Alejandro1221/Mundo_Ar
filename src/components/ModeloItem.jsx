@@ -6,6 +6,7 @@ const ModeloItem = ({ modelo, esPlantilla, manejarSeleccion, manejarEliminacion,
   const [mostrarVistaPrevia, setMostrarVistaPrevia] = useState(false);
   const [cerrando, setCerrando] = useState(false);
 
+
   useEffect(() => {
   const contenedor = document.querySelector(".lista-modelos");
   if (!contenedor) return;
@@ -17,7 +18,6 @@ const ModeloItem = ({ modelo, esPlantilla, manejarSeleccion, manejarEliminacion,
   }
 
   return () => {
-  const contenedor = document.querySelector(".lista-modelos");
   contenedor?.classList.remove("modal-bloqueo");
 };
   }, [mostrarVistaPrevia]); 

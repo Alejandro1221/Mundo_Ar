@@ -16,9 +16,6 @@ const BancoModelos = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
-  const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
-  //const [modeloEnVista, setModeloEnVista] = useState(null);
-
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -69,19 +66,36 @@ const BancoModelos = () => {
 
   // Confirmar selección y volver a la plantilla
   const confirmarSeleccion = () => {
-    console.log("📌 Antes de guardar en sessionStorage en BancoModelos.jsx:", modelosSeleccionados);
-
-    const modelosConURL = modelosSeleccionados.map(m => ({
+    const nuevosSeleccionados = modelosSeleccionados.map(m => ({
         id: m.id,
         nombre: m.nombre,
-        url: m.modelo_url,  
+        url: m.url || m.modelo_url, 
         miniatura: m.miniatura,
         categoria: m.categoria,
     }));
 
-    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConURL));
+    // Recuperar modelos anteriores del sessionStorage
+    const guardadosRaw = sessionStorage.getItem("modelosSeleccionados");
+    let existentes = [];
 
-    navigate(-1); 
+    try {
+      existentes = JSON.parse(guardadosRaw) || [];
+    } catch (_) {
+      existentes = [];
+    }
+    // Filtrar para evitar duplicados por id
+    const nuevosIds = nuevosSeleccionados.map(m => m.id);
+    const fusionados = [
+      ...existentes.filter(m => !nuevosIds.includes(m.id)),
+      ...nuevosSeleccionados
+    ];
+
+    // Guardar en sessionStorage
+    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(fusionados));
+
+    // Volver a la plantilla
+    const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+    navigate(paginaAnterior);
 };
 
 const manejarEliminacion = async (modelo) => {

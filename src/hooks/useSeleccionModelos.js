@@ -1,28 +1,32 @@
 import { useState, useEffect } from "react";
 
-export const useSeleccionModelos = () => {
+/**
+ * Hook para manejar modelos seleccionados por juego y casilla.
+ * Aísla los datos usando una clave única por combinación de juegoId y casillaId.
+ */
+export const useSeleccionModelos = (juegoId, casillaId) => {
+  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
   const [modelosSeleccionados, setModelosSeleccionados] = useState([]);
 
+  // Cargar desde sessionStorage
   useEffect(() => {
-    // Cargar modelos seleccionados desde sessionStorage si existen
-    const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
+    const modelosGuardados = sessionStorage.getItem(key);
     if (modelosGuardados) {
       try {
         const modelos = JSON.parse(modelosGuardados);
         if (Array.isArray(modelos)) {
           setModelosSeleccionados(modelos);
-        } else {
-          setModelosSeleccionados([]);
         }
-      } catch (err) {
+      } catch {
         setModelosSeleccionados([]);
       }
     }
-  }, []);
+  }, [key]);
 
+  // Guardar en sessionStorage cada vez que cambien
   useEffect(() => {
-    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-  }, [modelosSeleccionados]);
+    sessionStorage.setItem(key, JSON.stringify(modelosSeleccionados));
+  }, [modelosSeleccionados, key]);
 
   return { modelosSeleccionados, setModelosSeleccionados };
 };
