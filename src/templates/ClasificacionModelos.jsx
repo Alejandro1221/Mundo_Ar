@@ -8,50 +8,80 @@ import "../assets/styles/docente/clasificacionModelos.css";
 
 const ClasificacionModelos = () => {
   const navigate = useNavigate();
-  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
-
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
+  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
+
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const [grupos, setGrupos] = useState(["Grupo 1", "Grupo 2"]);
   const [asignaciones, setAsignaciones] = useState({});
 
-  useEffect(() => {
-    if (!juegoId || !casillaId) {
-      alert("Error: No se encontró el juego o la casilla.");
-      navigate("/docente/configurar-casillas");
-    } else {
-      const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-      console.log("Modelos en sessionStorage:", modelosGuardados); // Depuración
-      cargarConfiguracion();
-    }
-  }, [juegoId, casillaId, navigate]);
+  const [yaCargado, setYaCargado] = useState(false);
 
-  const cargarConfiguracion = async () => {
-    try {
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-  
-      if (juegoSnap.exists()) {
-        const casilla = juegoSnap.data().casillas[casillaId];
-        if (casilla?.configuracion) {
-          const { modelos, grupos, celebracion } = casilla.configuracion;
-          setModelosSeleccionados(modelos || []);
-          setGrupos(grupos || []);
-          setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
-  
-          const asignacionInicial = {};
-          modelos.forEach((modelo) => {
-            if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
-          });
-          setAsignaciones(asignacionInicial);
-        }
+useEffect(() => {
+  if (!juegoId || !casillaId) {
+    alert("Error: No se encontró el juego o la casilla.");
+    navigate("/docente/configurar-casillas");
+    return;
+  }
+
+  if (yaCargado || modelosSeleccionados === null) return;
+
+  console.log("🧠 KEY usada:", `modelosSeleccionados_${juegoId}_${casillaId}`);
+  console.log("🔁 Hook recibió modelos:", modelosSeleccionados);
+
+  sessionStorage.setItem("juegoId", juegoId);
+  sessionStorage.setItem("casillaId", casillaId);
+
+  cargarConfiguracion();
+  setYaCargado(true);
+}, [juegoId, casillaId]);
+
+
+const cargarConfiguracion = async () => {
+  try {
+    // Si ya hay modelos con grupo, no sobreescribir nada
+    if (modelosSeleccionados.length > 0) {
+      const tieneGrupos = modelosSeleccionados.some(m => m.grupo);
+      if (tieneGrupos) {
+        console.log("✅ Modelos ya configurados con grupo:", modelosSeleccionados);
+        const asignacionInicial = {};
+        modelosSeleccionados.forEach((modelo) => {
+          if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
+        });
+        setAsignaciones(asignacionInicial);
+        return;
       }
-    } catch (error) {
-      console.error("Error al cargar configuración:", error);
     }
-  };
+
+    // Si no había grupo o modelos vacíos, consultar Firestore
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+
+    if (juegoSnap.exists()) {
+      const casilla = juegoSnap.data().casillas?.[casillaId];
+      if (casilla?.configuracion) {
+        const { modelos = [], grupos = [], celebracion = { tipo: "confeti", opciones: {} } } = casilla.configuracion;
+
+        console.log("📥 Modelos cargados desde Firestore:", modelos);
+
+        setModelosSeleccionados(modelos);
+        setGrupos(grupos.length > 0 ? grupos : ["Grupo 1", "Grupo 2"]);
+        setCelebracion(celebracion);
+
+        const asignacionInicial = {};
+        modelos.forEach((modelo) => {
+          if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
+        });
+        setAsignaciones(asignacionInicial);
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar configuración desde Firestore:", error);
+  }
+};
+
   
   const guardarConfiguracion = async () => {
     const modelosConGrupo = modelosSeleccionados.map((modelo) => ({
@@ -82,7 +112,6 @@ const ClasificacionModelos = () => {
         };
 
         await updateDoc(juegoRef, { casillas: casillasActuales });
-        sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
         mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
       }
     } catch (error) {
@@ -155,7 +184,9 @@ const ClasificacionModelos = () => {
 
       <div className="modelos-config">
         <h3>Modelos seleccionados</h3>
-        {modelosSeleccionados.length > 0 ? (
+        {modelosSeleccionados === null ? (
+          <p>Cargando modelos...</p>
+        ) : modelosSeleccionados.length > 0 ? (
           modelosSeleccionados.map((modelo, i) => (
             <div key={i} className="modelo-item">
               <model-viewer
@@ -168,11 +199,23 @@ const ClasificacionModelos = () => {
               ></model-viewer>
               <p>{modelo.nombre}</p>
               <div className="modelo-info">
-                <select value={asignaciones[modelo.url] || ""} onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}>
+                <select
+                  value={asignaciones[modelo.url] || ""}
+                  onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}
+                >
                   <option value="">Selecciona grupo</option>
-                  {grupos.map((g, idx) => <option key={idx} value={g}>{g}</option>)}
+                  {grupos.map((g, idx) => (
+                    <option key={idx} value={g}>
+                      {g}
+                    </option>
+                  ))}
                 </select>
-                <button className="eliminar-modelo-btn" onClick={() => eliminarModelo(modelo.url)}>❌ Eliminar</button>
+                <button
+                  className="eliminar-modelo-btn"
+                  onClick={() => eliminarModelo(modelo.url)}
+                >
+                  ❌ Eliminar
+                </button>
               </div>
             </div>
           ))
@@ -180,6 +223,7 @@ const ClasificacionModelos = () => {
           <p>No hay modelos seleccionados.</p>
         )}
       </div>
+
 
       <div className="seccion-celebracion">
         <h3>🎉 Celebración</h3>
@@ -217,8 +261,7 @@ const ClasificacionModelos = () => {
         <button onClick={guardarConfiguracion}>💾 Guardar configuración</button>
         <button onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-          navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
+          navigate("/docente/banco-modelos", { state: { desdePlantilla: true,juegoId,casillaId, }, });
         }}>Seleccionar más modelos</button>
         <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>Volver</button>
       </div>

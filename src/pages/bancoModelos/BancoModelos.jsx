@@ -5,57 +5,53 @@ import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
 import { FiPlus, FiArrowLeft } from "react-icons/fi";
+import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
-
 
 const BancoModelos = () => {
   const [modelos, setModelos] = useState([]);
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
-  const [modelosSeleccionados, setModelosSeleccionados] = useState([]);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
 
+  
+
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Manejo seguro de location.state para evitar errores
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
+    //const { juegoId, casillaId } = location.state || {};
+    const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
+    const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
 
+    console.log("🧩 BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
+
+    const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
   useEffect(() => {
-    const cargarDatos = async () => {
-      try {
-        const [modelosCargados, categoriasCargadas] = await Promise.all([
-          obtenerModelos(),
-          obtenerCategorias() // 🔹 Cargar categorías dinámicamente
-        ]);
-
-        if (!modelosCargados) throw new Error("No se pudieron cargar los modelos");
-
-        setCategorias(["Todos", ...categoriasCargadas]); // 🔹 Actualizar categorías
-        setModelos(modelosCargados);
-
-        // Si se abrió desde una plantilla, recuperar modelos seleccionados desde sessionStorage
-        if (desdePlantilla) {
-          const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-          if (modelosGuardados) {
-            setModelosSeleccionados(JSON.parse(modelosGuardados));
-          }
+      const cargarDatos = async () => {
+        try {
+          const [modelosCargados, categoriasCargadas] = await Promise.all([
+            obtenerModelos(),
+            obtenerCategorias()
+          ]);
+  
+          if (!modelosCargados) throw new Error("No se pudieron cargar los modelos");
+  
+          setCategorias(["Todos", ...categoriasCargadas]);
+          setModelos(modelosCargados);
+        } catch (error) {
+          console.error("❌ Error al cargar modelos:", error);
+          setModelos([]);
         }
-
-      } catch (error) {
-        console.error("❌ Error al cargar modelos:", error);
-        setModelos([]);
-      }
-    };
-    cargarDatos();
-  }, [desdePlantilla]);
+      };
+      cargarDatos();
+    }, []);
 
   // Filtrar modelos según la categoría seleccionada
-  const modelosFiltrados = modelos.filter(modelo =>
-    categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada
-);
+ const modelosFiltrados = modelos.filter(
+    modelo => categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada
+  );
 
   const manejarSeleccion = (modelo) => {
     setModelosSeleccionados(prev => {
@@ -65,38 +61,24 @@ const BancoModelos = () => {
   };
 
   // Confirmar selección y volver a la plantilla
-  const confirmarSeleccion = () => {
-    const nuevosSeleccionados = modelosSeleccionados.map(m => ({
-        id: m.id,
-        nombre: m.nombre,
-        url: m.url || m.modelo_url, 
-        miniatura: m.miniatura,
-        categoria: m.categoria,
-    }));
+const confirmarSeleccion = () => {
+  const nuevosSeleccionados = modelosSeleccionados.map(m => ({
+    id: m.id,
+    nombre: m.nombre,
+    url: m.url || m.modelo_url,
+    miniatura: m.miniatura,
+    categoria: m.categoria,
+  }));
 
-    // Recuperar modelos anteriores del sessionStorage
-    const guardadosRaw = sessionStorage.getItem("modelosSeleccionados");
-    let existentes = [];
+  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+  sessionStorage.setItem(key, JSON.stringify(nuevosSeleccionados));
 
-    try {
-      existentes = JSON.parse(guardadosRaw) || [];
-    } catch (_) {
-      existentes = [];
-    }
-    // Filtrar para evitar duplicados por id
-    const nuevosIds = nuevosSeleccionados.map(m => m.id);
-    const fusionados = [
-      ...existentes.filter(m => !nuevosIds.includes(m.id)),
-      ...nuevosSeleccionados
-    ];
+  // También actualizamos el hook
+  setModelosSeleccionados(nuevosSeleccionados);
 
-    // Guardar en sessionStorage
-    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(fusionados));
-
-    // Volver a la plantilla
-    const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
-    navigate(paginaAnterior);
+  navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard");
 };
+
 
 const manejarEliminacion = async (modelo) => {
   if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
