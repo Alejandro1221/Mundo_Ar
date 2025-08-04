@@ -129,6 +129,10 @@ const ConfigurarCasillas = () => {
                     sessionStorage.removeItem("modelosSeleccionados");
                     sessionStorage.removeItem("sonidoSeleccionado");
                     sessionStorage.removeItem("modeloAsociadoParaSonido");
+                    sessionStorage.removeItem(`modelosSeleccionados_${juegoId}_${casillaSeleccionada}`);
+                    sessionStorage.removeItem("gruposSeleccionados");
+                    sessionStorage.removeItem("asignacionesModelos");
+                    sessionStorage.removeItem("celebracionSeleccionada");
                     guardarCambios();
                   }}>
                     Guardar

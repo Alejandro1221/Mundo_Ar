@@ -307,6 +307,7 @@ const ModeloSonido = () => {
             className="vista-previa-btn"
             onClick={() => {
               sessionStorage.setItem("modoVistaPrevia", "true");
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados)); 
               sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonidoSeleccionado));
               sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
               navigate("/estudiante/vista-previa-modelo-sonido");

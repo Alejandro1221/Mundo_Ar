@@ -22,7 +22,9 @@ export const useSeleccionModelos = (juegoId, casillaId) => {
     } else {
       setModelosSeleccionados([]);
     }
-  }, [key, modelosSeleccionados]);
+  //}, [key, modelosSeleccionados]);
+  }, [key]);
+
 
   // Guardar en sessionStorage cada vez que cambien
   useEffect(() => {

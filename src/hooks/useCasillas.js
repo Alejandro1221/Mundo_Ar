@@ -46,7 +46,7 @@ export const useCasillas = (juegoId) => {
     const nuevasCasillas = [...casillas];
     nuevasCasillas[casillaSeleccionada] = { plantilla: plantillaSeleccionada };
 
-    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); //Solo actualiza una casilla
+    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); 
     setCasillas(nuevasCasillas);
     setModalVisible(false);
 

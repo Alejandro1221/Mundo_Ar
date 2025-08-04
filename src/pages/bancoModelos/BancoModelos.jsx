@@ -16,8 +16,6 @@ const BancoModelos = () => {
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
 
-  
-
   const location = useLocation();
   const navigate = useNavigate();
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
@@ -76,7 +74,14 @@ const confirmarSeleccion = () => {
   // También actualizamos el hook
   setModelosSeleccionados(nuevosSeleccionados);
 
-  navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard");
+  //navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard");
+  navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard", {
+  state: {
+    juegoId,
+    casillaId
+  }
+});
+
 };
 
 

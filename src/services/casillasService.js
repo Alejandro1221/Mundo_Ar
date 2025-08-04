@@ -45,7 +45,8 @@ export const eliminarCasilla = async (juegoId, index) => {
       const nuevasCasillas = [...(juegoData.casillas || Array(30).fill({ plantilla: null }))];
 
       //Eliminar la plantilla de esa casilla
-      nuevasCasillas[index] = { plantilla: null };
+       nuevasCasillas[index] = { plantilla: null, configuracion: null };
+      //nuevasCasillas[index] = { plantilla: null };
 
       await updateDoc(juegoRef, { casillas: nuevasCasillas });
     }

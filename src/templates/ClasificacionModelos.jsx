@@ -11,78 +11,60 @@ const ClasificacionModelos = () => {
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
-
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
-  const [grupos, setGrupos] = useState(["Grupo 1", "Grupo 2"]);
+  const [grupos, setGrupos] = useState(null);
   const [asignaciones, setAsignaciones] = useState({});
+  const [cargadoDesdeHook, setCargadoDesdeHook] = useState(false);
 
-  const [yaCargado, setYaCargado] = useState(false);
+useEffect(() => {
+  if (modelosSeleccionados.length > 0) {
+    console.log("🧠 Modelos disponibles desde el hook:", modelosSeleccionados);
+    setCargadoDesdeHook(true);
+  }
+}, [modelosSeleccionados]);
 
 useEffect(() => {
   if (!juegoId || !casillaId) {
     alert("Error: No se encontró el juego o la casilla.");
     navigate("/docente/configurar-casillas");
-    return;
+  } else {
+    if (!cargadoDesdeHook) {
+      cargarConfiguracion(); // Firestore solo si el hook no tuvo éxito
+    } else {
+      console.log("✅ Hook ya cargó modelos, no sobreescribimos");
+    }
   }
-
-  if (yaCargado || modelosSeleccionados === null) return;
-
-  console.log("🧠 KEY usada:", `modelosSeleccionados_${juegoId}_${casillaId}`);
-  console.log("🔁 Hook recibió modelos:", modelosSeleccionados);
-
-  sessionStorage.setItem("juegoId", juegoId);
-  sessionStorage.setItem("casillaId", casillaId);
-
-  cargarConfiguracion();
-  setYaCargado(true);
-}, [juegoId, casillaId]);
-
+}, [juegoId, casillaId, navigate, cargadoDesdeHook]);
 
 const cargarConfiguracion = async () => {
   try {
-    // Si ya hay modelos con grupo, no sobreescribir nada
-    if (modelosSeleccionados.length > 0) {
-      const tieneGrupos = modelosSeleccionados.some(m => m.grupo);
-      if (tieneGrupos) {
-        console.log("✅ Modelos ya configurados con grupo:", modelosSeleccionados);
-        const asignacionInicial = {};
-        modelosSeleccionados.forEach((modelo) => {
-          if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
-        });
-        setAsignaciones(asignacionInicial);
-        return;
-      }
-    }
-
-    // Si no había grupo o modelos vacíos, consultar Firestore
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
 
     if (juegoSnap.exists()) {
-      const casilla = juegoSnap.data().casillas?.[casillaId];
+      const casilla = juegoSnap.data().casillas[casillaId];
+
       if (casilla?.configuracion) {
-        const { modelos = [], grupos = [], celebracion = { tipo: "confeti", opciones: {} } } = casilla.configuracion;
+        const { modelos, grupos, celebracion, asignaciones: asignacionesGuardadas } = casilla.configuracion;
 
-        console.log("📥 Modelos cargados desde Firestore:", modelos);
-
-        setModelosSeleccionados(modelos);
-        setGrupos(grupos.length > 0 ? grupos : ["Grupo 1", "Grupo 2"]);
-        setCelebracion(celebracion);
-
-        const asignacionInicial = {};
-        modelos.forEach((modelo) => {
-          if (modelo.grupo) asignacionInicial[modelo.url] = modelo.grupo;
-        });
-        setAsignaciones(asignacionInicial);
+        setModelosSeleccionados(modelos || []);
+        setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); // usa grupos guardados o crea por defecto
+        setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
+        setAsignaciones(asignacionesGuardadas || {});
+        return;
       }
     }
+
+    // Si no hay casilla o configuración, es primera vez
+    setGrupos(["Grupo 1", "Grupo 2"]);
   } catch (error) {
-    console.error("❌ Error al cargar configuración desde Firestore:", error);
+    console.error("Error al cargar configuración:", error);
+    setGrupos(["Grupo 1", "Grupo 2"]); // fallback si algo falla
   }
 };
 
-  
+
   const guardarConfiguracion = async () => {
     const modelosConGrupo = modelosSeleccionados.map((modelo) => ({
       ...modelo,
@@ -108,6 +90,7 @@ const cargarConfiguracion = async () => {
             modelos: modelosConGrupo,
             grupos,
             celebracion,
+            asignaciones
           },
         };
 
@@ -137,7 +120,6 @@ const cargarConfiguracion = async () => {
     const nuevasAsignaciones = { ...asignaciones };
     delete nuevasAsignaciones[urlModelo];
     setAsignaciones(nuevasAsignaciones);
-    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(nuevosModelos));
   };
 
   const eliminarGrupo = (nombreGrupo) => {
@@ -170,23 +152,27 @@ const cargarConfiguracion = async () => {
       {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
       <div className="grupos-config">
-        <h3>Grupos</h3>
-        <ul>
-          {grupos.map((g, i) => (
-            <li key={i}>
-              <input value={g} onChange={(e) => renombrarGrupo(i, e.target.value)} />
-              <button onClick={() => eliminarGrupo(g)}>❌</button>
-            </li>
-          ))}
-        </ul>
-        <button onClick={agregarGrupo}>➕ Agregar grupo</button>
-      </div>
+      <h3>Grupos</h3>
+      {grupos === null ? (
+        <p>Cargando grupos...</p>
+      ) : (
+        <>
+          <ul>
+            {grupos.map((g, i) => (
+              <li key={i}>
+                <input value={g} onChange={(e) => renombrarGrupo(i, e.target.value)} />
+                <button onClick={() => eliminarGrupo(g)}>❌</button>
+              </li>
+            ))}
+          </ul>
+          <button onClick={agregarGrupo}>➕ Agregar grupo</button>
+        </>
+      )}
+    </div>
 
       <div className="modelos-config">
         <h3>Modelos seleccionados</h3>
-        {modelosSeleccionados === null ? (
-          <p>Cargando modelos...</p>
-        ) : modelosSeleccionados.length > 0 ? (
+        {modelosSeleccionados.length > 0 ? (
           modelosSeleccionados.map((modelo, i) => (
             <div key={i} className="modelo-item">
               <model-viewer
@@ -199,23 +185,16 @@ const cargarConfiguracion = async () => {
               ></model-viewer>
               <p>{modelo.nombre}</p>
               <div className="modelo-info">
-                <select
-                  value={asignaciones[modelo.url] || ""}
-                  onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}
-                >
-                  <option value="">Selecciona grupo</option>
-                  {grupos.map((g, idx) => (
-                    <option key={idx} value={g}>
-                      {g}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  className="eliminar-modelo-btn"
-                  onClick={() => eliminarModelo(modelo.url)}
-                >
-                  ❌ Eliminar
-                </button>
+                {grupos === null ? (
+                <p>Cargando asignaciones...</p>
+                ) : (
+                  <select value={asignaciones[modelo.url] || ""} onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}>
+                    <option value="">Selecciona grupo</option>
+                    {grupos.map((g, idx) => <option key={idx} value={g}>{g}</option>)}
+                  </select>
+                )}
+  
+                <button className="eliminar-modelo-btn" onClick={() => eliminarModelo(modelo.url)}>❌ Eliminar</button>
               </div>
             </div>
           ))
@@ -223,7 +202,6 @@ const cargarConfiguracion = async () => {
           <p>No hay modelos seleccionados.</p>
         )}
       </div>
-
 
       <div className="seccion-celebracion">
         <h3>🎉 Celebración</h3>
@@ -246,6 +224,7 @@ const cargarConfiguracion = async () => {
         className="vista-previa-btn"
         onClick={() => {
           sessionStorage.setItem("modoVistaPrevia", "true");
+          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
           sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
           sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
@@ -261,7 +240,14 @@ const cargarConfiguracion = async () => {
         <button onClick={guardarConfiguracion}>💾 Guardar configuración</button>
         <button onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          navigate("/docente/banco-modelos", { state: { desdePlantilla: true,juegoId,casillaId, }, });
+          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+          navigate("/docente/banco-modelos", {
+            state: {
+              desdePlantilla: true,
+              juegoId,
+              casillaId,
+            },
+          });
         }}>Seleccionar más modelos</button>
         <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>Volver</button>
       </div>
