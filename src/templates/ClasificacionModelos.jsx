@@ -174,17 +174,19 @@ const cargarConfiguracion = async () => {
         <h3>Modelos seleccionados</h3>
         {modelosSeleccionados.length > 0 ? (
           modelosSeleccionados.map((modelo, i) => (
-            <div key={i} className="modelo-item">
-              <model-viewer
-                src={modelo.url}
-                alt={modelo.nombre}
-                camera-controls
-                auto-rotate
-                shadow-intensity="1"
-                style={{ width: "200px", height: "200px" }}
-              ></model-viewer>
-              <p>{modelo.nombre}</p>
-              <div className="modelo-info">
+            <div key={i} className="modelo-card">
+              <div className="modelo-preview">
+                <model-viewer
+                  src={modelo.url}
+                  alt={modelo.nombre}
+                  camera-controls
+                  auto-rotate
+                  shadow-intensity="1"
+                  style={{ width: "100%", height: "180px" }}
+                ></model-viewer>
+              </div>
+              <div className="modelo-detalles">
+                <h4>{modelo.nombre}</h4>
                 {grupos === null ? (
                 <p>Cargando asignaciones...</p>
                 ) : (

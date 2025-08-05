@@ -10,23 +10,12 @@ const ModeloTexto = () => {
   const navigate = useNavigate();
   //const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
   
-
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
 
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [asignaciones, setAsignaciones] = useState({});
-
-
-  /*useEffect(() => {
-    if (!juegoId || !casillaId) {
-      alert("Error: No se encontró el juego o la casilla.");
-      navigate("/docente/dashboard");
-    } else {
-      cargarConfiguracion();
-    }
-  }, [juegoId, casillaId]);*/
 
   useEffect(() => {
   if (!juegoId || !casillaId) {
@@ -127,6 +116,15 @@ const cargarConfiguracion = async () => {
 
   const asignarTexto = (modeloUrl, texto) => {
     setAsignaciones((prev) => ({ ...prev, [modeloUrl]: texto }));
+    };
+
+    const eliminarModelo = (urlModelo) => {
+    const nuevosModelos = modelosSeleccionados.filter((m) => m.url !== urlModelo);
+    setModelosSeleccionados(nuevosModelos);
+
+    const nuevasAsignaciones = { ...asignaciones };
+    delete nuevasAsignaciones[urlModelo];
+    setAsignaciones(nuevasAsignaciones);
   };
 
 
@@ -155,6 +153,16 @@ const cargarConfiguracion = async () => {
                   value={asignaciones[modelo.url] || ""}
                   onChange={(e) => asignarTexto(modelo.url, e.target.value)}
                 ></textarea>
+                  <button
+                    className="eliminar-modelo-btn"
+                   onClick={() => {
+                    if (confirm("¿Estás seguro de eliminar este modelo?")) {
+                      eliminarModelo(modelo.url);
+                    }
+                  }}
+                  >
+                    Eliminar
+                  </button>
               </div>
             ))
           ) : (

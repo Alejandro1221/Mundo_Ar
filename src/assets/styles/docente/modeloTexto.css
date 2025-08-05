@@ -110,3 +110,19 @@
 .acciones-plantilla button:focus {
   outline: 2px solid var(--pastel-verde);
 }
+
+.eliminar-modelo-btn {
+  margin-top: 10px;
+  background-color: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.eliminar-modelo-btn:hover {
+  transform: scale(1.05);
+}

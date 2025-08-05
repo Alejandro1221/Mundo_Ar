@@ -82,32 +82,6 @@ h2 {
   margin-bottom: 24px;
 }
 
-.modelo-item {
-  background: var(--fondo-claro);
-  border: 2px solid var(--pastel-azul);
-  border-radius: var(--borde-suave);
-  padding: 12px;
-  text-align: center;
-  box-shadow: var(--sombra-suave);
-}
-
-.modelo-item p {
-  margin: 10px 0 6px;
-  font-weight: bold;
-}
-
-.modelo-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.modelo-info select {
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: var(--borde-suave);
-}
 
 .eliminar-modelo-btn {
   background-color: var(--pastel-rosa);
@@ -189,6 +163,13 @@ h2 {
   overflow: hidden;
   background: #f9f9f9;
 }
+
+.modelo-preview model-viewer {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 
 .modelo-detalles {
   text-align: center;
