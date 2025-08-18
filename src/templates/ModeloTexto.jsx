@@ -42,6 +42,42 @@ const cargarConfiguracion = async () => {
       return;
     }
 
+    
+useEffect(() => {
+  if (!juegoId || !casillaId) return;
+
+  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+  const modelosGuardados = sessionStorage.getItem(key);
+
+  if (modelosGuardados) {
+    const nuevos = JSON.parse(modelosGuardados);
+    console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
+
+    // Fusionar con los ya seleccionados (sin duplicar por URL)
+    const yaExistentes = modelosSeleccionados || [];
+    const nuevosSinRepetir = nuevos.filter(
+      (nuevo) => !yaExistentes.some((m) => m.url === nuevo.url)
+    );
+
+    const fusionados = [...yaExistentes, ...nuevosSinRepetir];
+    setModelosSeleccionados(fusionados);
+
+    // Actualiza asignaciones
+    const nuevasAsignaciones = {};
+    fusionados.forEach((modelo) => {
+      nuevasAsignaciones[modelo.url] = modelo.texto || "";
+    });
+    setAsignaciones(nuevasAsignaciones);
+
+    sessionStorage.removeItem(key);
+    modelosCargadosDesdeSession.current = true;
+
+    setMensaje({ texto: "✅ Modelos actualizados desde el banco.", tipo: "success" });
+    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
+  }
+}, [juegoId, casillaId]);
+
+
     // Si no, buscar en Firestore
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
@@ -61,7 +97,7 @@ const cargarConfiguracion = async () => {
 
         setModelosSeleccionados(modelosConTexto);
         setAsignaciones(nuevasAsignaciones);
-        console.log("📥 Modelos cargados desde Firestore:", modelosConTexto);
+        console.log("Modelos cargados desde Firestore:", modelosConTexto);
       }
     }
   } catch (error) {
@@ -119,14 +155,18 @@ const cargarConfiguracion = async () => {
     };
 
     const eliminarModelo = (urlModelo) => {
-    const nuevosModelos = modelosSeleccionados.filter((m) => m.url !== urlModelo);
-    setModelosSeleccionados(nuevosModelos);
+      const nuevosModelos = modelosSeleccionados.filter((m) => m.url !== urlModelo);
+      setModelosSeleccionados(nuevosModelos);
 
-    const nuevasAsignaciones = { ...asignaciones };
-    delete nuevasAsignaciones[urlModelo];
-    setAsignaciones(nuevasAsignaciones);
+      const nuevasAsignaciones = { ...asignaciones };
+      delete nuevasAsignaciones[urlModelo];
+      setAsignaciones(nuevasAsignaciones);
+
+      sessionStorage.setItem(
+        `modelosSeleccionados_${juegoId}_${casillaId}`,
+        JSON.stringify(nuevosModelos)
+  );
   };
-
 
   return (
     <div className="modelo-texto-container">

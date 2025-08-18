@@ -1,48 +1,34 @@
-const cargarConfiguracion = async () => {
-  try {
-    let modelos = [];
 
-    // 1. Cargar desde sessionStorage si hay
-    const modelosGuardados = sessionStorage.getItem("modelosSeleccionados");
-    if (modelosGuardados) {
-      try {
-        const parsed = JSON.parse(modelosGuardados);
-        if (Array.isArray(parsed)) {
-          modelos = parsed;
-          console.log("✅ Modelos cargados desde sessionStorage:", parsed);
-        }
-      } catch (err) {
-        console.warn("⚠️ Error al parsear modelos desde sessionStorage", err);
-      }
-    }
+useEffect(() => {
+  if (!juegoId || !casillaId) return;
 
-    // 2. Si no hay modelos, o si vienes desde una ruta directa, carga desde Firestore
-    if (modelos.length === 0) {
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
+  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+  const modelosGuardados = sessionStorage.getItem(key);
 
-      if (juegoSnap.exists()) {
-        const dataJuego = juegoSnap.data();
-        const casilla = dataJuego.casillas[casillaId];
+  if (modelosGuardados) {
+    const nuevos = JSON.parse(modelosGuardados);
+    console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
 
-        if (casilla?.configuracion?.modelos?.length > 0) {
-          modelos = casilla.configuracion.modelos;
-          console.log("📥 Modelos cargados desde Firestore:", modelos);
-        }
-      }
-    }
+    // Fusionar con los ya seleccionados (sin duplicar por URL)
+    const yaExistentes = modelosSeleccionados || [];
+    const nuevosSinRepetir = nuevos.filter(
+      (nuevo) => !yaExistentes.some((m) => m.url === nuevo.url)
+    );
 
-    // 3. Aplicar asignaciones de texto
+    const fusionados = [...yaExistentes, ...nuevosSinRepetir];
+    setModelosSeleccionados(fusionados);
+
+    // Actualiza asignaciones
     const nuevasAsignaciones = {};
-    const modelosConTexto = modelos.map((modelo) => {
-      const texto = modelo.texto || "";
-      nuevasAsignaciones[modelo.url] = texto;
-      return { ...modelo, texto };
+    fusionados.forEach((modelo) => {
+      nuevasAsignaciones[modelo.url] = modelo.texto || "";
     });
-
-    setModelosSeleccionados(modelosConTexto);
     setAsignaciones(nuevasAsignaciones);
-  } catch (error) {
-    console.error("Error al cargar configuración:", error);
+
+    sessionStorage.removeItem(key);
+    modelosCargadosDesdeSession.current = true;
+
+    setMensaje({ texto: "✅ Modelos actualizados desde el banco.", tipo: "success" });
+    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
   }
-};
+}, [juegoId, casillaId]);
