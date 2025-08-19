@@ -300,7 +300,7 @@ const ModeloSonido = () => {
               navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId } });
             }}
           >
-            ➕ Seleccionar Modelos
+            Seleccionar Modelos
           </button>
 
           <button

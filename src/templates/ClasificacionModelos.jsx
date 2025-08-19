@@ -25,17 +25,21 @@ useEffect(() => {
 }, [modelosSeleccionados]);
 
 useEffect(() => {
-  if (!juegoId || !casillaId) {
+  let idJuego = juegoId || sessionStorage.getItem("juegoId");
+  let idCasilla = casillaId || sessionStorage.getItem("casillaId");
+
+  if (!idJuego || !idCasilla) {
     alert("Error: No se encontró el juego o la casilla.");
     navigate("/docente/configurar-casillas");
-  } else {
-    if (!cargadoDesdeHook) {
-      cargarConfiguracion(); // Firestore solo si el hook no tuvo éxito
-    } else {
-      console.log("✅ Hook ya cargó modelos, no sobreescribimos");
-    }
+    return;
   }
-}, [juegoId, casillaId, navigate, cargadoDesdeHook]);
+
+  if (!cargadoDesdeHook) {
+    cargarConfiguracion(); 
+  } else {
+    console.log("✅ Hook ya cargó modelos, no sobreescribimos");
+  }
+}, [juegoId, casillaId, cargadoDesdeHook, navigate]);
 
 const cargarConfiguracion = async () => {
   try {
@@ -48,7 +52,16 @@ const cargarConfiguracion = async () => {
       if (casilla?.configuracion) {
         const { modelos, grupos, celebracion, asignaciones: asignacionesGuardadas } = casilla.configuracion;
 
-        setModelosSeleccionados(modelos || []);
+        
+        setModelosSeleccionados(prev => {
+          // usar un Map para no duplicar
+          const mapa = new Map(prev.map(m => [m.id || m.url, m]));
+          modelos.forEach(m => mapa.set(m.id || m.url, m));
+          return Array.from(mapa.values());
+        });
+
+        
+        //setModelosSeleccionados(modelos || []);
         setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); // usa grupos guardados o crea por defecto
         setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
         setAsignaciones(asignacionesGuardadas || {});
@@ -247,9 +260,12 @@ const cargarConfiguracion = async () => {
       <div className="acciones-plantilla">
         <button onClick={guardarConfiguracion}>💾 Guardar configuración</button>
         <button onClick={() => {
+
+          sessionStorage.setItem("juegoId", juegoId);
+          sessionStorage.setItem("casillaId", casillaId);
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
           
+          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
           sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
           sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
