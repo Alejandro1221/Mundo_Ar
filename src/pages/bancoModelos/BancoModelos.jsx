@@ -15,6 +15,8 @@ const BancoModelos = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
+  const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
+
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -69,8 +71,6 @@ const confirmarSeleccion = () => {
     texto: m.texto || ""
   }));
 
-  console.log("💾 Guardando en sessionStorage:", nuevosSeleccionados);
-
   const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
   sessionStorage.setItem(key, JSON.stringify(nuevosSeleccionados));
 
@@ -104,7 +104,6 @@ const manejarEliminacion = async (modelo) => {
     }
   }
 };
-
 
 const manejarEliminacionCategoria = async () => {
   if (!categoriaAEliminar.trim()) {

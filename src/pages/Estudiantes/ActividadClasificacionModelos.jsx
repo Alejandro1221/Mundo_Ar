@@ -37,10 +37,15 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     }
 
     if (!juegoId || !casillaId) {
-      alert("Error: No se encontró el juego o la casilla.");
-      navigate("/estudiante/dashboard");
-      return;
+    alert("Error: No se encontró el juego o la casilla.");
+    const paginaAnterior = sessionStorage.getItem("paginaAnterior");
+    if (paginaAnterior) {
+      navigate(paginaAnterior); 
+    } else {
+      navigate("/estudiante/dashboard"); 
     }
+    return;
+  }
 
     const cargarConfiguracion = async () => {
       const juegoRef = doc(db, "juegos", juegoId);

@@ -225,9 +225,15 @@ const cargarConfiguracion = async () => {
       <button
         className="vista-previa-btn"
         onClick={() => {
+          const modelosConGrupo = modelosSeleccionados.map((m) => ({
+            ...m,
+            grupo: asignaciones[m.url] || null,
+          }));
           sessionStorage.setItem("modoVistaPrevia", "true");
-          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
-          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          //sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+          //sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
           sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
           sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
           sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
@@ -243,6 +249,12 @@ const cargarConfiguracion = async () => {
         <button onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
           sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+          
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
+          sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+                
           navigate("/docente/banco-modelos", {
             state: {
               desdePlantilla: true,
@@ -250,7 +262,7 @@ const cargarConfiguracion = async () => {
               casillaId,
             },
           });
-        }}>Seleccionar más modelos</button>
+        }}>Seleccionar modelos</button>
         <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>Volver</button>
       </div>
     </div>
