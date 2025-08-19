@@ -7,6 +7,8 @@ import "../../assets/styles/estudiante/actividadModeloTexto.css";
 import "../../aframe/arrastrable-modelo";
 import "../../aframe/colision-modelo-texto";
 import "../../aframe/seleccionable-texto";
+import { CELEBRACIONES } from "../../utils/celebraciones";
+
 
 const ActividadModeloTexto = ({ vistaPrevia = false }) => {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ const ActividadModeloTexto = ({ vistaPrevia = false }) => {
   const [modelos, setModelos] = useState([]);
 
   const [modeloActivoIndex, setModeloActivoIndex] = useState(0);
+  const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
 
 useEffect(() => {
   const establecerModeloActivo = (modelos) => {
@@ -31,6 +34,12 @@ useEffect(() => {
       );
 
       establecerModeloActivo(modelosGuardados);
+
+      const c = JSON.parse(
+        sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`) ||
+        sessionStorage.getItem("celebracionSeleccionada") || "null"
+      );
+      if (c) setCelebracion(c);
       return;
     }
 
@@ -57,6 +66,9 @@ useEffect(() => {
       );
 
       establecerModeloActivo(modelosCargados);
+      if (casilla?.configuracion?.celebracion) {
+        setCelebracion(casilla.configuracion.celebracion);
+      }
     } catch (error) {
       console.error("❌ Error al cargar los modelos:", error);
     }
@@ -78,6 +90,20 @@ useEffect(() => {
     });
   };
 }, [modeloActivoIndex, modelos]);
+
+
+  const ejecutarCelebracion = () => {
+    if (celebracion && CELEBRACIONES[celebracion.tipo]) {
+      CELEBRACIONES[celebracion.tipo].render(celebracion.opciones);
+    }
+  };
+
+  useEffect(() => {
+  const onDone = () => ejecutarCelebracion();
+  window.addEventListener("actividad-texto-completada", onDone, { once: true });
+  return () => window.removeEventListener("actividad-texto-completada", onDone);
+}, [celebracion]);
+
 
 
   return (

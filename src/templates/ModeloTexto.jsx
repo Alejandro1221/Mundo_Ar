@@ -14,9 +14,12 @@ const ModeloTexto = () => {
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
 
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
+  const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const cargadoDesdeSession = useRef(false);
 
-  // Verificar IDs de juego y casilla
+  const modelosKey = `modelosSeleccionados_${juegoId}_${casillaId}`;
+  const celebracionKey = `celebracion_${juegoId}_${casillaId}`;
+
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
@@ -29,47 +32,62 @@ const ModeloTexto = () => {
   }, [juegoId, casillaId]);
 
   // Cargar configuración de modelos
-  const cargarConfiguracion = async () => {
-    try {
-      // Primero intenta cargar desde sessionStorage
-      const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-      const modelosGuardados = sessionStorage.getItem(key);
+const cargarConfiguracion = async () => {
+  try {
+    // Primero intenta cargar desde sessionStorage
+    const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+    const modelosGuardados = sessionStorage.getItem(key);
+    const celebracionGuardada = sessionStorage.getItem("celebracionSeleccionada");
+    const celebracionPorCasilla = sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`); // ⬅️ NUEVO
 
-      if (modelosGuardados) {
-        const nuevos = JSON.parse(modelosGuardados);
-        console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
+    if (modelosGuardados) {
+      const nuevos = JSON.parse(modelosGuardados);
+      setModelosSeleccionados(nuevos.map((m) => ({ ...m, texto: m.texto || "" })));
 
-        setModelosSeleccionados(
-          nuevos.map((m) => ({ ...m, texto: m.texto || "" }))
-        );
-
-        cargadoDesdeSession.current = true;
-        return;
+      const origenCelebracion = celebracionPorCasilla || celebracionGuardada; // ⬅️ NUEVO
+      if (origenCelebracion) {
+        try { setCelebracion(JSON.parse(origenCelebracion)); } catch {}
       }
 
-      // Si no, cargar desde Firestore
-      if (cargadoDesdeSession.current) return; 
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-
-      if (juegoSnap.exists()) {
-        const dataJuego = juegoSnap.data();
-        const casilla = dataJuego.casillas[casillaId];
-
-        if (casilla?.configuracion?.modelos?.length > 0) {
-          const modelosConTexto = casilla.configuracion.modelos.map((modelo) => ({
-            ...modelo,
-            texto: modelo.texto || "",
-          }));
-
-          setModelosSeleccionados(modelosConTexto);
-          console.log("✅ Modelos cargados desde Firestore:", modelosConTexto);
-        }
-      }
-    } catch (error) {
-      console.error("❌ Error al cargar configuración:", error);
+      cargadoDesdeSession.current = true;
+      return;
     }
-  };
+
+    // Si no, cargar desde Firestore
+    if (cargadoDesdeSession.current) return;
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+
+    if (juegoSnap.exists()) {
+      const dataJuego = juegoSnap.data();
+      const casilla = dataJuego.casillas?.[casillaId];
+
+      if (casilla?.configuracion?.modelos?.length > 0) {
+        const modelosConTexto = casilla.configuracion.modelos.map((modelo) => ({
+          ...modelo,
+          texto: modelo.texto || "",
+        }));
+
+        setModelosSeleccionados(modelosConTexto);
+        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); // ⬅️ NUEVO (cachear modelos)
+      }
+
+      if (casilla?.configuracion?.celebracion) { 
+        setCelebracion(casilla.configuracion.celebracion);
+        sessionStorage.setItem(
+          `celebracion_${juegoId}_${casillaId}`,
+          JSON.stringify(casilla.configuracion.celebracion)
+        );
+        sessionStorage.setItem(
+          "celebracionSeleccionada",
+          JSON.stringify(casilla.configuracion.celebracion)
+        );
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar configuración:", error);
+  }
+};
 
   // Guardar configuración en Firestore
   const guardarConfiguracion = async () => {
@@ -94,11 +112,14 @@ const ModeloTexto = () => {
           plantilla: "modelo-texto",
           configuracion: {
             modelos: modelosSeleccionados,
+            celebracion,
           },
         };
 
         await updateDoc(juegoRef, { casillas: casillasActuales });
-        mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
+        sessionStorage.setItem(modelosKey, JSON.stringify(modelosSeleccionados));
+        sessionStorage.setItem(celebracionKey, JSON.stringify(celebracion));
+        mostrarMensaje("Plantilla guardada correctamente.", "success");
       }
     } catch (error) {
       console.error("❌ Error al guardar configuración:", error);
@@ -158,7 +179,7 @@ const ModeloTexto = () => {
                   className="eliminar-modelo-btn"
                   onClick={() => {
                     if (confirm("¿Estás seguro de eliminar este modelo?")) {
-                      eliminarModelo(modelo.id);   // 👈 usar id
+                      eliminarModelo(modelo.id);   
                     }
                   }}
                 >
@@ -172,6 +193,50 @@ const ModeloTexto = () => {
           )}
         </div>
 
+        <section className="seccion-celebracion" style={{ marginTop: 16 }}>
+          <h3>🎉 Celebración</h3>
+          <select
+            value={celebracion.tipo}
+            onChange={(e) =>
+              setCelebracion({ tipo: e.target.value, opciones: {} })
+            }
+          >
+            <option value="confeti">🎉 Confeti</option>
+            <option value="gif">🎥 GIF animado</option>
+            <option value="mensaje">✅ Mensaje</option>
+          </select>
+
+          {celebracion.tipo === "gif" && (
+            <input
+              type="text"
+              placeholder="URL del GIF"
+              value={celebracion.opciones.gifUrl || ""}
+              onChange={(e) =>
+                setCelebracion({
+                  ...celebracion,
+                  opciones: { gifUrl: e.target.value },
+                })
+              }
+              style={{ marginTop: 8, width: "100%" }}
+            />
+          )}
+
+          {celebracion.tipo === "mensaje" && (
+            <input
+              type="text"
+              placeholder="Mensaje personalizado"
+              value={celebracion.opciones.mensaje || ""}
+              onChange={(e) =>
+                setCelebracion({
+                  ...celebracion,
+                  opciones: { mensaje: e.target.value },
+                })
+              }
+              style={{ marginTop: 8, width: "100%" }}
+            />
+          )}
+        </section>
+
         <button
           className="vista-previa-btn"
           onClick={() => {
@@ -181,8 +246,8 @@ const ModeloTexto = () => {
             }));
             sessionStorage.setItem("modoVistaPrevia", "true");
             sessionStorage.setItem("paginaAnterior", window.location.pathname);
-            //sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
             sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
+            sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
             navigate("/estudiante/vista-previa-modelo-texto");
           }}
         >

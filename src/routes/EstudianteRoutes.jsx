@@ -12,6 +12,8 @@ import VistaPreviaRompecabezas from "../pages/Estudiantes/VistaPreviaRompecabeza
 import ActividadModeloTexto from "../pages/Estudiantes/ActividadModeloTexto";
 import VistaPreviaModeloTexto from "../pages/Estudiantes/VistaPreviaModeloTexto";
 
+import ActividadCasillaSorpresa from "../pages/Estudiantes/ActividadCasillaSorpresa";
+import VistaPreviaCasillaSorpresa from "../pages/Estudiantes/VistaPreviaCasillaSorpresa";
 import VerificarCasilla from "../pages/Estudiantes/VerificarCasilla";
 import DesdeMarcador from "../pages/Estudiantes/DesdeMarcador";
 
@@ -33,6 +35,9 @@ const EstudianteRoutes = () => {
 
       <Route path="actividad-modelo-texto/:casillaId" element={<ActividadModeloTexto />} />
       <Route path="vista-previa-modelo-texto" element={<VistaPreviaModeloTexto />} />
+
+      <Route path="actividad-casilla-sorpresa/:casillaId" element={<ActividadCasillaSorpresa />} />
+      <Route path="vista-previa-casilla-sorpresa" element={<VistaPreviaCasillaSorpresa />} />
 
 
       <Route path="verificar-casilla" element={<VerificarCasilla />} />           

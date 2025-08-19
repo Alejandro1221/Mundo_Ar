@@ -32,7 +32,6 @@ const VerificarCasilla = () => {
     <>
     <button
         className="btn-volver-casilla"
-        //onClick={() => navigate("/estudiante/seleccionar-casilla")}
         onClick={() => (window.location.href = "/estudiante/seleccionar-casilla")}
       >
         ⬅️ Volver al tablero

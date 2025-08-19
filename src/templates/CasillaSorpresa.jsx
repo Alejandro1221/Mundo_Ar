@@ -52,7 +52,8 @@ const CasillaSorpresa = () => {
     const juegoSnap = await getDoc(juegoRef);
 
     if (juegoSnap.exists()) {
-      const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+      const casillasActuales =
+        juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
       casillasActuales[casillaId] = {
         plantilla: "casilla-sorpresa",
         configuracion: { textos: [textoLimpio] },
@@ -73,7 +74,9 @@ const CasillaSorpresa = () => {
       <div className="contenido-scrollable">
         <h2>Plantilla: Casilla Sorpresa</h2>
 
-        {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
+        {mensaje.texto && (
+          <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
+        )}
 
         <div className="modelo-item">
           <label>Texto:</label>
@@ -94,8 +97,27 @@ const CasillaSorpresa = () => {
         </div>
 
         <div className="acciones-plantilla">
+          <button
+            className="vista-previa-btn"
+            onClick={() => {
+              sessionStorage.setItem(
+                "casillaSorpresaTexto",
+                JSON.stringify(texto)
+              );
+              sessionStorage.setItem("modoVistaPrevia", "true");
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              navigate("/estudiante/vista-previa-casilla-sorpresa");
+            }}
+          >
+            👀 Vista previa
+          </button>
+
           <button onClick={guardarConfiguracion}>💾 Guardar</button>
-          <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>⬅️ Volver</button>
+          <button
+            onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}
+          >
+            ⬅️ Volver
+          </button>
         </div>
       </div>
     </div>

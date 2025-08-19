@@ -41,7 +41,7 @@ const ModeloSonido = () => {
 
   const cargarConfiguracionExistente = async () => {
   try {
-    // 🔊 Cargar sonido desde sessionStorage si existe
+    // Cargar sonido desde sessionStorage si existe
     const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
     if (rawSonido) {
       try {
@@ -52,31 +52,27 @@ const ModeloSonido = () => {
         }
         setSonidoSeleccionado(sonido);
       } catch (err) {
-        console.error("❌ Error al parsear `sonidoSeleccionado`:", err);
+        console.error("Error al parsear `sonidoSeleccionado`:", err);
       }
     }
 
-    // ✅ Intentar cargar modelos desde sessionStorage
+    // Intentar cargar modelos desde sessionStorage
     const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
     const rawModelos = sessionStorage.getItem(key);
     if (rawModelos) {
       try {
         const modelos = JSON.parse(rawModelos);
         if (Array.isArray(modelos)) {
-           console.log("🔑 Clave usada:", key);
-            console.log("📦 Datos recuperados:", modelos);
-          console.log("✅ Modelos recuperados desde sessionStorage:", modelos);
+      
           setModelosSeleccionados(modelos);
-          return; // ⛔ No seguir a Firestore si ya cargamos
+          return; // No seguir a Firestore si ya cargamos
         }
       } catch (err) {
         console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
       }
     }
 
-  
-
-    // 🔄 Si no se cargó desde sessionStorage, ir a Firestore
+    // Si no se cargó desde sessionStorage, ir a Firestore
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
 

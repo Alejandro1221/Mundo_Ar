@@ -1,4 +1,3 @@
-import React from "react";
 import ActividadModeloSonido from "./ActividadModeloSonido";
 
 const VistaPreviaModeloSonido = () => {

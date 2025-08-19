@@ -68,7 +68,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
 
   useEffect(() => {
     window.verificarClasificacion = (modeloEl) => {
-      console.log("Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); // DEBUG
+      console.log("Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); 
       const categoriaModelo = modeloEl.getAttribute("grupo");
       const posicionModelo = new THREE.Vector3();
       modeloEl.object3D.getWorldPosition(posicionModelo);
@@ -135,7 +135,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   const tipo = celebracion?.tipo;
   const opciones = celebracion?.opciones || {};
 
-  console.log("🔥 Tipo de celebración:", tipo, opciones);
+  console.log("Tipo de celebración:", tipo, opciones);
 
   if (CELEBRACIONES[tipo] && typeof CELEBRACIONES[tipo].render === "function") {
     CELEBRACIONES[tipo].render(opciones);

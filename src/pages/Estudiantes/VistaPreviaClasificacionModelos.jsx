@@ -1,4 +1,3 @@
-import React from "react";
 import ActividadClasificacionModelos from "./ActividadClasificacionModelos";
 
 const VistaPreviaClasificacionModelos = () => {
