@@ -66,7 +66,10 @@ const confirmarSeleccion = () => {
     url: m.url || m.modelo_url,
     miniatura: m.miniatura,
     categoria: m.categoria,
+    texto: m.texto || ""
   }));
+
+  console.log("💾 Guardando en sessionStorage:", nuevosSeleccionados);
 
   const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
   sessionStorage.setItem(key, JSON.stringify(nuevosSeleccionados));

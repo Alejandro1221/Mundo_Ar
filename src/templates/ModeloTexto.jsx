@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
@@ -8,177 +8,141 @@ import "../assets/styles/docente/modeloTexto.css";
 
 const ModeloTexto = () => {
   const navigate = useNavigate();
-  //const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos();
   
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
 
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
-  const [asignaciones, setAsignaciones] = useState({});
+  const cargadoDesdeSession = useRef(false);
 
+  // Verificar IDs de juego y casilla
   useEffect(() => {
-  if (!juegoId || !casillaId) {
-    alert("Error: No se encontró el juego o la casilla.");
-    navigate("/docente/dashboard");
-  } else {
-    sessionStorage.setItem("juegoId", juegoId);
-    sessionStorage.setItem("casillaId", casillaId);
-    cargarConfiguracion();
-  }
-}, [juegoId, casillaId]);
-
-
-const cargarConfiguracion = async () => {
-  try {
-    // Si ya hay modelos cargados por el hook, no sobrescribas
-    if (modelosSeleccionados.length > 0) {
-      console.log("✅ Modelos ya estaban en memoria:", modelosSeleccionados);
-      const nuevasAsignaciones = {};
-      modelosSeleccionados.forEach(modelo => {
-        nuevasAsignaciones[modelo.url] = modelo.texto || "";
-      });
-      setAsignaciones(nuevasAsignaciones);
-      return;
+    if (!juegoId || !casillaId) {
+      alert("Error: No se encontró el juego o la casilla.");
+      navigate("/docente/dashboard");
+    } else {
+      sessionStorage.setItem("juegoId", juegoId);
+      sessionStorage.setItem("casillaId", casillaId);
+      cargarConfiguracion();
     }
+  }, [juegoId, casillaId]);
 
-    
-useEffect(() => {
-  if (!juegoId || !casillaId) return;
+  // Cargar configuración de modelos
+  const cargarConfiguracion = async () => {
+    try {
+      // Primero intenta cargar desde sessionStorage
+      const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+      const modelosGuardados = sessionStorage.getItem(key);
 
-  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-  const modelosGuardados = sessionStorage.getItem(key);
+      if (modelosGuardados) {
+        const nuevos = JSON.parse(modelosGuardados);
+        console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
 
-  if (modelosGuardados) {
-    const nuevos = JSON.parse(modelosGuardados);
-    console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
+        setModelosSeleccionados(
+          nuevos.map((m) => ({ ...m, texto: m.texto || "" }))
+        );
 
-    // Fusionar con los ya seleccionados (sin duplicar por URL)
-    const yaExistentes = modelosSeleccionados || [];
-    const nuevosSinRepetir = nuevos.filter(
-      (nuevo) => !yaExistentes.some((m) => m.url === nuevo.url)
-    );
-
-    const fusionados = [...yaExistentes, ...nuevosSinRepetir];
-    setModelosSeleccionados(fusionados);
-
-    // Actualiza asignaciones
-    const nuevasAsignaciones = {};
-    fusionados.forEach((modelo) => {
-      nuevasAsignaciones[modelo.url] = modelo.texto || "";
-    });
-    setAsignaciones(nuevasAsignaciones);
-
-    sessionStorage.removeItem(key);
-    modelosCargadosDesdeSession.current = true;
-
-    setMensaje({ texto: "✅ Modelos actualizados desde el banco.", tipo: "success" });
-    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
-  }
-}, [juegoId, casillaId]);
-
-
-    // Si no, buscar en Firestore
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
-
-    if (juegoSnap.exists()) {
-      const dataJuego = juegoSnap.data();
-      const casilla = dataJuego.casillas[casillaId];
-
-      if (casilla?.configuracion?.modelos?.length > 0) {
-        const modelos = casilla.configuracion.modelos;
-        const nuevasAsignaciones = {};
-        const modelosConTexto = modelos.map((modelo) => {
-          const texto = modelo.texto || "";
-          nuevasAsignaciones[modelo.url] = texto;
-          return { ...modelo, texto };
-        });
-
-        setModelosSeleccionados(modelosConTexto);
-        setAsignaciones(nuevasAsignaciones);
-        console.log("Modelos cargados desde Firestore:", modelosConTexto);
+        cargadoDesdeSession.current = true;
+        //sessionStorage.removeItem(key);
+        mostrarMensaje("✅ Modelos actualizados desde el banco.", "success");
+        return;
       }
-    }
-  } catch (error) {
-    console.error("Error al cargar configuración:", error);
-  }
-};
 
-  
+      // Si no, cargar desde Firestore
+      if (cargadoDesdeSession.current) return; 
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+
+      if (juegoSnap.exists()) {
+        const dataJuego = juegoSnap.data();
+        const casilla = dataJuego.casillas[casillaId];
+
+        if (casilla?.configuracion?.modelos?.length > 0) {
+          const modelosConTexto = casilla.configuracion.modelos.map((modelo) => ({
+            ...modelo,
+            texto: modelo.texto || "",
+          }));
+
+          setModelosSeleccionados(modelosConTexto);
+          console.log("✅ Modelos cargados desde Firestore:", modelosConTexto);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error al cargar configuración:", error);
+    }
+  };
+
+  // Guardar configuración en Firestore
   const guardarConfiguracion = async () => {
     const faltanTextos = modelosSeleccionados.some(
-      (modelo) => !asignaciones[modelo.url]?.trim()
+      (modelo) => !modelo.texto?.trim()
     );
-    
+
     if (faltanTextos) {
       mostrarMensaje("⚠️ Todos los modelos deben tener un concepto escrito.", "error");
       return;
     }
-    
-    // Construye modelos completos
-    const modelosConTexto = modelosSeleccionados.map((modelo) => ({
-      ...modelo,
-      texto: asignaciones[modelo.url].trim(),
-    }));
-  
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
-  
-    if (juegoSnap.exists()) {
-      const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-  
-      casillasActuales[casillaId] = {
-        plantilla: "modelo-texto",
-        configuracion: {
-          modelos: modelosConTexto,
-        },
-      };
-  
-      console.log("Modelos que se van a guardar:", modelosConTexto);
-      console.log("Casillas que se van a actualizar:", casillasActuales);
-      console.log("Guardado en casilla:", casillaId);
 
-      await updateDoc(juegoRef, { casillas: casillasActuales });
-      mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
+    try {
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+
+      if (juegoSnap.exists()) {
+        const casillasActuales =
+          juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+
+        casillasActuales[casillaId] = {
+          plantilla: "modelo-texto",
+          configuracion: {
+            modelos: modelosSeleccionados,
+          },
+        };
+
+        await updateDoc(juegoRef, { casillas: casillasActuales });
+        mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
+      }
+    } catch (error) {
+      console.error("❌ Error al guardar configuración:", error);
     }
   };
-  
 
+  // Mostrar mensajes
   const mostrarMensaje = (texto, tipo = "info") => {
     setMensaje({ texto, tipo });
     setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
   };
 
+  // Editar texto dentro de modelosSeleccionados
   const asignarTexto = (modeloUrl, texto) => {
-    setAsignaciones((prev) => ({ ...prev, [modeloUrl]: texto }));
-    };
-
-    const eliminarModelo = (urlModelo) => {
-      const nuevosModelos = modelosSeleccionados.filter((m) => m.url !== urlModelo);
-      setModelosSeleccionados(nuevosModelos);
-
-      const nuevasAsignaciones = { ...asignaciones };
-      delete nuevasAsignaciones[urlModelo];
-      setAsignaciones(nuevasAsignaciones);
-
-      sessionStorage.setItem(
-        `modelosSeleccionados_${juegoId}_${casillaId}`,
-        JSON.stringify(nuevosModelos)
-  );
+    setModelosSeleccionados((prev) =>
+      prev.map((m) => (m.url === modeloUrl ? { ...m, texto } : m))
+    );
   };
+
+  // Eliminar modelo
+  const eliminarModelo = (idModelo) => {
+  const nuevosModelos = modelosSeleccionados.filter((m) => m.id !== idModelo);
+  setModelosSeleccionados(nuevosModelos);
+
+  sessionStorage.setItem(
+    `modelosSeleccionados_${juegoId}_${casillaId}`,
+    JSON.stringify(nuevosModelos)
+  );
+};
+
 
   return (
     <div className="modelo-texto-container">
-       <div className="contenido-scrollable">
+      <div className="contenido-scrollable">
         <h2>Plantilla: Modelo con Texto</h2>
 
         {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
         <div className="modelos-lista">
           {modelosSeleccionados.length > 0 ? (
-            modelosSeleccionados.map((modelo, index) => (
-              <div key={index} className="modelo-item">
+            modelosSeleccionados.map((modelo) => (
+              <div key={modelo.id} className="modelo-item">
                 <model-viewer
                   src={modelo.url}
                   alt={modelo.nombre}
@@ -190,21 +154,22 @@ useEffect(() => {
                 <p>{modelo.nombre}</p>
                 <textarea
                   placeholder="Escribe aquí el concepto del modelo"
-                  value={asignaciones[modelo.url] || ""}
+                  value={modelo.texto || ""}
                   onChange={(e) => asignarTexto(modelo.url, e.target.value)}
                 ></textarea>
-                  <button
-                    className="eliminar-modelo-btn"
-                   onClick={() => {
+                <button
+                  className="eliminar-modelo-btn"
+                  onClick={() => {
                     if (confirm("¿Estás seguro de eliminar este modelo?")) {
-                      eliminarModelo(modelo.url);
+                      eliminarModelo(modelo.id);   // 👈 usar id
                     }
                   }}
-                  >
-                    Eliminar
-                  </button>
+                >
+                  Eliminar
+                </button>
               </div>
             ))
+
           ) : (
             <p>No hay modelos seleccionados.</p>
           )}
@@ -213,14 +178,18 @@ useEffect(() => {
         <button
           className="vista-previa-btn"
           onClick={() => {
+            const modelosConTexto = modelosSeleccionados.map((m) => ({
+              ...m,
+              texto: m.texto || "",
+            }));
             sessionStorage.setItem("modoVistaPrevia", "true");
             sessionStorage.setItem("paginaAnterior", window.location.pathname);
-            sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-            sessionStorage.setItem("asignacionesTexto", JSON.stringify(asignaciones));
+            //sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+            sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
             navigate("/estudiante/vista-previa-modelo-texto");
           }}
         >
-          vista previa
+          Vista previa
         </button>
 
         <div className="acciones-plantilla">
@@ -229,15 +198,18 @@ useEffect(() => {
             onClick={() => {
               sessionStorage.setItem("paginaAnterior", window.location.pathname);
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-              //navigate("/docente/banco-modelos", { state: { desdePlantilla: true } });
-              navigate("/docente/banco-modelos", { state: { desdePlantilla: true,juegoId, casillaId, }, });
+              navigate("/docente/banco-modelos", {
+                state: { desdePlantilla: true, juegoId, casillaId },
+              });
             }}
           >
             Seleccionar Modelos
           </button>
-          <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>⬅️ Volver</button>
+          <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>
+            ⬅️ Volver
+          </button>
         </div>
-        </div>
+      </div>
     </div>
   );
 };
