@@ -44,8 +44,6 @@ const ModeloTexto = () => {
         );
 
         cargadoDesdeSession.current = true;
-        //sessionStorage.removeItem(key);
-        mostrarMensaje("✅ Modelos actualizados desde el banco.", "success");
         return;
       }
 
@@ -130,7 +128,6 @@ const ModeloTexto = () => {
     JSON.stringify(nuevosModelos)
   );
 };
-
 
   return (
     <div className="modelo-texto-container">

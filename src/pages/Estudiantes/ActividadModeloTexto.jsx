@@ -25,22 +25,14 @@ useEffect(() => {
     }
   };
 
-  if (vistaPrevia) {
-    const modelosGuardados = JSON.parse(
-      sessionStorage.getItem("modelosSeleccionados") || "[]"
-    );
-    const asignacionesTexto = JSON.parse(
-      sessionStorage.getItem("asignacionesTexto") || "{}"
-    );
+    if (vistaPrevia) {
+      const modelosGuardados = JSON.parse(
+        sessionStorage.getItem("modelosSeleccionados") || "[]"
+      );
 
-    const modelosConTexto = modelosGuardados.map((modelo) => ({
-      ...modelo,
-      texto: asignacionesTexto[modelo.url] || "",
-    }));
-
-    establecerModeloActivo(modelosConTexto);
-    return;
-  }
+      establecerModeloActivo(modelosGuardados);
+      return;
+    }
 
   const cargarModelos = async () => {
     if (!juegoId || casillaId === null) {
