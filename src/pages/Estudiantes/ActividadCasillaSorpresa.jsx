@@ -1,61 +1,89 @@
-// src/pages/Estudiantes/ActividadCasillaSorpresa.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
-import "../../assets/styles/estudiante/ActividadCasillaSorpresa.css";
 import HeaderActividad from "../../components/Estudiante/HeaderActividad";
+import "../../assets/styles/estudiante/ActividadCasillaSorpresa.css";
 
 const ActividadCasillaSorpresa = ({ vistaPrevia = false }) => {
   const navigate = useNavigate();
-  const [juegoId] = useState(sessionStorage.getItem("juegoId"));
-  const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const [texto, setTexto] = useState("");
 
   useEffect(() => {
-    if (vistaPrevia) {
-      // Recuperar de sessionStorage
-      const textoPrevio = sessionStorage.getItem("casillaSorpresaTexto");
-      if (textoPrevio) {
-        setTexto(JSON.parse(textoPrevio));
-      }
-    } else {
-      cargarTexto();
+    const juegoId = sessionStorage.getItem("juegoId");
+    const casillaId = sessionStorage.getItem("casillaId");
+
+    if (vistaPrevia || sessionStorage.getItem("modoVistaPrevia") === "true") {
+      const t = sessionStorage.getItem("casillaSorpresaTexto");
+      setTexto(t ? JSON.parse(t) : "");
+      return;
     }
-  }, [vistaPrevia, juegoId, casillaId]);
 
-  const cargarTexto = async () => {
-    try {
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-
-      if (juegoSnap.exists()) {
-        const casilla = juegoSnap.data().casillas?.[casillaId];
-        const textoGuardado = casilla?.configuracion?.textos?.[0] || "";
-        setTexto(textoGuardado);
-      }
-    } catch (error) {
-      console.error("❌ Error cargando Casilla Sorpresa:", error);
+    // Modo normal (jugando): leer de Firestore
+    if (!juegoId || casillaId == null) {
+      // si no hay contexto, regresa a dashboard o donde corresponda
+      navigate("/estudiante/dashboard");
+      return;
     }
-  };
 
-  return (
-    <div className="actividad-sorpresa-container">
-      {/* 👇 Header con botón de volver */}
-      <HeaderActividad titulo="Casilla Sorpresa" />
+    const cargar = async () => {
+      try {
+        const snap = await getDoc(doc(db, "juegos", juegoId));
+        if (!snap.exists()) return;
+        const data = snap.data();
+        const idx = Number(casillaId);
+        const casilla = data?.casillas?.[idx];
+        const t = casilla?.configuracion?.textos?.[0] || "";
+        setTexto(t);
+      } catch (err) {
+        console.error("❌ Error cargando Casilla Sorpresa:", err);
+      }
+    };
 
-      <div className="actividad-sorpresa-card">
-        <h2>🎁 ¡Sorpresa!</h2>
-        <p>{texto || "No hay texto configurado para esta casilla."}</p>
-      </div>
+    cargar();
+  }, [vistaPrevia, navigate]);
 
-      {/* Banner de vista previa solo si viene desde docente */}
-      {vistaPrevia && (
-        <div className="vista-previa-banner">
-        </div>
-      )}
+return (
+  <div className="actividad-ra-container">
+    <HeaderActividad titulo="Casilla Sorpresa (AR)" />
+
+    {/* Escena AR */}
+    <a-scene
+      arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      embedded
+      renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+      background="transparent: true"
+      style={{ width: "100%", height: "70vh" }}
+    >
+     
+      <a-entity position="0 0 -2">
+ 
+        <a-text
+          value={(texto || "—").replace(/\r?\n/g, "\n")}
+          align="center"
+          color="#111111"
+          width="2.8"           
+          position="0 0 0.1"    
+          side="double"         
+          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+          anchor="center"
+          baseline="center"
+          letter-spacing="0.05"
+          line-height="60"
+          wrap-count="30"
+
+        ></a-text>
+      </a-entity>
+
+      <a-entity camera="fov: 95" position="0 0 0"></a-entity>
+    </a-scene>
+
+    <div style={{ padding: 12, textAlign: "center", fontSize: 14, opacity: 0.8 }}>
+      Si no ves la cámara, revisa permisos y que estés en HTTPS/localhost.
     </div>
-  );
+  </div>
+);
 };
 
 export default ActividadCasillaSorpresa;

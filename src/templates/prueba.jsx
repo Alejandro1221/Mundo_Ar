@@ -1,34 +1,57 @@
+// Cargar configuración de modelos
+const cargarConfiguracion = async () => {
+  try {
+    // Primero intenta cargar desde sessionStorage
+    const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+    const modelosGuardados = sessionStorage.getItem(key);
+    const celebracionGuardada = sessionStorage.getItem("celebracionSeleccionada");
+    const celebracionPorCasilla = sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`); // ⬅️ NUEVO
 
-useEffect(() => {
-  if (!juegoId || !casillaId) return;
+    if (modelosGuardados) {
+      const nuevos = JSON.parse(modelosGuardados);
+      setModelosSeleccionados(nuevos.map((m) => ({ ...m, texto: m.texto || "" })));
 
-  const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-  const modelosGuardados = sessionStorage.getItem(key);
+      const origenCelebracion = celebracionPorCasilla || celebracionGuardada; // ⬅️ NUEVO
+      if (origenCelebracion) {
+        try { setCelebracion(JSON.parse(origenCelebracion)); } catch {}
+      }
 
-  if (modelosGuardados) {
-    const nuevos = JSON.parse(modelosGuardados);
-    console.log("📥 Modelos recuperados desde sessionStorage:", nuevos);
+      cargadoDesdeSession.current = true;
+      return;
+    }
 
-    // Fusionar con los ya seleccionados (sin duplicar por URL)
-    const yaExistentes = modelosSeleccionados || [];
-    const nuevosSinRepetir = nuevos.filter(
-      (nuevo) => !yaExistentes.some((m) => m.url === nuevo.url)
-    );
+    // Si no, cargar desde Firestore
+    if (cargadoDesdeSession.current) return;
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
 
-    const fusionados = [...yaExistentes, ...nuevosSinRepetir];
-    setModelosSeleccionados(fusionados);
+    if (juegoSnap.exists()) {
+      const dataJuego = juegoSnap.data();
+      const casilla = dataJuego.casillas?.[casillaId];
 
-    // Actualiza asignaciones
-    const nuevasAsignaciones = {};
-    fusionados.forEach((modelo) => {
-      nuevasAsignaciones[modelo.url] = modelo.texto || "";
-    });
-    setAsignaciones(nuevasAsignaciones);
+      if (casilla?.configuracion?.modelos?.length > 0) {
+        const modelosConTexto = casilla.configuracion.modelos.map((modelo) => ({
+          ...modelo,
+          texto: modelo.texto || "",
+        }));
 
-    sessionStorage.removeItem(key);
-    modelosCargadosDesdeSession.current = true;
+        setModelosSeleccionados(modelosConTexto);
+        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); // ⬅️ NUEVO (cachear modelos)
+      }
 
-    setMensaje({ texto: "✅ Modelos actualizados desde el banco.", tipo: "success" });
-    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
+      if (casilla?.configuracion?.celebracion) { // ⬅️ NUEVO (cargar y cachear celebración)
+        setCelebracion(casilla.configuracion.celebracion);
+        sessionStorage.setItem(
+          `celebracion_${juegoId}_${casillaId}`,
+          JSON.stringify(casilla.configuracion.celebracion)
+        );
+        sessionStorage.setItem(
+          "celebracionSeleccionada",
+          JSON.stringify(casilla.configuracion.celebracion)
+        );
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar configuración:", error);
   }
-}, [juegoId, casillaId]);
+};
