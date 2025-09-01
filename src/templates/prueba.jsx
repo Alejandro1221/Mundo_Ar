@@ -1,57 +1,176 @@
-// Cargar configuración de modelos
-const cargarConfiguracion = async () => {
-  try {
-    // Primero intenta cargar desde sessionStorage
-    const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-    const modelosGuardados = sessionStorage.getItem(key);
-    const celebracionGuardada = sessionStorage.getItem("celebracionSeleccionada");
-    const celebracionPorCasilla = sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`); // ⬅️ NUEVO
+import React, { useState, useEffect } from "react";
+import { subirModelo } from "../../services/modelosService";
+import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
+import "../../assets/styles/bancoModelos/formularioSubida.css";
 
-    if (modelosGuardados) {
-      const nuevos = JSON.parse(modelosGuardados);
-      setModelosSeleccionados(nuevos.map((m) => ({ ...m, texto: m.texto || "" })));
+const FormularioSubida = ({ setModelos }) => {
+  const [nombre, setNombre] = useState("");
+  const [nombreTouched, setNombreTouched] = useState(false);
 
-      const origenCelebracion = celebracionPorCasilla || celebracionGuardada; // ⬅️ NUEVO
-      if (origenCelebracion) {
-        try { setCelebracion(JSON.parse(origenCelebracion)); } catch {}
-      }
+  const [categoria, setCategoria] = useState("");
+  const [categorias, setCategorias] = useState(["Seleccione una categoría"]);
+  const [nuevaCategoria, setNuevaCategoria] = useState("");
+  const [mostrarInputCategoria, setMostrarInputCategoria] = useState(false);
+  const [archivo, setArchivo] = useState(null);
+  const [miniatura, setMiniatura] = useState(null);
+  const [subiendo, setSubiendo] = useState(false);
+  const [progreso, setProgreso] = useState(0);
 
-      cargadoDesdeSession.current = true;
+  const nombreTrim = nombre.trim();
+  const nombreValido = nombreTrim.length > 0;
+  const puedeEnviar = nombreValido && categoria && archivo && miniatura && !subiendo;
+
+  useEffect(() => {
+    const cargarCategorias = async () => {
+      const categoriasCargadas = await obtenerCategorias();
+      setCategorias(categoriasCargadas || []);
+    };
+    cargarCategorias();
+  }, []);
+
+  const manejarSubida = async (e) => {
+    e.preventDefault();
+
+    // Validación de nombre (sin alert)
+    if (!nombreValido) {
+      setNombreTouched(true);
       return;
     }
 
-    // Si no, cargar desde Firestore
-    if (cargadoDesdeSession.current) return;
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
-
-    if (juegoSnap.exists()) {
-      const dataJuego = juegoSnap.data();
-      const casilla = dataJuego.casillas?.[casillaId];
-
-      if (casilla?.configuracion?.modelos?.length > 0) {
-        const modelosConTexto = casilla.configuracion.modelos.map((modelo) => ({
-          ...modelo,
-          texto: modelo.texto || "",
-        }));
-
-        setModelosSeleccionados(modelosConTexto);
-        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); // ⬅️ NUEVO (cachear modelos)
-      }
-
-      if (casilla?.configuracion?.celebracion) { // ⬅️ NUEVO (cargar y cachear celebración)
-        setCelebracion(casilla.configuracion.celebracion);
-        sessionStorage.setItem(
-          `celebracion_${juegoId}_${casillaId}`,
-          JSON.stringify(casilla.configuracion.celebracion)
-        );
-        sessionStorage.setItem(
-          "celebracionSeleccionada",
-          JSON.stringify(casilla.configuracion.celebracion)
-        );
-      }
+    // Validación de los demás campos (puedes mantener alert si quieres)
+    if (!categoria || !archivo || !miniatura) {
+      alert("⚠️ Completa categoría, modelo y miniatura.");
+      return;
     }
-  } catch (error) {
-    console.error("❌ Error al cargar configuración:", error);
-  }
+
+    setSubiendo(true);
+    setProgreso(0);
+
+    try {
+      // Ajusta la firma si tu servicio recibe objeto en vez de params
+      const nuevoModelo = await subirModelo(
+        nombreTrim,
+        categoria,
+        archivo,
+        miniatura,
+        setProgreso
+      );
+
+      if (nuevoModelo) {
+        setModelos((prev) => [nuevoModelo, ...prev]);
+        setProgreso(100);
+        setTimeout(() => setProgreso(0), 2000);
+
+        // Reset del formulario
+        setNombre("");
+        setNombreTouched(false);
+        setCategoria("");
+        setArchivo(null);
+        setMiniatura(null);
+      }
+    } catch (error) {
+      console.error("❌ Error en la subida:", error);
+      alert("Ocurrió un error al subir el modelo.");
+    } finally {
+      setSubiendo(false);
+    }
+  };
+
+  const manejarNuevaCategoria = async () => {
+    if (!mostrarInputCategoria) {
+      setMostrarInputCategoria(true);
+      return;
+    }
+    const nueva = nuevaCategoria.trim();
+    if (!nueva) return;
+
+    await agregarCategoria(nueva);
+    setCategorias((prev) => [...prev, nueva]);
+    setCategoria(nueva);
+    setNuevaCategoria("");
+    setMostrarInputCategoria(false);
+  };
+
+  return (
+    <form className="form-subida" onSubmit={manejarSubida} noValidate>
+      <fieldset disabled={subiendo}>
+        {/* Nombre obligatorio */}
+        <label>Nombre del modelo *</label>
+        <input
+          type="text"
+          placeholder="Ej. Esqueleto humano"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          onBlur={() => setNombreTouched(true)}
+          aria-invalid={nombreTouched && !nombreValido ? "true" : "false"}
+          required
+          maxLength={60}
+        />
+        {nombreTouched && !nombreValido && (
+          <small className="error">Debes escribir un nombre.</small>
+        )}
+
+        <label>Seleccionar Categoría:</label>
+        <select
+          value={categoria}
+          onChange={(e) => setCategoria(e.target.value)}
+          required
+        >
+          <option value="">-- Seleccionar --</option>
+          {categorias.map((cat, index) => (
+            <option key={index} value={cat}>{cat}</option>
+          ))}
+        </select>
+
+        <div className={`nueva-categoria-container ${mostrarInputCategoria ? "columna" : ""}`}>
+          {mostrarInputCategoria && (
+            <input
+              type="text"
+              placeholder="Nueva Categoría"
+              value={nuevaCategoria}
+              onChange={(e) => setNuevaCategoria(e.target.value)}
+            />
+          )}
+          <button
+            type="button"
+            className="btn-nueva-categoria"
+            onClick={manejarNuevaCategoria}
+          >
+            {mostrarInputCategoria ? "✔ Agregar" : "➕ Nueva Categoría"}
+          </button>
+        </div>
+
+        <label>Modelo (.glb)</label>
+        <input
+          type="file"
+          accept=".glb"
+          onChange={(e) => setArchivo(e.target.files[0] || null)}
+          required
+        />
+
+        <label>Miniatura (Imagen PNG)</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setMiniatura(e.target.files[0] || null)}
+          required
+        />
+
+        {subiendo && (
+          <div className="progreso-container">
+            <p>📊 Subiendo... {progreso}%</p>
+            <div className="progreso-barra">
+              <div className="progreso" style={{ width: `${progreso}%` }}></div>
+            </div>
+          </div>
+        )}
+
+        <button type="submit" className="btn-subir" disabled={!puedeEnviar}>
+          {subiendo ? "Subiendo..." : "Subir Modelo"}
+        </button>
+      </fieldset>
+    </form>
+  );
 };
+
+export default FormularioSubida;

@@ -132,7 +132,7 @@ const ActividadModeloSonido = ({ vistaPrevia = false }) => {
      
       )}
 
-      {/* 🎮 Escena AR */}
+      {/* Escena AR */}
       <a-scene
           arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
           vr-mode-ui="enabled: false"

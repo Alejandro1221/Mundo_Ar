@@ -12,6 +12,10 @@
 
   --borde-suave: 12px;
   --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  --ui-disabled-bg: #e9ecef;     
+  --ui-disabled-text: #ffffff;   
+  --ui-disabled-border: #dfe3e8; 
 }
 
 /* ENCABEZADOS */
@@ -191,4 +195,37 @@ a-scene, a-scene .a-canvas, a-scene canvas {
 .Toastify__progress-bar {
   background: var(--pastel-indigo);
 }
+
+/* Desabilitar Botones */
+
+/* Botones deshabilitados en general */
+button:disabled,
+.btn:disabled,
+.is-disabled {
+  background: var(--ui-disabled-bg) ;
+  color: var(--ui-disabled-text) ;
+  border: 1px solid var(--ui-disabled-border) ;
+  cursor: not-allowed ;
+  box-shadow: none ;
+  opacity: 1;           
+  transform: none;
+}
+
+/* Evitar hover/animaciones si está deshabilitado */
+button:disabled:hover,
+.btn:disabled:hover,
+.is-disabled:hover {
+  transform: none;
+}
+
+/* Inputs deshabilitados */
+input[disabled],
+select[disabled],
+textarea[disabled] {
+  background: var(--ui-disabled-bg);
+  color: var(--ui-disabled-text);
+  border-color: var(--ui-disabled-border);
+  cursor: not-allowed;
+}
+
 

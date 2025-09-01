@@ -56,7 +56,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
       setNombre("");
       setCategoria("");
       setProgreso(0);
-      if (inputFileRef.current) inputFileRef.current.value = ""; // ✅ Limpiar input file
+      if (inputFileRef.current) inputFileRef.current.value = ""; 
 
       alert("✅ Sonido subido exitosamente.");
     } catch (error) {

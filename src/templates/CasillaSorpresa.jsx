@@ -109,7 +109,7 @@ const CasillaSorpresa = () => {
               navigate("/estudiante/vista-previa-casilla-sorpresa");
             }}
           >
-            👀 Vista previa
+            Vista previa
           </button>
 
           <button onClick={guardarConfiguracion}>💾 Guardar</button>

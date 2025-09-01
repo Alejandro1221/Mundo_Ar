@@ -17,7 +17,6 @@ const BancoModelos = () => {
   const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
   const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
 
-
   const location = useLocation();
   const navigate = useNavigate();
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
@@ -86,7 +85,6 @@ const confirmarSeleccion = () => {
 });
 
 };
-
 
 const manejarEliminacion = async (modelo) => {
   if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {

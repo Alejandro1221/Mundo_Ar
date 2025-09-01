@@ -152,6 +152,32 @@
   transition: width 0.4s ease-in-out;
 }
 
+/* coloca el error debajo del input, alineado a la izquierda */
+.form-subida .error {
+  display: block;
+  color: #d32f2f;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  margin: 4px 0 10px 4px; 
+}
+
+.form-subida input[aria-invalid="true"] {
+  border-color: #e53935;
+  box-shadow: 0 0 0 2px rgba(229, 57, 53, 0.12);
+  outline: none;
+}
+
+.form-subida .btn-subir:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nueva-categoria-container.columna {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
 
 /*Adaptación móvil */
 @media (max-width: 480px) {

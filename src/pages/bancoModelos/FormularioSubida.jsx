@@ -5,6 +5,8 @@ import "../../assets/styles/bancoModelos/formularioSubida.css";
 
 const FormularioSubida = ({ setModelos }) => {
   const [nombre, setNombre] = useState("");
+  const [nombreTouched, setNombreTouched] = useState(false);
+
   const [categoria, setCategoria] = useState("");
   const [categorias, setCategorias] = useState(["Seleccione una categoría"]);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
@@ -13,6 +15,9 @@ const FormularioSubida = ({ setModelos }) => {
   const [miniatura, setMiniatura] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
+
+  const nombreTrim = nombre.trim();
+  const nombreValido = nombreTrim.length > 0;
 
   useEffect(() => {
     const cargarCategorias = async () => {
@@ -24,7 +29,12 @@ const FormularioSubida = ({ setModelos }) => {
 
   const manejarSubida = async (e) => {
     e.preventDefault();
-    if (!nombre || !categoria || !archivo || !miniatura) {
+
+    if (!nombreValido) {
+      setNombreTouched(true);
+      return;
+    }
+    if (!categoria || !archivo || !miniatura) {
       alert("⚠️ Completa todos los campos");
       return;
     }
@@ -33,12 +43,14 @@ const FormularioSubida = ({ setModelos }) => {
     setProgreso(0);
 
     try {
-      const nuevoModelo = await subirModelo(nombre, categoria, archivo, miniatura, setProgreso);
+      const nuevoModelo = await subirModelo(nombreTrim, categoria, archivo, miniatura, setProgreso);
       if (nuevoModelo) {
         setModelos((prev) => [nuevoModelo, ...prev]);
         setProgreso(100);
         setTimeout(() => setProgreso(0), 2000);
+
         setNombre("");
+        setNombreTouched(false);
         setCategoria("");
         setArchivo(null);
         setMiniatura(null);
@@ -66,16 +78,26 @@ const FormularioSubida = ({ setModelos }) => {
     setMostrarInputCategoria(false);
   };
 
+  const puedeSubir =
+  nombreValido && categoria && archivo && miniatura && !subiendo;
+
   return (
     <form className="form-subida" onSubmit={manejarSubida}>
       <fieldset disabled={subiendo}>
+        <label>Nombre del modelo </label>
         <input
           type="text"
-          placeholder="Nombre del modelo"
+          placeholder="Escribe el nombre del modelo"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          onBlur={() => setNombreTouched(true)}
+          aria-invalid={nombreTouched && !nombreValido ? "true" : "false"}
           required
+          maxLength={60}
         />
+        {nombreTouched && !nombreValido && (
+          <small className="error">Debes escribir un nombre.</small>
+        )}
 
         <label>Seleccionar Categoría:</label>
         <select
@@ -89,7 +111,6 @@ const FormularioSubida = ({ setModelos }) => {
           ))}
         </select>
 
-        {/* 🔧 Aquí está el ajuste con clase condicional */}
         <div className={`nueva-categoria-container ${mostrarInputCategoria ? "columna" : ""}`}>
           {mostrarInputCategoria && (
             <input
@@ -133,7 +154,7 @@ const FormularioSubida = ({ setModelos }) => {
           </div>
         )}
 
-        <button type="submit" className="btn-subir" disabled={subiendo}>
+        <button type="submit" className="btn-subir" disabled={!puedeSubir}>
           {subiendo ? "Subiendo..." : "Subir Modelo"}
         </button>
       </fieldset>

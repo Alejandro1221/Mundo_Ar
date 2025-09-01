@@ -51,12 +51,10 @@ return (
     <a-scene
       arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
       vr-mode-ui="enabled: false"
-      embedded
       renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
       background="transparent: true"
-      style={{ width: "100%", height: "70vh" }}
     >
-     
+
       <a-entity position="0 0 -2">
  
         <a-text
