@@ -97,7 +97,7 @@
 }
 
 .form-subida button:disabled {
-  background: gray !important;
+  background: rgb(153, 150, 150)!important;
   cursor: not-allowed;
 }
 

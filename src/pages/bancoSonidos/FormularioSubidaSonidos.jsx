@@ -9,11 +9,14 @@ import "../../assets/styles/bancoSonidos/formularioSubidaSonidos.css";
 const FormularioSubidaSonidos = ({ setSonidos }) => {
   const [archivo, setArchivo] = useState(null);
   const [nombre, setNombre] = useState("");
+  const [nombreTouched, setNombreTouched] = useState(false);
   const [categoria, setCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
   const [progreso, setProgreso] = useState(0);
   const [subiendo, setSubiendo] = useState(false);
 
+   const nombreTrim = nombre.trim();
+  const nombreValido = nombreTrim.length > 0;
   const [mostrarCampoNuevaCategoria, setMostrarCampoNuevaCategoria] =
     useState(false);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
@@ -36,7 +39,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
   const handleSubir = async (e) => {
     e.preventDefault();
 
-    if (!archivo || !nombre || !categoria) {
+    if (!archivo || !nombreValido || !categoria) {
       alert("⚠️ Todos los campos son obligatorios.");
       return;
     }
@@ -45,7 +48,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
     try {
       const nuevoSonido = await subirSonido(
         archivo,
-        nombre,
+        nnombre.trim,
         categoria,
         setProgreso
       );
@@ -90,7 +93,14 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
         placeholder="Nombre del sonido"
         value={nombre}
         onChange={(e) => setNombre(e.target.value)}
+        onBlur={() => setNombreTouched(true)}
+        aria-invalid={nombreTouched && !nombreValido ? "true" : "false"}
+        required
+        maxLength={60}
       />
+      {nombreTouched && !nombreValido && (
+        <small className="error">Debes escribir un nombre.</small>
+      )}
 
       <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
         <option value="">Selecciona una categoría</option>
@@ -144,7 +154,8 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
         </div>
       )}
 
-      <button type="submit" disabled={subiendo} className="btn-subir-sonido">
+      <button type="submit" 
+        disabled={subiendo || !archivo || !categoria || !nombreValido} className="btn-subir-sonido">
         {subiendo ? "Subiendo..." : "🎵 Subir Sonido"}
       </button>
     </form>
