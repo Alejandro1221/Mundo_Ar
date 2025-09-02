@@ -20,19 +20,27 @@ const CasillaSorpresa = () => {
     }
   }, [juegoId, casillaId]);
 
-  const cargarConfiguracion = async () => {
-    try {
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-      if (juegoSnap.exists()) {
-        const casilla = juegoSnap.data().casillas?.[casillaId];
-        const textoGuardado = casilla?.configuracion?.textos?.[0] || "";
-        setTexto(textoGuardado);
-      }
-    } catch (error) {
-      console.error("❌ Error al cargar la configuración:", error);
-    }
-  };
+const cargarConfiguracion = async () => {
+  try {
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+    if (!juegoSnap.exists()) return;
+
+    const idx = Number(casillaId); // usar índice numérico
+    const casillas = juegoSnap.data().casillas || [];
+    const casilla = Array.isArray(casillas) ? casillas[idx] : casillas?.[idx];
+
+    const cfg = casilla?.configuracion || {};
+    // Acepta ambos formatos: textos (array) o texto (string)
+    const textos = Array.isArray(cfg.textos)
+      ? cfg.textos
+      : (cfg.texto ? [cfg.texto] : []);
+
+    setTexto(textos[0] || "");
+  } catch (error) {
+    console.error("❌ Error al cargar la configuración:", error);
+  }
+};
 
   const guardarConfiguracion = async () => {
     const textoLimpio = texto.trim();
@@ -42,25 +50,37 @@ const CasillaSorpresa = () => {
       mostrarMensaje("⚠️ Debes escribir un texto.", "error");
       return;
     }
-
     if (palabras.length > 50) {
       mostrarMensaje("⚠️ El texto no debe exceder las 50 palabras.", "error");
       return;
     }
 
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
+    try {
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+      if (!juegoSnap.exists()) {
+        mostrarMensaje("❌ Juego no encontrado.", "error");
+        return;
+      }
 
-    if (juegoSnap.exists()) {
-      const casillasActuales =
-        juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-      casillasActuales[casillaId] = {
+      const idx = Number(casillaId);                      
+      const origen = juegoSnap.data().casillas;
+      const casillasActuales = Array.isArray(origen) ? [...origen] : [];
+
+      if (casillasActuales.length <= idx) {
+        casillasActuales.length = idx + 1;                 
+      }
+
+      casillasActuales[idx] = {
         plantilla: "casilla-sorpresa",
         configuracion: { textos: [textoLimpio] },
       };
 
       await updateDoc(juegoRef, { casillas: casillasActuales });
       mostrarMensaje("✅ Texto guardado correctamente.", "success");
+    } catch (error) {
+      console.error("❌ Error al guardar la configuración:", error);
+      mostrarMensaje("❌ Error al guardar.", "error");
     }
   };
 

@@ -22,6 +22,7 @@ const DesdeMarcador = () => {
         "clasificacion-modelos": `/estudiante/actividad-clasificacion-modelos/${casillaId + 1}`,
         "rompecabezas-modelo": `/estudiante/actividad-rompecabezas/${casillaId + 1}`,
         "modelo-texto": `/estudiante/actividad-modelo-texto/${casillaId + 1}`,
+        "casilla-sorpresa": `/estudiante/actividad-casilla-sorpresa/${casillaId + 1}`,
       };
 
       if (plantilla && rutas[plantilla]) {

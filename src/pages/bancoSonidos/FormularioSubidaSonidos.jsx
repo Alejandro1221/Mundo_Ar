@@ -48,7 +48,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
     try {
       const nuevoSonido = await subirSonido(
         archivo,
-        nnombre.trim,
+        nombretrim,
         categoria,
         setProgreso
       );
