@@ -72,3 +72,45 @@
   background-color: var(--pastel-azul); 
   color: var(--texto-principal);
 }
+
+
+.flash {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 10px 0 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  border: 1px solid #eef1f4;
+  background: #fff;
+}
+
+.flash-warning { border-left: 6px solid #EFDB89; }
+.flash-success { border-left: 6px solid #B3E18F; }
+.flash-error   { border-left: 6px solid #F297A6; }
+.flash-info    { border-left: 6px solid #63CEE0; }
+
+.flash-title {
+  font-weight: 800;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.flash-message {
+  color: #4b5563;
+  line-height: 1.35;
+}
+
+.flash-close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px 6px;
+  border-radius: 8px;
+}
+.flash-close:hover { background: #f3f4f6; }

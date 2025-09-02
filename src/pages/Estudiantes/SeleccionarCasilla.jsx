@@ -8,6 +8,23 @@ import "../../assets/styles/estudiante/SeleccionarCasilla.css";
 const SeleccionarCasilla = () => {
   const navigate = useNavigate();
   const [casillas, setCasillas] = useState([]);
+  const [flash, setFlash] = useState(null);
+
+  useEffect(() => {
+    const raw = sessionStorage.getItem("flashMsg");
+    if (raw) {
+      try {
+        setFlash(JSON.parse(raw));
+      } catch {}
+      sessionStorage.removeItem("flashMsg"); 
+    }
+  }, []);
+
+  useEffect(() => {
+      if (!flash) return;
+      const t = setTimeout(() => setFlash(null), 5000);
+      return () => clearTimeout(t);
+    }, [flash]);
 
   useEffect(() => {
       const cargarCasillas = async () => {
@@ -32,7 +49,8 @@ const SeleccionarCasilla = () => {
       cargarCasillas();
     }, [navigate]);
 
-  // Posiciones ajustadas para que las casillas sigan el camino
+
+  // Posiciones del tablero
   const posiciones = [
     { top: "83%", left: "59%" }, // 1
     { top: "79%", left: "50%" }, // 2
@@ -75,6 +93,22 @@ const SeleccionarCasilla = () => {
         />
         <h2>Selecciona una Casilla</h2>
       </div>
+      
+      {flash && (
+        <div className={`flash flash-${flash.tipo}`} role="alert">
+          <div className="flash-content">
+            <div className="flash-title">{flash.titulo}</div>
+            <div className="flash-message">{flash.mensaje}</div>
+          </div>
+          <button
+            className="flash-close"
+            aria-label="Cerrar"
+            onClick={() => setFlash(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="camino-container">
         <img src={caminoImg} alt="Camino de juego" className="fondo-camino" />
