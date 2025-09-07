@@ -78,7 +78,6 @@ const Login = () => {
           <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
           <div className="auth-links">
-            <Link to="/register">Registrarse</Link>
             <Link to="/docente/recuperar">¿Olvidaste tu contraseña?</Link>
           </div>
 
@@ -90,6 +89,10 @@ const Login = () => {
             <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google icon" style={{ width: "20px", marginRight: "10px" }} />
             Iniciar sesión con Google
           </button>
+        </div>
+
+        <div className="register-link">
+          <Link to="/register">Registrarse</Link>
         </div>
       </div>
       <ToastContainer position="top-center" autoClose={3000} />

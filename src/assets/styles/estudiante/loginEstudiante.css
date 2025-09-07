@@ -62,6 +62,34 @@ h2 {
   transform: scale(1.05);
 }
 
+.login-box .auth-links {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;  
+  text-align: right;          
+  margin-bottom: 10px;      
+}
+
+.login-box .auth-links a {
+  display: inline-block;
+  font-size: 0.95rem;         
+}
+.register-link {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.register-link a {
+  color: var(--pastel-indigo);
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
 .error-message {
   color: var(--docente-peligro);
   margin-bottom: 10px;
