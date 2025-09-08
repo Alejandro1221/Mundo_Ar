@@ -251,7 +251,6 @@
   }
 }
 
-
 .configurar-casillas-container__casilla.plantilla-modelo-sonido {
   background-color: var(--pastel-azul);
 }
@@ -269,7 +268,7 @@
 }
 
 .configurar-casillas-container__casilla.plantilla-casilla-sorpresa {
-  background-color: var(--pastel-indigo); /
+  background-color: var(--pastel-indigo); 
 }
 
 

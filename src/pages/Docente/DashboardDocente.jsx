@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { FiMenu, FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
-import { FiLogOut } from "react-icons/fi";
 import { FiEdit } from "react-icons/fi";
-import {crearJuegoEnFirestore,actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
+import { actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
 import { doc, getDoc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,10 +14,9 @@ import "../../assets/styles/docente/dashboardDocente.css";
 const DashboardDocente = () => {
   const [usuario, setUsuario] = useState(null);
   const [juegos, setJuegos] = useState([]);
-  const [nombreJuego, setNombreJuego] = useState("");
   const navigate = useNavigate();
-  const [mostrarInput, setMostrarInput] = useState(false);
-  const [publico, setPublico] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const goTo = (path) => { setMenuOpen(false); navigate(path); };
   
   // Detectar usuario autenticado
   useEffect(() => {
@@ -59,43 +58,6 @@ const DashboardDocente = () => {
     }
   };
 
-  // Crear un nuevo juego
-  const crearJuego = async () => {
-    if (!usuario || !usuario.uid) {  
-      alert("Error: No se pudo identificar al usuario.");
-      return;
-    }
-  
-    if (!nombreJuego.trim()) {
-      toast.warning("⚠️ El nombre del juego es obligatorio.");
-      return;
-    }
-  
-    try {
-      const nuevoJuego = {
-        nombre: nombreJuego,
-        casillas: Array(30).fill({ configuracion: null }),
-        creadoPor: usuario.uid,
-        fechaCreacion: new Date(),
-        publico: publico,
-      };
-  
-      const juegosExistentes = juegos.map(j => j.nombre.toLowerCase());
-      if (juegosExistentes.includes(nombreJuego.toLowerCase())) {
-        toast.warning(`⚠️ Ya existe un juego con ese nombre.`);
-        return;
-      }
-  
-      await crearJuegoEnFirestore(nuevoJuego);
-      toast.success(`🎉 Juego "${nombreJuego}" creado exitosamente.`);
-      setNombreJuego("");
-      cargarJuegos(usuario.uid);
-    } catch (error) {
-      console.error("Error al crear el juego:", error);
-      toast.error("❌ Hubo un error al crear el juego.");
-    }
-  };
-  
   // Cambiar visibilidad del juego
   const cambiarVisibilidad = async (juegoId, nuevoEstado) => {
     try {
@@ -162,71 +124,71 @@ const confirmarEliminacion = (juegoId, nombreJuego) => {
         icon: "❓"
       }
     );
-  };
+};
 
+const openBancoModelos = ({ desdePlantilla = false, returnTo = "/docente/dashboard" } = {}) => {
+  sessionStorage.setItem("paginaAnterior", returnTo);
+  setMenuOpen(false);
+  navigate("/docente/banco-modelos", { state: { desdePlantilla } });
+};
+
+const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboard" } = {}) => {
+  sessionStorage.setItem("paginaAnterior", returnTo);
+  setMenuOpen(false);
+  navigate("/docente/banco-sonidos", { state: { desdePlantilla } });
+};
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h1>
           {usuario?.nombre
-            ? `Hola, profesor ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
-            : "Hola, profesor"}
+            ? `Bienvenido, profesor ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
+            : "Bienvenido, profesor"}
         </h1>
-        <button className="boton-logout" onClick={handleCerrarSesion}>
-          <FiLogOut />
-          Cerrar sesión
-        </button>
+        <div className="header-actions">
+          <button
+            className="hamburger-btn"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menú"
+            aria-expanded={menuOpen}
+            aria-controls="menu-drawer"
+          >
+            <FiMenu />
+          </button>
+        </div>
       </div>
-  
-      {/* Crear un nuevo juego */}
-      <div className="crear-juego-form">
-        {mostrarInput && (
-          <>
-            <label className="label">Nombre del juego</label>
-            <input
-              type="text"
-              className="input"
-              placeholder="Escribe un nombre"
-              value={nombreJuego}
-              onChange={(e) => setNombreJuego(e.target.value)}
-            />
-            {/* Switch público */}
-            <div className="switch-container">
-              <label className="switch-label">
-                <span>{publico ? "Juego Público" : "Juego Privado"}</span>
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={publico}
-                    onChange={(e) => setPublico(e.target.checked)}
-                  />
-                  <span className="slider" />
-                </label>
-              </label>
-            </div>
-          </>
-        )}
-  
-        <button
-          type="button"
-          className="boton-dashboard"
-          onClick={() => {
-            if (!mostrarInput) {
-              setMostrarInput(true);
-            } else {
-              if (!nombreJuego.trim()) {
-                toast.warning("⚠️ El nombre del juego es obligatorio.");
-                return;
-              }
-              crearJuego();
-              setMostrarInput(false);
-            }
-          }}
-        >
-          Crear Juego
+
+      {menuOpen && <div className="menu-backdrop" onClick={() => setMenuOpen(false)} />}
+
+      <nav id="menu-drawer" className={`menu-drawer ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+        <button className="menu-close" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú">
+          <FiX />
         </button>
-      </div>
+
+        <ul className="menu-list">
+          <li>
+            <button className="menu-item" onClick={() => { setMenuOpen(false); navigate("/docente/crear-juego"); }}>
+              Crear juego
+            </button>
+          </li>
+          <li>
+            <button className="menu-item" onClick={() => openBancoModelos()}>
+              Banco de Modelos
+            </button>
+          </li>
+          <li>
+            <button className="menu-item" onClick={() => openBancoSonidos()}>
+              Banco de Sonidos
+            </button>
+          </li>
+          <li>
+            <button className="menu-item danger" onClick={handleCerrarSesion}>
+              Cerrar sesión
+            </button>
+          </li>
+        </ul>
+      </nav>
   
       {/* Lista de Juegos */}
       <div className="bloque-juegos">
@@ -277,29 +239,6 @@ const confirmarEliminacion = (juegoId, nombreJuego) => {
             ))
           )}
         </div>
-      </div>
-  
-      {/* Opciones adicionales */}
-      <div className="opciones-bancos">
-        <button
-          className="boton-modelos"
-          onClick={() => {
-            sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
-            navigate("/docente/banco-modelos", { state: { desdePlantilla: false } });
-          }}
-        >
-          Banco de Modelos
-        </button>
-  
-        <button
-          className="boton-sonidos"
-          onClick={() => {
-            sessionStorage.setItem("paginaAnterior", "/docente/dashboard");
-            navigate("/docente/banco-sonidos", { state: { desdePlantilla: false } });
-          }}
-        >
-          Banco de Sonidos
-        </button>
       </div>
       <ToastContainer position="top-center" autoClose={1000} />
     </div>

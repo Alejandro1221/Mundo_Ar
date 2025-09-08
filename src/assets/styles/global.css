@@ -16,6 +16,19 @@
   --ui-disabled-bg: #e9ecef;     
   --ui-disabled-text: #ffffff;   
   --ui-disabled-border: #dfe3e8; 
+
+  --bg-azul-1: #BFEFF6;   
+  --bg-azul-2: #63CEE0;   
+  --bg-azul-3: #47B5C5;  
+
+  --page-w: 760px;
+  --page-gutter: clamp(1px, 0vw, 20px);
+}
+
+html, body{
+  margin:0;
+  padding:0;
+  overflow-x:hidden;
 }
 
 /* ENCABEZADOS */
@@ -28,20 +41,19 @@ h1, h2, h3, h4 {
 h1 { font-size: 2rem; }
 h2 { font-size: 1.5rem; }
 
-
 /* ESTILOS A-FRAME */
 a-scene, a-scene .a-canvas, a-scene canvas {
   position: fixed !important;
   top: 0 !important;
   left: 0 !important;
-  width: 100vw !important;
+  width: 100% !important;
   height: 100vh !important;
   max-height: 100vh !important;
   object-fit: cover !important;
   z-index: 0;
 }
 
-
+/* Animación aparecer */
 @keyframes aparecer {
   0% {
     transform: translateX(-50%) scale(0.8);
@@ -84,6 +96,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   color: var(--texto-principal);
 }
 
+/* TOASTIFY */
 .Toastify__toast {
   border-radius: var(--borde-suave);
   font-family: 'Lato', sans-serif;
@@ -120,6 +133,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   background: var(--pastel-indigo);
 }
 
+/* Toast de confirmación */
 .toast-confirmation {
   background-color: #fefefe;
   border: 1px solid #ccc;
@@ -159,59 +173,19 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   cursor: pointer;
 }
 
-
-.Toastify__toast {
-  border-radius: var(--borde-suave);
-  font-family: 'Lato', sans-serif;
-  font-weight: 500;
-  font-size: 1rem;
-  box-shadow: var(--sombra-suave);
-}
-
-.Toastify__toast--success {
-  background-color: var(--pastel-verde);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--error {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--info {
-  background-color: var(--pastel-azul);
-  color: var(--texto-principal);
-}
-
-.Toastify__toast--warning {
-  background-color: var(--pastel-amarillo);
-  color: var(--texto-principal);
-}
-
-.Toastify__close-button {
-  color: var(--texto-principal);
-}
-
-.Toastify__progress-bar {
-  background: var(--pastel-indigo);
-}
-
-/* Desabilitar Botones */
-
-/* Botones deshabilitados en general */
+/* Deshabilitar Botones */
 button:disabled,
 .btn:disabled,
 .is-disabled {
-  background: var(--ui-disabled-bg) ;
-  color: var(--ui-disabled-text) ;
-  border: 1px solid var(--ui-disabled-border) ;
-  cursor: not-allowed ;
-  box-shadow: none ;
-  opacity: 1;           
+  background: var(--ui-disabled-bg);
+  color: var(--ui-disabled-text);
+  border: 1px solid var(--ui-disabled-border);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 1;
   transform: none;
 }
 
-/* Evitar hover/animaciones si está deshabilitado */
 button:disabled:hover,
 .btn:disabled:hover,
 .is-disabled:hover {
@@ -227,5 +201,3 @@ textarea[disabled] {
   border-color: var(--ui-disabled-border);
   cursor: not-allowed;
 }
-
-
