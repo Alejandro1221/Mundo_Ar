@@ -60,46 +60,51 @@ const CrearJuego = () => {
   };
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>Nuevo juego</h1>
-        <button className="boton-logout" onClick={() => navigate("/docente/dashboard")}>
-          Volver
+  <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title-crear">
+    <div className="crear-juego-form">
+      <div className="modal-head">
+        <h1 id="modal-title-crear" className="modal-title">Nuevo juego</h1>
+        <button
+          className="modal-close"
+          aria-label="Cerrar"
+          onClick={() => navigate("/docente/dashboard")}
+          title="Cerrar"
+        >
+          ✕
         </button>
       </div>
 
-      <div className="crear-juego-form open">
-        <label className="label">Nombre del juego</label>
-        <input
-          type="text"
-          className="input"
-          placeholder="Escribe un nombre"
-          value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-        />
+      <label className="label">Nombre del juego</label>
+      <input
+        type="text"
+        className="input"
+        placeholder="Escribe un nombre"
+        value={nombre}
+        onChange={(e) => setNombre(e.target.value)}
+      />
 
-        <div className="switch-container" style={{ marginTop: 10 }}>
-          <label className="switch-label">
-            <span>{publico ? "Juego Público" : "Juego Privado"}</span>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={publico}
-                onChange={(e) => setPublico(e.target.checked)}
-              />
-              <span className="slider" />
-            </label>
+      <div className="switch-container" style={{ marginTop: 6 }}>
+        <label className="switch-label">
+          <span>{publico ? "Juego Público" : "Juego Privado"}</span>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={publico}
+              onChange={(e) => setPublico(e.target.checked)}
+            />
+            <span className="slider" />
           </label>
-        </div>
-
-        <button type="button" className="boton-dashboard" onClick={crear} style={{ marginTop: 16 }}>
-          Crear Juego
-        </button>
+        </label>
       </div>
 
-      <ToastContainer position="top-center" autoClose={1200} />
+      <button type="button" className="boton-dashboard" onClick={crear}>
+        Crear Juego
+      </button>
     </div>
-  );
+
+    <ToastContainer position="top-center" autoClose={1200} />
+  </div>
+);
 };
 
 export default CrearJuego;

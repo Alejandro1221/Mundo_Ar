@@ -1,11 +1,11 @@
 .dashboard-container{
   min-height: 100vh;
-  width: 100%;                     
+  width: 100%;
   background: var(--fondo-claro);
   padding: 40px var(--page-gutter);
   display: flex;
   flex-direction: column;
-  align-items: center;            
+  align-items: stretch;            
   color: var(--texto-principal);
   text-align: center;
 }
@@ -15,21 +15,10 @@
   align-items: center;             
   gap: 12px;                       
   justify-content: flex-start;
+  width: min(100% - 32px, var(--page-w));  
+  margin: 0 auto;  
 }
 
-.dashboard-header,
-.bloque-juegos{
-  width: min(100% - 32px, var(--page-w));  
-  margin: 0 auto;                          
-}
-.bloque-juegos{
-  padding: 22px 26px;
-  background: #e5f2f5 !important;                    
-  border: 1px solid rgba(0,0,0,.06);
-  border-radius: 20px;
-  box-shadow: 0 10px 24px rgba(0,0,0,.10);
-  backdrop-filter: none;
-}
 
 .dashboard-header h1 {
   font-size: 2rem;
@@ -105,12 +94,11 @@ input:checked + .slider::before {
   transform: translateX(26px);
 }
 
-
-/* Bloque Juegos */
 .bloque-juegos{
-  margin: 24px auto 50px;          /* mantiene centrado */
+  width: min(100% - 32px, var(--page-w));
+  margin: 24px auto 50px;          
   padding: 22px 26px;
-  background: #ffffff;             /* gris muy claro: #f7f9fb si quieres */
+  background: #ebf2f8;  
   border: 1px solid rgba(0,0,0,.06);
   border-radius: 20px;
   box-shadow: 0 10px 24px rgba(0,0,0,.10);
@@ -123,13 +111,13 @@ input:checked + .slider::before {
 }
 
 .lista-juegos{
-  width:100%;
-  display:flex;
-  flex-direction:column;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap:20px;
-  margin-top:12px;
-  padding:6px;
+  gap: 20px;
+  margin-top: 12px;
+  padding: 6px;
 }
 
 /* Tarjetas Juego */
@@ -145,7 +133,6 @@ input:checked + .slider::before {
   box-shadow: var(--sombra-suave);
   transition: box-shadow .3s;
 }
-
 .juego-item:hover {
   transform: scale(1.02);
 }

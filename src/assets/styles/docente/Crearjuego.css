@@ -1,0 +1,100 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  /* Usa un velo muy translúcido */
+  background: rgba(255, 255, 255, 0.05); 
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* Safari */
+  
+  display: grid;
+  place-items: center;
+  z-index: 200;
+
+  animation: overlayIn .18s ease-out;
+}
+/* Reutilizamos tu clase .crear-juego-form como la tarjeta modal */
+.crear-juego-form {
+  width: min(92vw, 560px);
+  background: rgba(255,255,255,.85); /* mismo glass que usas */
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: var(--borde-suave);
+  box-shadow: 0 24px 60px rgba(0,0,0,.18);
+  padding: 22px 20px;
+  display: grid;
+  gap: 14px;
+  transform: translateY(6px);
+  animation: cardIn .22s ease-out forwards;
+}
+
+/* Cabecera dentro de la tarjeta (título + cerrar) */
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--texto-principal);
+}
+
+/* Botón cerrar con tu paleta */
+.modal-close {
+  border: none;
+  background: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: var(--sombra-suave);
+  transition: transform .12s ease, filter .12s ease;
+}
+.modal-close:hover { transform: translateY(-1px); filter: brightness(.95); }
+
+/* Campos (reusa tus estilos) */
+.label { font-weight: 700; text-align: left; color: var(--texto-principal); }
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #e6e8ec;
+  border-radius: 12px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.input:focus {
+  border-color: var(--pastel-azul);
+  box-shadow: 0 0 0 3px rgba(99,206,224,.25);
+}
+
+.boton-dashboard {
+  background-color: var(--pastel-azul);
+  color: var(--texto-blanco);
+  border: none;
+  padding: 12px 100px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--sombra-suave);
+  transition: transform 0.2s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.boton-dashboard:hover {
+  transform: scale(1.08);
+}
+/* Animaciones */
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+/* Responsive pequeño */
+@media (max-width: 420px){
+  .crear-juego-form { padding: 18px 16px; border-radius: 14px; }
+  .modal-title { font-size: 1.25rem; }
+}

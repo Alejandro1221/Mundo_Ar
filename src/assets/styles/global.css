@@ -19,6 +19,7 @@
 
   --page-w: 760px;
   --page-gutter: clamp(1px, 0vw, 20px);
+
 }
 
 html, body{
