@@ -1,21 +1,26 @@
 import React, { useEffect, useState } from "react";
+import { FiPlus, FiArrowLeft, FiMenu, FiX } from "react-icons/fi";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
 import { obtenerCategorias, eliminarCategoria} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
-import { FiPlus, FiArrowLeft } from "react-icons/fi";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 
 const BancoModelos = () => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState(null);
   const [modelos, setModelos] = useState([]);
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
-  const [mostrarCampoEliminar, setMostrarCampoEliminar] = useState(false);
   const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+    setActiveModal(null);
+  };
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -141,78 +146,74 @@ const manejarEliminacionCategoria = async () => {
         <FiArrowLeft /> 
         </button>
         <h1>Banco de Modelos</h1>
-      </div>
-
-      {/* Botón para mostrar/ocultar formulario */}
-      {!desdePlantilla && (
-        <button
-          className="btn-toggle-formulario"
-          onClick={() => setMostrarFormulario(!mostrarFormulario)}
-        >
-          {mostrarFormulario ? (
-            <>
-              <FiArrowLeft /> Ocultar Formulario
-            </>
-          ) : (
-            <>
-              <FiPlus /> Subir Modelo
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Formulario de subida */}
-      {!desdePlantilla && mostrarFormulario && (
-        <FormularioSubida setModelos={setModelos} />
-      )}
-
-      {/* Selector de categoría + botón eliminar */}
-      <div className="selector-categoria">
-        <select
-          onChange={(e) => setCategoriaSeleccionada(e.target.value)}
-          value={categoriaSeleccionada}
-        >
-          {categorias.map((cat, index) => (
-            <option key={index} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-
-        <button
-          className="btn-toggle-eliminar-categoria"
-          onClick={() => setMostrarCampoEliminar(prev => !prev)}
-        >
-          {mostrarCampoEliminar ? "Cancelar Eliminación" : "🗑️ Eliminar Categoría"}
-        </button>
-      </div>
-
-      {/* Campo eliminar categoría */}
-      {mostrarCampoEliminar && (
-        <div className="campo-eliminar-categoria">
-          <input
-            type="text"
-            list="categorias-lista"
-            placeholder="Escribe una categoría a eliminar"
-            value={categoriaAEliminar}
-            onChange={(e) => setCategoriaAEliminar(e.target.value)}
-          />
-          <datalist id="categorias-lista">
-            {categorias
-              .filter(cat => cat !== "Todos")
-              .map((cat, index) => (
-                <option key={index} value={cat} />
-              ))}
-          </datalist>
+        <div className="acciones-derecha">
+          
           <button
-            className="btn-eliminar-categoria"
-            onClick={manejarEliminacionCategoria}
-            disabled={!categoriaAEliminar.trim()}
+            className="btn-menu"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Abrir menú"
+            aria-expanded={menuOpen}
+            aria-controls="menu-drawer"
           >
-            🗑️ Confirmar Eliminar
+            <FiMenu />
           </button>
         </div>
+      </div>
+
+      {/* Backdrop */}
+      {menuOpen && (
+        <div
+          className="menu-backdrop"
+          onClick={closeMenu}
+          aria-hidden="true"
+        />
       )}
+
+
+      {/* Drawer */}
+      <nav
+        id="menu-drawer"
+        className={`menu-drawer ${menuOpen ? "open" : ""}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="menu-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="menu-header">
+          <h2 id="menu-title">Menú</h2>
+          <button type="button" className="menu-close" onClick={closeMenu} aria-label="Cerrar menú">
+            ❌
+          </button>
+        </div>
+
+        <ul className="menu-list">
+          {!desdePlantilla && (
+            <li>
+              <button
+                className="menu-item"
+                onClick={() => {
+                  setActiveModal("subir");
+                  closeMenu();
+                }}
+              >
+                <FiPlus /> Subir modelo
+              </button>
+            </li>
+          )}
+          <li>
+            <button
+              className="menu-item danger"
+              onClick={() => {
+                setActiveModal("eliminarCategoria");
+                closeMenu();
+              }}
+            >
+              🗑️ Eliminar categoría
+            </button>
+          </li>
+        </ul>
+      </nav>
+
 
       {/* Lista de modelos */}
       <div className="lista-modelos">
