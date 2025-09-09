@@ -17,10 +17,6 @@
   --ui-disabled-text: #ffffff;   
   --ui-disabled-border: #dfe3e8; 
 
-  --bg-azul-1: #BFEFF6;   
-  --bg-azul-2: #63CEE0;   
-  --bg-azul-3: #47B5C5;  
-
   --page-w: 760px;
   --page-gutter: clamp(1px, 0vw, 20px);
 }

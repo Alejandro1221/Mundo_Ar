@@ -1,31 +1,35 @@
-.dashboard-container {
+.dashboard-container{
   min-height: 100vh;
-  width: 100%;
-  /*background-color: var(--fondo-claro);*/
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%),
-    linear-gradient(180deg, var(--bg-azul-1) 0%, var(--bg-azul-2) 55%, var(--bg-azul-3) 100%);
+  width: 100%;                     
+  background: var(--fondo-claro);
   padding: 40px var(--page-gutter);
   display: flex;
   flex-direction: column;
-  align-items: stretch; 
+  align-items: center;            
   color: var(--texto-principal);
   text-align: center;
 }
 
-
-/* Header */
-.dashboard-header {
-  /*width: 100%;*/
-  width: min(100%, var(--page-w));
-  margin: 0 auto 30px;
+.dashboard-header{
   display: flex;
-  align-items: center;
-  gap: 12px;     
+  align-items: center;             
+  gap: 12px;                       
   justify-content: flex-start;
-  margin-bottom: 30px;
 }
 
+.dashboard-header,
+.bloque-juegos{
+  width: min(100% - 32px, var(--page-w));  
+  margin: 0 auto;                          
+}
+.bloque-juegos{
+  padding: 22px 26px;
+  background: #e5f2f5 !important;                    
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
+  backdrop-filter: none;
+}
 
 .dashboard-header h1 {
   font-size: 2rem;
@@ -101,44 +105,19 @@ input:checked + .slider::before {
   transform: translateX(26px);
 }
 
-/* Botón Crear Juego */
-.boton-dashboard {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-blanco);
-  border: none;
-  padding: 12px 100px;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 999px;
-  cursor: pointer;
-  box-shadow: var(--sombra-suave);
-  transition: background-color 0.3s, transform 0.2s;
-  margin: 0 auto;
-}
-
-.boton-dashboard:hover {
-  transform: scale(1.2);
-}
-
-.boton-dashboard:focus-visible {
-  outline: 2px solid var(--pastel-verde);
-}
 
 /* Bloque Juegos */
-.bloque-juegos {
-  width: 100%;
-  max-width: 1100px;
-  margin: 24px auto 50px;
-  padding: 20px 25px;                  
-  background: rgba(255, 255, 255, 0.45);  
-  border-radius: 20px;                     
-  backdrop-filter: blur(6px);             
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+.bloque-juegos{
+  margin: 24px auto 50px;          /* mantiene centrado */
+  padding: 22px 26px;
+  background: #ffffff;             /* gris muy claro: #f7f9fb si quieres */
+  border: 1px solid rgba(0,0,0,.06);
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(0,0,0,.10);
 }
 
 .bloque-juegos h3 {
-  margin: 0 0 16px 4px;
-  color: #233a52;                         
+  margin: 0 0 35px 4px;
   font-weight: 800;
   
 }
@@ -147,7 +126,7 @@ input:checked + .slider::before {
   width:100%;
   display:flex;
   flex-direction:column;
-  align-items:stretch;
+  align-items: center;
   gap:20px;
   margin-top:12px;
   padding:6px;
@@ -155,389 +134,17 @@ input:checked + .slider::before {
 
 /* Tarjetas Juego */
 .juego-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-
-  width:100%;
-  max-width:none;
-  margin:0;
-  padding:16px 20px;
-  box-sizing:border-box;
-
-  border-radius:var(--borde-suave);
-  box-shadow:var(--sombra-suave);
-  transition:box-shadow .3s;
-}
-
-
-.juego-item:hover {
-  transform: scale(1.02);
-}
-
-.juego-item:focus-visible {
-  outline: 2px solid var(--pastel-rosa);
-}
-
-
-.juego-item.juego-privado:hover {
-  background-color: var(--pastel-amarillo);
-  transform: scale(1.04);
-}
-
-
-.juego-item.juego-publico:hover {
-  background-color: var(--pastel-azul);
-  transform: scale(1.04);
-}
-
-.juego-nombre {
-  flex: 1;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: var(--texto-blanco);
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Botón de Iconos */
-.icono-btn {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: rgb(46, 62, 207);
-  border: none;
-  padding: 8px;
-  border-radius: 8px;
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.icono-btn:hover {
-  background-color: rgba(206, 27, 27, 0.3);
-  transform: scale(1.1);
-}
-
-.icono-btn:focus-visible {
-  outline: 2px solid var(--pastel-verde);
-}
-
-/* Slider en estado de juego */
-.juego-publico .slider {
-  background-color: rgba(255, 255, 255, 0.6); 
-}
-
-.juego-publico input:checked + .slider::before {
-  background-color: var(--pastel-azul); 
-}
-
-.juego-privado .slider {
-  background-color: rgba(255, 255, 255, 0.6); 
-}
-
-.juego-privado input:checked + .slider::before {
-  background-color: var(--pastel-amarillo); 
-}
-
-/* Fondo por defecto: switch desactivado (Privado) */
-.switch .slider {
-  background-color: #dfe0eb;
-}
-
-/* Bolita por defecto: gris */
-.switch .slider::before {
-  background-color: #bfc0c9;
-}
-
-/* Cuando está activado: juego público */
-.switch input:checked + .slider {
-  background-color: #e0e0e0; 
-}
-
-.switch input:checked + .slider::before {
-  background-color: var(--pastel-azul); 
-}
-
-/* Fondo AZUL cuando es público */
-.juego-item.juego-publico {
-  background-color: var(--pastel-azul);
-}
-
-/* Fondo AMARILLO cuando es privado */
-.juego-item.juego-privado {
-  background-color: var(--pastel-amarillo);
-}
-
-/* Bolita amarilla cuando está desactivado (privado) */
-.juego-item input + .slider::before {
-  background-color: var(--pastel-amarillo);
-}
-
-/* Bolita azul cuando está activado (público) */
-.juego-item input:checked + .slider::before {
-  background-color: var(--pastel-azul);
-}
-
-.hamburger-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: var(--pastel-azul);
-  color: var(--texto-blanco);
-  box-shadow: var(--sombra-suave);
-  transition: transform .15s ease;
-  font-size: 1.2rem;
-}
-.hamburger-btn:hover { transform: scale(1.05); }
-.hamburger-btn svg { width: 22px; height: 22px; }  /* tamaño del icono */
-
-/* Capa oscura detrás */
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.25);
-  z-index: 80;
-}
-
-/* Drawer anclado a la izquierda */
-.menu-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: auto;
-
-  height: auto;
-  width: min(86vw, 250px);
-  background: var(--fondo-claro);
-  box-shadow: 4px 0 24px rgba(0,0,0,.15);
-  transform: translateX(-100%);
-  transition: transform .25s ease;
-  z-index: 90;
-  padding: 16px;
+  width: min(100%, 700px);  
+  margin-inline: auto;                  
+  padding: 16px 20px;
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-.menu-drawer.open { transform: translateX(0); }
-
-.menu-close {
-  align-self: flex-end;
-  border: none;
-  background: transparent;
-  font-size: 1.4rem;
-  cursor: pointer;
-  color: var(--texto-principal);
-}
-.menu-close svg { width: 22px; height: 22px; }
-
-/* Lista sin viñetas ni márgenes */
-.menu-list {
-  list-style: none !important;
-  margin: 12px 0 0 !important;
-  padding: 0 !important;
-  display: grid;
-  gap: 10px;
-}
-
-/* Botones del menú bonitos */
-.menu-item {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  text-align: left;
-  padding: 12px 14px;
+  align-items: center;
+  gap: 12px;
   border-radius: var(--borde-suave);
-  background: var(--fondo-claro);
-  color: var(--texto-principal);
-  border: 1px solid var(--ui-disabled-border);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: background .15s ease, transform .1s ease;
-}
-.menu-item:hover { background: #f5f8fb; transform: translateY(-1px); }
-.menu-item.danger { color: #c0392b; border-color: #f0d4d1; background: var(--fondo-claro); }
-.menu-item.danger:hover { background: #fdecea; }
-
-
-.dashboard-container {
-  min-height: 100vh;
-  width: 100%;
-  /*background-color: var(--fondo-claro);*/
-  background:
-    radial-gradient(1200px 600px at 80% -10%, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 60%),
-    linear-gradient(180deg, var(--bg-azul-1) 0%, var(--bg-azul-2) 55%, var(--bg-azul-3) 100%);
-  padding: 40px var(--page-gutter);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; 
-  color: var(--texto-principal);
-  text-align: center;
-}
-
-/* Header */
-.dashboard-header {
-  /*width: 100%;*/
-  width: min(100%, var(--page-w));
-  margin: 0 auto 30px;
-  display: flex;
-  align-items: center;
-  gap: 12px;     
-  justify-content: flex-start;
-  margin-bottom: 30px;
-}
-
-.dashboard-header h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;  
-  order: -1;     
-}
-
-/* Switch */
-.switch-container {
-  margin: 10px 0 20px 0;
-}
-
-.switch-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  gap: 10px;
-}
-
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.switch-label span {
-  font-size: 1rem; 
-  color: var(--texto-principal); 
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #dfe0eb;
-  border-radius: 26px;
-  transition: background-color 0.4s;
-}
-
-.slider::before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: var(--pastel-azul);
-  border-radius: 50%;
-  transition: transform 0.4s;
-}
-
-input:checked + .slider {
-  background-color: #d9dae2;
-}
-
-input:checked + .slider::before {
-  transform: translateX(26px);
-}
-
-/* Botón Crear Juego */
-.boton-dashboard {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-blanco);
-  border: none;
-  padding: 12px 100px;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 999px;
-  cursor: pointer;
   box-shadow: var(--sombra-suave);
-  transition: background-color 0.3s, transform 0.2s;
-  margin: 0 auto;
+  transition: box-shadow .3s;
 }
-
-.boton-dashboard:hover {
-  transform: scale(1.2);
-}
-
-.boton-dashboard:focus-visible {
-  outline: 2px solid var(--pastel-verde);
-}
-
-/* Bloque Juegos */
-.bloque-juegos {
-  width: 80%;
-  /*width: min(100%, var(--page-w));*/
-  max-width: 1100px;
-  margin: 24px auto 50px;
-  padding: 20px 25px;                  
-  background: rgba(255, 255, 255, 0.45);  
-  border-radius: 20px;                     
-  backdrop-filter: blur(6px);             
-  box-shadow: 0 10px 24px rgba(0,0,0,.08);
-}
-
-.bloque-juegos h3 {
-  margin: 0 0 16px 4px;
-  color: #233a52;                         
-  font-weight: 800;
-  
-}
-
-.lista-juegos{
-  width:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:stretch;
-  gap:20px;
-  margin-top:12px;
-  padding:6px;
-}
-
-/* Tarjetas Juego */
-.juego-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-
-  width:100%;
-  max-width:none;
-  margin:0;
-  padding:16px 20px;
-  box-sizing:border-box;
-
-  border-radius:var(--borde-suave);
-  box-shadow:var(--sombra-suave);
-  transition:box-shadow .3s;
-}
-
 
 .juego-item:hover {
   transform: scale(1.02);
@@ -661,10 +268,11 @@ input:checked + .slider::before {
   box-shadow: var(--sombra-suave);
   transition: transform .15s ease;
   font-size: 1.2rem;
+  margin-left: 50px;
+  
 }
 .hamburger-btn:hover { transform: scale(1.05); }
-.hamburger-btn svg { width: 22px; height: 22px; }  /* tamaño del icono */
-
+.hamburger-btn svg { width: 22px; height: 22px; } 
 /* Capa oscura detrás */
 .menu-backdrop {
   position: fixed;
@@ -737,21 +345,20 @@ input:checked + .slider::before {
 
 /* Móvil pequeño (aprieta un poco) */
 @media (max-width: 480px){
-  :root{ --page-w: 100%; }               /* ocupa todo el ancho disponible */
+  :root{ --page-w: 100%; }              
   .bloque-juegos{ padding: 16px 14px; }
   .lista-juegos{ gap: 12px; }
 }
 
 /* Tablet (tu target) */
 @media (min-width: 600px) and (max-width: 1024px){
-  :root{ --page-w: 680px; }              /* ancho estable tablet */
+  :root{ --page-w: 680px; }             
   .bloque-juegos{ padding: 22px 24px; border-radius: 20px; }
   .juego-item{ border-radius: 16px; padding: 16px 18px; }
 }
 
-/* Desktop grande: mantenemos “look tablet”, solo damos un pelín más de aire */
 @media (min-width: 1024px){
-  :root{ --page-w: 760px; }              /* un poquito más ancho, sigue estilo tablet */
+  :root{ --page-w: 760px; }              
   .dashboard-header h1{ font-size: 2.2rem; }
 }
 
