@@ -168,16 +168,26 @@ const eliminarJuego = async () => {
 
         <div className="juego-panel__fila">
           <span className="juego-panel__label">Visibilidad</span>
-          <label className="juego-panel__toggle">
-            <input
-              type="checkbox"
-              checked={publico}
-              onChange={() => setPublico(v => !v)}
-              disabled={!editMode || loadingJuego || savingJuego}
-            />
-            <span>{publico ? "Público" : "Privado"}</span>
-          </label>
+
+          <div className="switch-container">
+            <label className="switch-label" htmlFor="visibilidadSwitch">
+              <span>{publico ? "Juego Público" : "Juego Privado"}</span>
+              <span className="switch">
+                <input
+                  id="visibilidadSwitch"
+                  type="checkbox"
+                  role="switch"
+                  aria-checked={publico}
+                  checked={publico}
+                  onChange={(e) => setPublico(e.target.checked)}
+                  disabled={!editMode || loadingJuego || savingJuego}
+                />
+                <span className="slider" />
+              </span>
+            </label>
+          </div>
         </div>
+
 
         {editMode && (
           <div className="juego-panel__acciones">

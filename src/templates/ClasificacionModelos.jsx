@@ -19,7 +19,7 @@ const ClasificacionModelos = () => {
 
 useEffect(() => {
   if (modelosSeleccionados.length > 0) {
-    console.log("🧠 Modelos disponibles desde el hook:", modelosSeleccionados);
+    console.log("Modelos disponibles desde el hook:", modelosSeleccionados);
     setCargadoDesdeHook(true);
   }
 }, [modelosSeleccionados]);
@@ -243,8 +243,6 @@ const cargarConfiguracion = async () => {
             grupo: asignaciones[m.url] || null,
           }));
           sessionStorage.setItem("modoVistaPrevia", "true");
-          //sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
-          //sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
           sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
           sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));

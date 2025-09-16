@@ -14,7 +14,7 @@
   align-items: center;
   justify-content: center; 
   padding: 12px 0;
-  margin-bottom: 60px;
+  margin-bottom: 25px;
 }
 
 .configurar-casillas-container__titulo {
@@ -22,41 +22,29 @@
   left: 50%;
   transform: translateX(-50%);
   margin: 0;
-  font-size: 1.6rem;
+  font-size: 1.3rem;  
   color: var(--texto-principal);
   white-space: nowrap;
 }
 
-.configurar-casillas-container__btn-volver {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-blanco);
-  padding: 10px;
-  border-radius: 50%;
-  font-size: 1.3rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: background-color 0.3s ease, transform 0.2s;
-  border: none;
-  outline: none;
-  position: absolute;
-  left: 0;
-}
-
-
 /* Tablero */
 .configurar-casillas-container__tablero {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  max-width: 600px;
+  max-width: 720px;
   padding: 20px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   justify-content: center;
 }
 
+/* Portrait: 5 columnas x 6 filas */
+@media (orientation: portrait) {
+  .configurar-casillas-container__tablero {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    max-width: 640px;
+  }
+}
 /* Casilla */
 .configurar-casillas-container__casilla {
   background-color: #f0f0f0;
@@ -208,11 +196,11 @@
   line-height: 1.2;
   display: block;
 }
-
 .juego-panel__titulo {
-  margin: 0 0 6px 0;
-  font-size: 18px;
-  font-weight: 600;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--texto-principal);
 }
 
 .juego-panel__fila {
@@ -220,11 +208,7 @@
   grid-template-columns: 120px 1fr;
   align-items: center;
   gap: 10px;
-}
-
-.juego-panel__label {
-  color: #333;
-  font-size: 14px;
+  margin-top: 50px;
 }
 
 .juego-panel__input {
@@ -268,8 +252,8 @@
   box-shadow: 0 10px 30px rgba(0,0,0,.06);
   padding: 16px 18px;
   margin: 14px 0 20px;
-  position: relative;          /* para posicionar el popover con absoluta dentro */
-  overflow: visible;           /* para que el popover no se corte */
+  position: relative;          
+  overflow: visible;          
   max-width: 760px;
 }
 
@@ -282,17 +266,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;     
+  justify-content: flex-start;     
   gap: 16px;
   margin-bottom: 10px;
 }
 
-.juego-panel__bar .hamburguesa-menu-container {
-  position: absolute;
-  left: 50px;
-  top: 50%;
-  transform: translateY(-50%);
-}
 
 
 /* animación suave desde el botón */
@@ -301,12 +279,6 @@
   to   { opacity: 1; transform: translateY(-50%) scale(1); }
 } 
 
-.juego-panel__titulo {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 700;
-  color: #2a2a2a;
-}
 
 .juego-panel__input:disabled {
   background: var(--ui-disabled-bg);       
@@ -316,27 +288,13 @@
   opacity: 1;
 }
 
-.juego-panel__fila {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  align-items: center;
-  gap: 10px;
-  margin: 10px 0;
-}
 
 .juego-panel__label {
   font-size: 14px;
   color: #444;
 }
 
-.juego-panel__input {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid rgba(0,0,0,.15);
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-}
+
 .juego-panel__input:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37,99,235,.15);
@@ -382,31 +340,6 @@
 }
 
 
-
-/* 📱 Responsivo */
-@media (max-width: 768px) {
-  .configurar-casillas-container__tablero {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (max-width: 480px) {
-  .configurar-casillas-container__tablero {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .configurar-casillas-container__titulo {
-    font-size: 1.2rem;
-  }
-
-  .configurar-casillas-container__modal-content {
-    width: 90%;
-    padding: 18px;
-  }
-
-
-}
-
 .configurar-casillas-container__casilla.plantilla-modelo-sonido {
   background-color: var(--pastel-azul);
 }
@@ -425,6 +358,21 @@
 
 .configurar-casillas-container__casilla.plantilla-casilla-sorpresa {
   background-color: var(--pastel-indigo); 
+}
+
+
+.juego-publico .slider {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.juego-publico input:checked + .slider::before {
+  background-color: var(--pastel-azul);
+}
+
+.juego-privado .slider {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+.juego-privado input:checked + .slider::before {
+  background-color: var(--pastel-amarillo);
 }
 
 
