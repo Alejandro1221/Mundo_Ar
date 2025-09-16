@@ -1,4 +1,12 @@
-/* Contenedor general del formulario */
+/* ADD: elimina el borde del fieldset y su espacio */
+.form-subida fieldset{
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-inline-size: 0; 
+}
+
+
 .form-subida {
   display: flex;
   flex-direction: column;
@@ -7,22 +15,21 @@
   padding: 28px 32px;
   border-radius: 16px;
   box-shadow: var(--sombra-suave);
-  max-width: 480px;
+  max-width: 520px;
   margin: auto;
   font-family: 'Segoe UI', sans-serif;
-  border: 1px solid #eee;
 }
+
 
 /* Inputs de texto y select */
 .form-subida input,
 .form-subida select {
   padding: 12px 14px;
-  border: 1.5px solid #ccc;
   border-radius: 10px;
   font-size: 15px;
   background: #f9f9f9;
   transition: border-color 0.3s, box-shadow 0.3s;
-  max-width: 80%;
+  max-width: 100%;
   margin-bottom: 10px;
 }
 
@@ -55,7 +62,7 @@
   display: block;
   width: 80%;
   margin-bottom: 16px;
-  border: 1.5px solid #ccc;
+  
 }
 
 /* Botón para añadir categoría */
@@ -115,7 +122,7 @@
   padding: 10px;
   border-radius: 8px;
   font-size: 14px;
-  border: 1.5px solid #ccc;
+ 
 }
 
 /* Cuando está en modo columna */

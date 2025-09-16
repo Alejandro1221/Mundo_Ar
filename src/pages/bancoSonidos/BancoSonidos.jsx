@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  obtenerSonidos,
-  obtenerCategorias,
-  eliminarCategoria,
-} from "../../services/sonidoService";
+import {obtenerSonidos,obtenerCategorias,eliminarCategoria,} from "../../services/sonidoService";
 import FormularioSubidaSonidos from "./FormularioSubidaSonidos";
 import SonidoItem from "../../components/SonidoItem";
 import BancoSonidosSeleccion from "./BancoSonidosSeleccion";

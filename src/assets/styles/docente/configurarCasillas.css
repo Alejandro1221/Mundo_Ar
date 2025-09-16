@@ -46,19 +46,6 @@
 }
 
 
-.configurar-casillas-container__btn-volver:hover {
-  background-color: #18577f;
-  transform: scale(1.1);
-}
-
-/* Título */
-.configurar-casillas-container h2 {
-  color: var(--texto-principal);
-  margin-top: 60px;
-  margin-bottom: 20px;
-  font-size: 1.6rem;
-}
-
 /* Tablero */
 .configurar-casillas-container__tablero {
   display: grid;
@@ -222,6 +209,180 @@
   display: block;
 }
 
+.juego-panel__titulo {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.juego-panel__fila {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.juego-panel__label {
+  color: #333;
+  font-size: 14px;
+}
+
+.juego-panel__input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.juego-panel__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.juego-panel__acciones {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.juego-panel__btn-guardar {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+.juego-panel__btn-guardar[disabled] {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.juego-panel {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+  padding: 16px 18px;
+  margin: 14px 0 20px;
+  position: relative;          /* para posicionar el popover con absoluta dentro */
+  overflow: visible;           /* para que el popover no se corte */
+  max-width: 760px;
+}
+
+.juego-panel.is-editing {
+  border-color: #2563eb;
+  box-shadow: 0 12px 34px rgba(37,99,235,.12);
+}
+
+.juego-panel__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;     
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.juego-panel__bar .hamburguesa-menu-container {
+  position: absolute;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+/* animación suave desde el botón */
+@keyframes hm-pop {
+  from { opacity: 0; transform: translateY(-50%) scale(.98); }
+  to   { opacity: 1; transform: translateY(-50%) scale(1); }
+} 
+
+.juego-panel__titulo {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #2a2a2a;
+}
+
+.juego-panel__input:disabled {
+  background: var(--ui-disabled-bg);       
+  border-color: var(--ui-disabled-border);  
+  color: rgba(89,89,91,.9);               
+  -webkit-text-fill-color: rgba(89,89,91,.9);
+  opacity: 1;
+}
+
+.juego-panel__fila {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.juego-panel__label {
+  font-size: 14px;
+  color: #444;
+}
+
+.juego-panel__input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+.juego-panel__input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+}
+
+.juego-panel__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+.juego-panel__toggle input { accent-color: #2563eb; }
+
+.juego-panel__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.juego-panel__btn-guardar {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.juego-panel__btn-guardar[disabled] { opacity: .6; cursor: not-allowed; }
+
+.btn.secundario {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,.12);
+  background: #fff;
+  cursor: pointer;
+}
+
+/* Resposive: en pantallas chicas, label arriba del input */
+@media (max-width: 640px) {
+  .juego-panel__fila { grid-template-columns: 1fr; }
+}
+
+
+
 /* 📱 Responsivo */
 @media (max-width: 768px) {
   .configurar-casillas-container__tablero {
@@ -243,12 +404,7 @@
     padding: 18px;
   }
 
-  .configurar-casillas-container__btn-volver {
-    top: 14px;
-    left: 14px;
-    padding: 8px;
-    font-size: 1rem;
-  }
+
 }
 
 .configurar-casillas-container__casilla.plantilla-modelo-sonido {

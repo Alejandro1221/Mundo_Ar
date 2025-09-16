@@ -5,6 +5,7 @@ import { obtenerCategorias, eliminarCategoria} from "../../services/categoriasSe
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
+import EliminarCategoria from "./EliminarCategoria";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 
@@ -19,7 +20,6 @@ const BancoModelos = () => {
 
   const closeMenu = () => {
     setMenuOpen(false);
-    setActiveModal(null);
   };
 
   const location = useLocation();
@@ -181,7 +181,7 @@ const manejarEliminacionCategoria = async () => {
       >
         <div className="menu-header">
           <h2 id="menu-title">Menú</h2>
-          <button type="button" className="menu-close" onClick={closeMenu} aria-label="Cerrar menú">
+          <button type="button" className="modal-close" onClick={() => setActiveModal(null)} aria-label="Cerrar">
             ❌
           </button>
         </div>
@@ -192,8 +192,8 @@ const manejarEliminacionCategoria = async () => {
               <button
                 className="menu-item"
                 onClick={() => {
+                  setMenuOpen(false);
                   setActiveModal("subir");
-                  closeMenu();
                 }}
               >
                 <FiPlus /> Subir modelo
@@ -204,8 +204,9 @@ const manejarEliminacionCategoria = async () => {
             <button
               className="menu-item danger"
               onClick={() => {
+                setMenuOpen(false);
                 setActiveModal("eliminarCategoria");
-                closeMenu();
+                
               }}
             >
               🗑️ Eliminar categoría
@@ -214,6 +215,82 @@ const manejarEliminacionCategoria = async () => {
         </ul>
       </nav>
 
+      {/* Modal: Subir Modelo */}
+      {activeModal === "subir" && (
+        <>
+          <div
+            className="modal-backdrop"
+            onClick={() => setActiveModal(null)}
+            aria-hidden="true"
+          />
+          <div
+            className="modal-window"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-subir-titulo"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 id="modal-subir-titulo">Subir modelo</h2>
+              <button
+                type="button"
+                className="menu-close"
+                onClick={() => setActiveModal(null)}
+                aria-label="Cerrar"
+              >
+                ❌
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <FormularioSubida
+                setModelos={setModelos}
+                // Si quieres cerrar al terminar la subida, dentro de tu FormularioSubida
+                // puedes llamar a onSuccess?.() cuando termine:
+                onSuccess={() => setActiveModal(null)}
+              />
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Modal: Eliminar Categoría */}
+      {activeModal === "eliminarCategoria" && (
+        <>
+          <div className="modal-backdrop" onClick={() => setActiveModal(null)} aria-hidden="true" />
+          <div
+            className="modal-window"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-eliminar-titulo"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-header">
+              <h2 id="modal-eliminar-titulo">Eliminar categoría</h2>
+              <button
+                type="button"
+                className="menu-close"
+                onClick={() => setActiveModal(null)}
+                aria-label="Cerrar"
+              >
+                ❌
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <EliminarCategoria
+                categorias={categorias}
+                onClose={() => setActiveModal(null)}
+                onDeleted={(cat) => {
+                  // actualiza estado local
+                  setCategorias((prev) => prev.filter((c) => c !== cat));
+                  setCategoriaSeleccionada("Todos");
+                }}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Lista de modelos */}
       <div className="lista-modelos">

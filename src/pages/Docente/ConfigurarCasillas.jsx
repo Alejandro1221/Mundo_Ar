@@ -1,12 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCasillas } from "../../hooks/useCasillas";
-import { FiArrowLeft } from "react-icons/fi";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import { ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/docente/configurarCasillas.css";
+
+import { db } from "../../services/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+
+import HamburguesaMenu from "../../components/HamburguesaMenu";
+import { eliminarJuegoPorId, actualizarJuego } from "../../services/juegosService";
+import "../../assets/styles/componentes/hamburguesaMenu.css";
+import { useNotify, useConfirm } from "../../components/NotifyProvider";
+
 
 const ConfigurarCasillas = () => {
   const { juegoId } = useParams(); 
   const navigate = useNavigate();
+
+  const [nombreJuego, setNombreJuego] = useState("");
+  const [publico, setPublico] = useState(false);
+  const [loadingJuego, setLoadingJuego] = useState(true);
+  const [savingJuego, setSavingJuego] = useState(false);
+
+  const [editMode, setEditMode] = useState(false);
+  const [backupNombre, setBackupNombre] = useState("");
+  const [backupPublico, setBackupPublico] = useState(false);
+  const notify = useNotify();
+  const confirm = useConfirm();
 
   const {
     casillas,
@@ -30,23 +52,152 @@ const ConfigurarCasillas = () => {
   };
 
   useEffect(() => {
-    if (!juegoId) return navigate("/docente/dashboard");
-    cargarCasillas();
-  }, [juegoId, cargarCasillas, navigate]);
+      if (!juegoId) return navigate("/docente/dashboard");
+  
+      const cargarJuego = async () => {
+        try {
+          setLoadingJuego(true);
+          const ref = doc(db, "juegos", juegoId);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            const data = snap.data();
+            setNombreJuego(data?.nombre || "");
+            setPublico(Boolean(data?.publico));
+            // backups para Cancelar
+            setBackupNombre(data?.nombre || "");
+            setBackupPublico(Boolean(data?.publico));
+          }
+        } catch (e) {
+          notify({ message: "No se pudo cargar el juego", type: "error" });
+        } finally {
+          setLoadingJuego(false);
+        }
+      };
+  
+      cargarJuego();
+      cargarCasillas();
+    }, [juegoId, cargarCasillas, navigate]);
+  
+const startEdit = () => {
+  setBackupNombre(nombreJuego);
+  setBackupPublico(publico);
+  setEditMode(true);
+};
+
+const cancelEdit = () => {
+  setNombreJuego(backupNombre);
+  setPublico(backupPublico);
+  setEditMode(false);
+};
+
+const guardarDetallesJuego = async () => {
+  try {
+    if (!nombreJuego.trim()) {
+      notify({ message: "Escribe un nombre para el juego", type: "warning" });
+      return;
+    }
+    setSavingJuego(true);
+    await actualizarJuego(juegoId, { nombre: nombreJuego.trim(), publico });
+    notify({ message: "Juego actualizado", type: "success" });
+    setEditMode(false);
+  } catch (e) {
+    console.error(e);
+    notify({ message: "No se pudo actualizar el juego", type: "error" });
+  } finally {
+    setSavingJuego(false);
+  }
+};
+
+const eliminarJuego = async () => {
+  const ok = await confirm({
+    title: "Eliminar juego",
+    message: "¿Seguro que deseas eliminar este juego? No se puede deshacer.",
+    confirmText: "Eliminar",
+    cancelText: "Cancelar",
+    variant: "danger",
+    toastId: `confirm-delete-${juegoId}`
+  });
+  if (!ok) return;
+
+  try {
+    await eliminarJuegoPorId(juegoId);
+    notify({ message: "Juego eliminado", type: "success" });
+    navigate("/docente/dashboard");
+  } catch (e) {
+    console.error(e);
+    notify({
+      message: e?.code
+        ? `No se pudo eliminar: ${e.code}`
+        : "No se pudo eliminar el juego",
+      type: "error"
+    });
+  }
+};
+
 
   return (
     <div className="configurar-casillas-container">
-      <div className="encabezado-horizontal">
-        <button
-          className="configurar-casillas-container__btn-volver"
-          onClick={() => navigate("/docente/dashboard")}
-          aria-label="Volver al dashboard"
-        >
-          <FiArrowLeft />
-        </button>
+      <Breadcrumbs />
+      <section className={`juego-panel ${editMode ? "is-editing" : ""}`}>
+        <div className="juego-panel__bar">
+          <HamburguesaMenu
+            options={[
+              { label: "Editar juego", onClick: startEdit },
+              { label: "Eliminar juego", onClick: eliminarJuego, danger: true },
+            ]}
+            placement="over"   
+            anchor=""        
+            offset={0}        
+          />
+          <h2 className="juego-panel__titulo">Información del juego</h2>
+          
+        </div>
 
+        <div className="juego-panel__fila">
+          <label className="juego-panel__label" htmlFor="nombreJuego">Nombre</label>
+          <input
+            id="nombreJuego"
+            type="text"
+            className="juego-panel__input"
+            value={nombreJuego}
+            onChange={(e) => setNombreJuego(e.target.value)}
+            disabled={!editMode || loadingJuego || savingJuego}
+            placeholder="Nombre del juego"
+          />
+        </div>
+
+        <div className="juego-panel__fila">
+          <span className="juego-panel__label">Visibilidad</span>
+          <label className="juego-panel__toggle">
+            <input
+              type="checkbox"
+              checked={publico}
+              onChange={() => setPublico(v => !v)}
+              disabled={!editMode || loadingJuego || savingJuego}
+            />
+            <span>{publico ? "Público" : "Privado"}</span>
+          </label>
+        </div>
+
+        {editMode && (
+          <div className="juego-panel__acciones">
+            <button className="btn secundario" onClick={cancelEdit} disabled={savingJuego}>
+              Cancelar
+            </button>
+            <button
+              className="juego-panel__btn-guardar"
+              onClick={guardarDetallesJuego}
+              disabled={savingJuego || !nombreJuego.trim()}
+            >
+              {savingJuego ? "Guardando..." : "Guardar cambios"}
+            </button>
+          </div>
+        )}
+      </section>
+  
+      <div className="encabezado-horizontal">
         <h2 className="configurar-casillas-container__titulo">
-          Configurar Casillas del Juego
+           Casillas del Juego
         </h2>
       </div>
       {/* Tablero de casillas */}
@@ -54,7 +205,6 @@ const ConfigurarCasillas = () => {
         {casillas.map((casilla, index) => (
           <div
             key={index}
-            //className={`configurar-casillas-container__casilla ${casilla.plantilla ? "configurada" : ""}`}
             className={`configurar-casillas-container__casilla ${casilla.plantilla ? `configurada plantilla-${casilla.plantilla}` : ""}`}
             onClick={() => abrirModal(index, casilla.plantilla)}
           >
@@ -95,13 +245,21 @@ const ConfigurarCasillas = () => {
                   <button
                   className="eliminar-btn"
                     onClick={async () => {
-                      const confirmar = window.confirm("¿Eliminar esta plantilla?");
-                      if (!confirmar) return;
+                    const ok = await confirm({
+                      title: "Eliminar plantilla",
+                      message: "¿Seguro que deseas eliminar esta plantilla?",
+                      confirmText: "Eliminar",
+                      cancelText: "Cancelar",
+                      variant: "danger",
+                      toastId: `confirm-delete-plantilla-${casillaSeleccionada}`,
+                    });
+                    if (!ok) return;
 
-                      await eliminarPlantilla(juegoId, casillaSeleccionada);
-                      setModalVisible(false);
-                      cargarCasillas();
-                    }}
+                    await eliminarPlantilla(juegoId, casillaSeleccionada);
+                    notify({ message: "Plantilla eliminada", type: "success" });
+                    setModalVisible(false);
+                    cargarCasillas();
+                  }}
                   >
                     🗑️ Eliminar Plantilla
                   </button>
@@ -143,6 +301,8 @@ const ConfigurarCasillas = () => {
           </div>
         </div>
       )}
+      
+      <ToastContainer position="top-center" autoClose={1200} />
     </div>
   );
 };

@@ -3,7 +3,8 @@ import { subirModelo } from "../../services/modelosService";
 import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
 import "../../assets/styles/bancoModelos/formularioSubida.css";
 
-const FormularioSubida = ({ setModelos }) => {
+"const FormularioSubida = ({ setModelos }) => {"
+const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [nombre, setNombre] = useState("");
   const [nombreTouched, setNombreTouched] = useState(false);
 
@@ -54,6 +55,8 @@ const FormularioSubida = ({ setModelos }) => {
         setCategoria("");
         setArchivo(null);
         setMiniatura(null);
+
+        onSuccess && onSuccess();
       }
     } catch (error) {
       console.error("❌ Error en la subida:", error);

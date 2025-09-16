@@ -1,8 +1,6 @@
-// src/components/Breadcrumbs.jsx
 import { Link, useLocation } from "react-router-dom";
-import "../styles/breadcrumbs.css";
+import "../assets/styles/componentes/breadcrumbs.css";
 
-// Ajusta estas rutas si tu dashboard real es distinto
 const MODULE_HOME = {
   docente:     { to: "/docente/dashboard",     label: "Dashboard docente" },
   estudiantes: { to: "/estudiantes/dashboard", label: "Dashboard estudiante" },
@@ -13,7 +11,7 @@ const nice = (s) => s.replaceAll("-", " ");
 
 export default function Breadcrumbs() {
   const { pathname } = useLocation();
-  const parts = pathname.split("/").filter(Boolean); // ["docente","configurar-casillas","ABC123"]
+  const parts = pathname.split("/").filter(Boolean); 
 
   const root = parts[0];
   const home = MODULE_HOME[root] ?? { to: "/", label: "Inicio" };

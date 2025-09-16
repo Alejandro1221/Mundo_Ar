@@ -38,4 +38,5 @@ export const crearJuegoEnFirestore = async (nuevoJuego) => {
 export const eliminarJuegoPorId = async (juegoId) => {
   const juegoRef = doc(db, "juegos", juegoId);
   await deleteDoc(juegoRef);
+  return true;
 };

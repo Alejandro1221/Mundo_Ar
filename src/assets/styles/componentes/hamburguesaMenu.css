@@ -1,0 +1,108 @@
+.hamburguesa-menu-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Botón redondo con tu paleta */
+.hamburguesa-btn {
+  background: var(--pastel-azul);
+  color: var(--texto-blanco);
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 10px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--sombra-suave);
+}
+.hamburguesa-btn svg { width: 20px; height: 20px; display: block; }
+.hamburguesa-btn:hover { filter: brightness(0.97); }
+
+.hamburguesa-menu {
+  position: absolute;        
+  list-style: none;
+  margin: 0;
+  padding: 10px;
+
+  /* opcional, si quieres la tarjetita blanca */
+  background: var(--fondo-claro);
+  border-radius: var(--borde-suave);
+  box-shadow: 0 12px 30px rgba(0,0,0,.12);
+  min-width: 220px;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.hamburguesa-menu > li { margin-bottom: 10px; }
+.hamburguesa-menu > li:last-child { margin-bottom: 0; }
+
+.hamburguesa-menu.below {
+  top: calc(100% + var(--hm-offset,6px));
+  left: 0;
+}
+
+.hamburguesa-menu.side-right {
+  top: 50%;
+  left: 100%;
+  transform: translate(calc(var(--hm-offset,8px)), -50%);
+}
+
+/* Header con la X */
+.hamburguesa-menu__head {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 10px 0 10px;
+}
+.hamburguesa-menu__close {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: .7;
+}
+.hamburguesa-menu__close:hover { opacity: 1; }
+
+.hamburguesa-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 10px;     
+  display: grid;
+  gap: 10px;
+}
+
+.hamburguesa-menu-item {
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  font-size: .95rem;
+  color: var(--texto-principal);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,.08);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.hamburguesa-menu.over {
+  top: 0;
+  left: 0;
+  transform: none; 
+}
+
+.hamburguesa-menu {
+  opacity: 0;
+  transform-origin: 12px 12px; /* cerca del botón */
+  animation: hm-fade-in 140ms ease-out forwards;
+}
+
+@keyframes hm-fade-in {
+  from { opacity: 0; transform: scale(.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hamburguesa-menu { animation: none; }
+}
+
+.hamburguesa-menu-item:hover { background: #f7f7f7; }
+.hamburguesa-menu-item:disabled { opacity: .6; cursor: not-allowed; }
+.hamburguesa-menu-item.danger { color: #b42318; border-color: #ffd5d5; background: #fff; }

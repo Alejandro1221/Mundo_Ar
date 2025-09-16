@@ -1,0 +1,95 @@
+/* Reutiliza estilos de .form-subida */
+.form-eliminar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #fff;
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: var(--sombra-suave);
+  font-family: 'Segoe UI', sans-serif;
+  border: none;
+  max-width: 480px;
+  margin: auto;
+}
+
+/* Input + datalist */
+.form-eliminar input {
+  padding: 12px 14px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #f9f9f9;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+}
+
+.form-eliminar input:focus {
+  border-color: var(--pastel-rosa);
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 6px rgba(207, 27, 27, 0.25);
+}
+
+/* Label */
+.form-eliminar label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+  margin-top: 4px;
+  margin-bottom: 8px;
+  text-align: left;
+  display: block;
+}
+
+/* Error message */
+.form-eliminar .error {
+  display: block;
+  color: #d32f2f;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  margin: 4px 0 0 4px;
+}
+
+/* Actions */
+.form-eliminar .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.form-eliminar .btn-sec {
+  background: #f2f2f2;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.form-eliminar .btn-sec:hover {
+  background: #e0e0e0;
+}
+
+.form-eliminar .btn-danger {
+  background: var(--pastel-rosa);
+  color: var(--texto-blanco);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.form-eliminar .btn-danger:hover {
+  background: #e74c3c;
+  transform: scale(1.05);
+}
+
+.form-eliminar .btn-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

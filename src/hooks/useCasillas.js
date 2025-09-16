@@ -1,9 +1,11 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { obtenerCasillas, actualizarCasillas, eliminarCasilla } from "../services/casillasService";
+import { useNotify } from "../components/NotifyProvider";
 
 export const useCasillas = (juegoId) => {
   const navigate = useNavigate();
+  const notify = useNotify();
   const [casillas, setCasillas] = useState(Array(30).fill({ plantilla: null }));
   const [modalVisible, setModalVisible] = useState(false);
   const [plantillaSeleccionada, setPlantillaSeleccionada] = useState("");
@@ -39,16 +41,22 @@ export const useCasillas = (juegoId) => {
   // Solo actualizar la casilla modificada en Firestore
   const guardarCambios = async () => {
     if (casillaSeleccionada === null || !plantillaSeleccionada) {
-      alert("Seleccione una plantilla.");
+      notify({ message: "Seleccione una plantilla", type: "warning" });
       return;
     }
 
-    const nuevasCasillas = [...casillas];
-    nuevasCasillas[casillaSeleccionada] = { plantilla: plantillaSeleccionada };
-
-    await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada); 
-    setCasillas(nuevasCasillas);
-    setModalVisible(false);
+    try {
+      const nuevasCasillas = [...casillas];
+      nuevasCasillas[casillaSeleccionada] = { plantilla: plantillaSeleccionada };
+      await actualizarCasillas(juegoId, casillaSeleccionada, plantillaSeleccionada);
+      setCasillas(nuevasCasillas);
+      setModalVisible(false);
+      notify({ message: "Plantilla asignada", type: "success" });
+    } catch (e) {
+      console.error("Error guardando casilla:", e);
+      notify({ message: "No se pudo guardar la plantilla", type: "error" });
+      return; 
+    }
 
     sessionStorage.setItem("juegoId", juegoId);
     sessionStorage.setItem("casillaId", casillaSeleccionada);
@@ -57,7 +65,10 @@ export const useCasillas = (juegoId) => {
     if (ruta) {
       navigate(ruta);
     } else {
-      alert(`La plantilla "${plantillaSeleccionada}" aún no está implementada.`);
+      notify({
+        message: `La plantilla "${plantillaSeleccionada}" aún no está implementada`,
+        type: "info"
+      });
     }
   };
 
