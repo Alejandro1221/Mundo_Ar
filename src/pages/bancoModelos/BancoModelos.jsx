@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiPlus, FiArrowLeft, FiMenu, FiX } from "react-icons/fi";
+import { FiPlus, FiMenu, FiX } from "react-icons/fi";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
 import { obtenerCategorias, eliminarCategoria} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -15,8 +15,6 @@ const BancoModelos = () => {
   const [modelos, setModelos] = useState([]);
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
-  const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
-  const [modelosDesvaneciendo, setModelosDesvaneciendo] = useState([]);
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -29,7 +27,7 @@ const BancoModelos = () => {
     const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
     const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
 
-    console.log("🧩 BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
+    console.log("BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
 
     const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
   useEffect(() => {
@@ -64,7 +62,6 @@ const BancoModelos = () => {
     });
   };
 
-  // Confirmar selección y volver a la plantilla
 const confirmarSeleccion = () => {
   const nuevosSeleccionados = modelosSeleccionados.map(m => ({
     id: m.id,
@@ -78,7 +75,6 @@ const confirmarSeleccion = () => {
   const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
   sessionStorage.setItem(key, JSON.stringify(nuevosSeleccionados));
 
-  // También actualizamos el hook
   setModelosSeleccionados(nuevosSeleccionados);
 
   //navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard");
@@ -108,46 +104,11 @@ const manejarEliminacion = async (modelo) => {
   }
 };
 
-const manejarEliminacionCategoria = async () => {
-  if (!categoriaAEliminar.trim()) {
-    alert("⚠️ Escribe el nombre de una categoría.");
-    return;
-  }
 
-  if (categoriaAEliminar === "Todos") {
-    alert("⚠️ No puedes eliminar la categoría 'Todos'.");
-    return;
-  }
-
-  if (window.confirm(`¿Seguro que deseas eliminar la categoría "${categoriaAEliminar}"?`)) {
-    try {
-      await eliminarCategoria(categoriaAEliminar);
-      setCategorias(prev => prev.filter(cat => cat !== categoriaAEliminar));
-      setCategoriaSeleccionada("Todos"); // Reiniciar a Todos
-      setCategoriaAEliminar(""); // Limpiar input
-      console.log(`✅ Categoría "${categoriaAEliminar}" eliminada correctamente.`);
-    } catch (error) {
-      console.error("❌ Error al eliminar categoría:", error);
-      alert("Hubo un error al eliminar la categoría. Inténtalo de nuevo.");
-    }
-  }
-};
 
   return (
     <div className="banco-modelos">
       <div className="encabezado-pagina">
-        <button
-          className="btn-volver"
-          onClick={() => {
-            const paginaAnterior = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
-            navigate(paginaAnterior);
-          }}
-        >
-        <FiArrowLeft /> 
-        </button>
-        <h1>Banco de Modelos</h1>
-        <div className="acciones-derecha">
-          
           <button
             className="btn-menu"
             onClick={() => setMenuOpen(true)}
@@ -157,7 +118,7 @@ const manejarEliminacionCategoria = async () => {
           >
             <FiMenu />
           </button>
-        </div>
+        <h1>Banco de Modelos</h1>
       </div>
 
       {/* Backdrop */}
@@ -181,8 +142,8 @@ const manejarEliminacionCategoria = async () => {
       >
         <div className="menu-header">
           <h2 id="menu-title">Menú</h2>
-          <button type="button" className="modal-close" onClick={() => setActiveModal(null)} aria-label="Cerrar">
-            ❌
+          <button type="button" className="menu-close" onClick={() => setMenuOpen(false)} aria-label="Cerrar">
+             <FiX />
           </button>
         </div>
 
@@ -245,8 +206,6 @@ const manejarEliminacionCategoria = async () => {
             <div className="modal-body">
               <FormularioSubida
                 setModelos={setModelos}
-                // Si quieres cerrar al terminar la subida, dentro de tu FormularioSubida
-                // puedes llamar a onSuccess?.() cuando termine:
                 onSuccess={() => setActiveModal(null)}
               />
             </div>

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../services/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { FiEdit } from "react-icons/fi";
-import { actualizarJuego,obtenerJuegosPorDocente,} from "../../services/juegosService";
+import { actualizarJuego,obtenerJuegosPorDocente,eliminarJuegoPorId,} from "../../services/juegosService";
 import { doc, getDoc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { eliminarJuegoPorId } from "../../services/juegosService";
 import "../../assets/styles/docente/dashboardDocente.css";
+import CrearJuego from "./CrearJuego";
 
 const DashboardDocente = () => {
   const [usuario, setUsuario] = useState(null);
@@ -17,6 +17,8 @@ const DashboardDocente = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const goTo = (path) => { setMenuOpen(false); navigate(path); };
+  const [modalCrearOpen, setModalCrearOpen] = useState(false);
+
   
   // Detectar usuario autenticado
   useEffect(() => {
@@ -138,6 +140,7 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
   navigate("/docente/banco-sonidos", { state: { desdePlantilla } });
 };
 
+
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
@@ -189,8 +192,8 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
       <div className="bloque-juegos">
         <div className="bloque-juegos__bar">
           <h3>Lista de Juegos Creados</h3>
-          <button className="btn btn-primario" onClick={() => navigate("/docente/crear-juego")}>
-            + Añadir juego
+          <button className="btn btn-primario" onClick={() => setModalCrearOpen(true)} aria-haspopup="dialog">
+            Añadir juego
           </button>
         </div>
   
@@ -200,7 +203,7 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
               <p>No tienes juegos creados aún.</p>
               <button
                 className="btn btn-primario"
-                onClick={() => navigate("/docente/crear-juego")}
+                 onClick={() => setModalCrearOpen(true)}
               >
                 Crear tu primer juego
               </button>
@@ -249,6 +252,14 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
           )}
         </div>
       </div>
+      <CrearJuego
+        isOpen={modalCrearOpen}
+        onClose={() => setModalCrearOpen(false)}
+        onCreated={(nuevo) => {
+          setJuegos((prev) => [nuevo, ...prev]);
+          setModalCrearOpen(false);
+        }}
+      />
       <ToastContainer position="top-center" autoClose={1000} />
     </div>
   );  

@@ -1,38 +1,19 @@
 .encabezado-pagina {
-  position: relative;
-  margin-bottom: 20px;
-  height: 50px;
-}
-
-.btn-volver {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: var(--pastel-azul);
-  color: var(--texto-blanco);
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 0.9rem;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.btn-volver:hover {
-  background-color: var(--pastel-verde);
-  transform: scale(1.05);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  margin-bottom: 16px;   
+  height: auto;         
 }
 
 .encabezado-pagina h1 {
   margin: 0;
-  font-size: 1.8rem;
+  font-size: 1.6rem;     
   color: var(--texto-principal);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%) translateY(-50%);
-  top: 50%;
+  position: static;     
+  transform: none;       
 }
 
 .banco-modelos {
@@ -42,10 +23,10 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: var(--sombra-suave);
-  text-align: center;
+  text-align: left;
   font-family: 'Segoe UI', sans-serif;
 
-  position: relative;   /* para posicionar el drawer/backdrop */
+  position: relative; 
   overflow: hidden;  
 }
 
@@ -203,18 +184,6 @@
 .btn-danger:disabled { opacity: .6; cursor: not-allowed; }
 
 
-/* Botón hamburguesa a la derecha (escopado a esta vista) */
-.banco-modelos .acciones-derecha {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 2; /* por si el h1 se superpone */
-}
-
 .banco-modelos .btn-menu {
   display: inline-flex;
   align-items: center;
@@ -233,7 +202,6 @@
   transform: scale(1.05);
 }
 
-/* Backdrop SOLO en BancoModelos */
 .banco-modelos .menu-backdrop{
   position: fixed;
   inset: 0;
@@ -244,53 +212,60 @@
 .banco-modelos .menu-drawer{
   position: fixed;
   top: 0;
-  right: 0;  
-  left: auto;
+  left: 0;  
+  right: auto;
 
   height: auto;
   background: var(--fondo-claro);
-  box-shadow: -4px 0 24px rgba(0,0,0,.15);
-  transform: translateX(100%);             
+  box-shadow: 4px 0 24px rgba(0,0,0,.15);
+  transform: translateX(-100%);             
   transition: transform .25s ease;
   z-index: 90;
 
   padding: 16px;
   display: flex;
   flex-direction: column;
-  border-top-left-radius: 12px;
-  border-bottom-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
   align-items: stretch;
+  z-index: 1000;
 }
 .banco-modelos .menu-drawer.open{ transform: translateX(0); }
 
-/* Opcional: estilos internos, mismos del dashboard pero scopeados */
 .banco-modelos .menu-header{
-  display:flex; align-items:center; justify-content:space-between;
-  padding:4px 0 10px; border-bottom:1px solid rgba(0,0,0,.06);
+  display:flex; 
+  align-items:center; 
+  justify-content:space-between;
+  padding: 8px 12px 10px; 
+  border-bottom:1px solid rgba(0,0,0,.06);
 }
-.banco-modelos .menu-close {
-  display: inline-flex;
+
+.banco-modelos .menu-close{
+  display: inline-flex;         
   align-items: center;
   justify-content: center;
   width: 36px;
   height: 36px;
+  padding:0;
   border: none;
-  border-radius: 8px;
-  background: var(--pastel-rosa);  
-  line-height: 0;  
+  border-radius: 10px;
+  background: #f8a6b6;          
+  color: #8b1e2c;               
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  line-height: 1;               
+  transition: background-color .2s, transform .2s;
 }
 
 .banco-modelos .menu-close:hover {
   background: var(--pastel-rosa);
   transform: scale(1.08);
 }
+
 .banco-modelos .menu-close svg{
-  width:24px;                              
-  height:24px;
-  stroke: currentColor;                     
-  fill: none;
+  width:22px;   
+  height:22px;           
+  display:block;           
+  stroke-width:2.4;      
 }
 
 .banco-modelos .menu-list{

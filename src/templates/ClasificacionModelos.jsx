@@ -62,7 +62,6 @@ const cargarConfiguracion = async () => {
           return Array.from(mapa.values());
         });
 
-        
         //setModelosSeleccionados(modelos || []);
         setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); // usa grupos guardados o crea por defecto
         setCelebracion(celebracion || { tipo: "confeti", opciones: {} });

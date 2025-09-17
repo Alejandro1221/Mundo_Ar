@@ -7,8 +7,8 @@ main {
   margin: auto;
   font-family: 'Source Sans Pro', sans-serif;
   color: var(--texto-principal);
-  height: 100vh; /* Asegura que ocupe toda la altura de la ventana */
-  overflow-y: auto; /* Habilita el scroll vertical */
+  height: 100vh; 
+  overflow-y: auto; 
   box-sizing: border-box;
   padding-bottom: 120px;
   scroll-behavior: smooth;
