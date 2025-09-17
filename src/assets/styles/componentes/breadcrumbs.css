@@ -28,3 +28,8 @@
 .breadcrumbs li:last-child::after {
   content: "";
 }
+
+.breadcrumbs .actual {
+  font-weight: bold;
+  color: #2563eb;
+}

@@ -2,12 +2,24 @@ import { Link, useLocation } from "react-router-dom";
 import "../assets/styles/componentes/breadcrumbs.css";
 
 const MODULE_HOME = {
-  docente:     { to: "/docente/dashboard",     label: "Dashboard docente" },
-  estudiantes: { to: "/estudiantes/dashboard", label: "Dashboard estudiante" },
+  docente:     { to: "/docente/dashboard",     label: "Dashboard" },
+  estudiantes: { to: "/estudiante/dashboard", label: "Dashboard estudiante" },
 };
 
-const looksLikeId = (s) => /^\d+$/.test(s) || s.length >= 16;
-const nice = (s) => s.replaceAll("-", " ");
+const LABELS = {
+  "configurar-casillas": "Configurar casillas",
+  "clasificacion-modelos": "Clasificación de modelos",
+  "plantilla-sonido-modelo": "Modelo-sonido",
+  "rompecabezas-modelo": "Rompecabezas",
+  "modelo-texto": "Modelo de texto",
+  "casilla-sorpresa": "Casilla sorpresa",
+};
+
+const looksLikeId = (s) =>
+  /^\d+$/.test(s) || (s.length >= 20 && !s.includes("-") && !s.includes("_"));
+const nice = (s) =>
+  s.replaceAll("-", " ")
+   .replace(/\b\w/g, (m) => m.toUpperCase());
 
 export default function Breadcrumbs() {
   const { pathname } = useLocation();
@@ -35,10 +47,14 @@ export default function Breadcrumbs() {
         {segments.map((seg, i) => {
           const to = paths[i];
           const isLast = i === segments.length - 1;
-          const label = nice(seg);
+          const raw = seg;
+          const label = LABELS[raw] ?? nice(raw); 
           return (
             <li key={to}>
-              {isLast ? <span>{label}</span> : <Link to={to}>{label}</Link>}
+              {isLast
+                ? <span aria-current="page" className="actual">{label}</span>
+                : <Link to={to}>{label}</Link>
+              }
             </li>
           );
         })}

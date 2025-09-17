@@ -143,8 +143,8 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
       <div className="dashboard-header">
         <h1>
           {usuario?.nombre
-            ? `Bienvenido, profesor ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}`
-            : "Bienvenido, profesor"}
+            ? `¡Bienvenido, profesor ${usuario.nombre.charAt(0).toUpperCase() + usuario.nombre.slice(1)}!`
+            : "¡Bienvenido, profesor!"}
         </h1>
         <div className="header-actions">
           <button
@@ -168,11 +168,6 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
 
         <ul className="menu-list">
           <li>
-            <button className="menu-item" onClick={() => { setMenuOpen(false); navigate("/docente/crear-juego"); }}>
-              Crear juego
-            </button>
-          </li>
-          <li>
             <button className="menu-item" onClick={() => openBancoModelos()}>
               Banco de Modelos
             </button>
@@ -192,10 +187,24 @@ const openBancoSonidos = ({ desdePlantilla = false, returnTo = "/docente/dashboa
   
       {/* Lista de Juegos */}
       <div className="bloque-juegos">
-        <h3>Lista de Juegos Creados</h3>
+        <div className="bloque-juegos__bar">
+          <h3>Lista de Juegos Creados</h3>
+          <button className="btn btn-primario" onClick={() => navigate("/docente/crear-juego")}>
+            + Añadir juego
+          </button>
+        </div>
+  
         <div className="lista-juegos">
           {juegos.length === 0 ? (
-            <p>No tienes juegos creados aún.</p>
+            <div className="empty-state">
+              <p>No tienes juegos creados aún.</p>
+              <button
+                className="btn btn-primario"
+                onClick={() => navigate("/docente/crear-juego")}
+              >
+                Crear tu primer juego
+              </button>
+            </div>
           ) : (
             juegos.map((juego) => (
               <div

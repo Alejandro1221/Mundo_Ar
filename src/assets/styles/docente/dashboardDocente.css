@@ -1,35 +1,62 @@
-.dashboard-container{
+.dashboard-container {
   min-height: 100vh;
   width: 100%;
   background: var(--fondo-claro);
-  padding: 40px var(--page-gutter);
+  padding: 40px 0;   
   display: flex;
   flex-direction: column;
-  align-items: stretch;            
+  align-items: stretch;
   color: var(--texto-principal);
   text-align: center;
 }
 
-.dashboard-header{
+.dashboard-header {
   display: flex;
-  align-items: center;             
-  gap: 12px;                       
+  align-items: center;
+  gap: 12px;
   justify-content: flex-start;
-  width: min(100% - 32px, var(--page-w));  
-  margin: 0 auto;  
+  width: 100%;         
+  max-width: var(--page-w);
+  margin: 0;          
+  padding-left: 0;  
+  margin-left: -20px;
+  margin-bottom: 30px;
+  
 }
-
 
 .dashboard-header h1 {
   font-size: 2rem;
   font-weight: bold;
   margin: 0;
+  
 }
 
 .header-actions {
   display: flex;  
   order: -1;     
 }
+
+/* Barra del bloque: título + botón a extremos */
+.bloque-juegos__bar {
+  padding: 0 55px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between; /* título izq, botón der */
+  margin-bottom: 5px;
+}
+
+/* Título dentro de la barra: sin márgenes extra */
+.bloque-juegos__bar h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+/* Asegura alineación a la izquierda del bloque (el contenedor general tiene text-align:center) */
+.bloque-juegos { 
+  text-align: left; 
+}
+
 
 /* Switch */
 .switch-container {
@@ -163,6 +190,24 @@ input:checked + .slider::before {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.btn-primario {
+  background-color: var(--pastel-azul); 
+  color: var(--texto-blanco);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primario:hover {
+  background-color: #3b82f6; 
+  transform: scale(1.03);
+}
+
 
 /* Botón de Iconos */
 .icono-btn {
@@ -348,4 +393,3 @@ input:checked + .slider::before {
   :root{ --page-w: 760px; }              
   .dashboard-header h1{ font-size: 2.2rem; }
 }
-

@@ -5,6 +5,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "@google/model-viewer";
 import "../assets/styles/docente/clasificacionModelos.css";
+import Breadcrumbs from "../components/Breadcrumbs";
+
 
 const ClasificacionModelos = () => {
   const navigate = useNavigate();
@@ -161,7 +163,8 @@ const cargarConfiguracion = async () => {
 
   return (
     <div className="docente-clasificacion-container">
-      <h2>Plantilla: Clasificación de Modelos</h2>
+      <Breadcrumbs/>
+      <h2>Clasificación de Modelos</h2>
       {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
       <div className="grupos-config">
@@ -219,7 +222,7 @@ const cargarConfiguracion = async () => {
       </div>
 
       <div className="seccion-celebracion">
-        <h3>🎉 Celebración</h3>
+        <h3>Celebración</h3>
         <select value={celebracion.tipo} onChange={(e) => setCelebracion({ tipo: e.target.value, opciones: {} })}>
           <option value="confeti">🎉 Confeti</option>
           <option value="gif">🎥 GIF animado</option>
@@ -231,7 +234,18 @@ const cargarConfiguracion = async () => {
         )}
 
         {celebracion.tipo === "mensaje" && (
-          <input type="text" placeholder="Mensaje personalizado" value={celebracion.opciones.mensaje || ""} onChange={(e) => setCelebracion({ ...celebracion, opciones: { mensaje: e.target.value } })} />
+          <textarea
+            placeholder="Mensaje personalizado"
+            value={celebracion.opciones.mensaje || ""}
+            onChange={(e) =>
+              setCelebracion({
+                ...celebracion,
+                opciones: { mensaje: e.target.value }
+              })
+            }
+            rows={3}
+            style={{ width: "100%", resize: "vertical" }}
+          />
         )}
       </div>
 
@@ -277,7 +291,7 @@ const cargarConfiguracion = async () => {
             },
           });
         }}>Seleccionar modelos</button>
-        <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>Volver</button>
+        
       </div>
     </div>
   );
