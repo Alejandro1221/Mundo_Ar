@@ -39,10 +39,6 @@ return (
         <p><strong>{modelo.nombre}</strong></p>
         <p><strong>Categoría:</strong> {modelo.categoria}</p>
 
-        <button className="btn-ver" onClick={() => setMostrarVistaPrevia(true)}>
-          Ver modelo
-        </button>
-
         {esPlantilla ? (
           <input
             type="checkbox"
@@ -54,6 +50,12 @@ return (
             🗑️ Eliminar
           </button>
         )}
+        
+        
+        <button className="btn-ver" onClick={() => setMostrarVistaPrevia(true)}>
+          Ver modelo
+        </button>
+
       </div>
 
       {mostrarVistaPrevia && (

@@ -164,6 +164,12 @@ const cargarConfiguracion = async () => {
     <div className="docente-clasificacion-container">
       <Breadcrumbs/>
       <h2>Clasificación de Modelos</h2>
+      <p className="leyenda-clasificacion">
+         Esta actividad permite organizar modelos 3D en grupos según sus características. 
+         El objetivo es que los estudiantes aprendan a identificar, comparar y clasificar 
+         los modelos, reforzando el aprendizaje activo y la comprensión de los conceptos.
+      </p>
+          
       {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
       <div className="grupos-config">
@@ -186,39 +192,79 @@ const cargarConfiguracion = async () => {
     </div>
 
       <div className="modelos-config">
-        <h3>Modelos seleccionados</h3>
-        {modelosSeleccionados.length > 0 ? (
-          modelosSeleccionados.map((modelo, i) => (
-            <div key={i} className="modelo-card">
-              <div className="modelo-preview">
-                <model-viewer
-                  src={modelo.url}
-                  alt={modelo.nombre}
-                  camera-controls
-                  auto-rotate
-                  shadow-intensity="1"
-                  style={{ width: "100%", height: "180px" }}
-                ></model-viewer>
+        <div className="modelos-config__bar">
+          <h3>Modelos seleccionados</h3>
+
+          <button
+            className="btn btn-primario"
+              onClick={() => {
+                // mismo flujo que tu botón “Seleccionar modelos”
+                sessionStorage.setItem("juegoId", juegoId);
+                sessionStorage.setItem("casillaId", casillaId);
+                sessionStorage.setItem("paginaAnterior", window.location.pathname);
+
+                sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+                sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+                sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
+                sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+                sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+
+                navigate("/docente/banco-modelos", {
+                  state: { desdePlantilla: true, juegoId, casillaId },
+                });
+              }}
+            >
+              + Agregar modelos
+            </button>
+        </div>
+
+        <div className="modelos-grid">
+          {modelosSeleccionados.length > 0 ? (
+            modelosSeleccionados.map((modelo, i) => (
+              <div key={i} className="modelo-card">
+                <div className="modelo-preview">
+                  <model-viewer
+                    src={modelo.url}
+                    alt={modelo.nombre}
+                    camera-controls
+                    auto-rotate
+                    shadow-intensity="1"
+                    style={{ width: "100%", height: "180px" }}
+                  ></model-viewer>
+                </div>
+
+                <div className="modelo-detalles">
+                  <h4>{modelo.nombre}</h4>
+
+                  {grupos === null ? (
+                    <p>Cargando asignaciones...</p>
+                  ) : (
+                    <select
+                      value={asignaciones[modelo.url] || ""}
+                      onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}
+                    >
+                      <option value="">Selecciona grupo</option>
+                      {grupos.map((g, idx) => (
+                        <option key={idx} value={g}>{g}</option>
+                      ))}
+                    </select>
+                  )}
+
+                  <button
+                    className="eliminar-modelo-btn"
+                    onClick={() => eliminarModelo(modelo.url)}
+                  >
+                    Eliminar
+                  </button>
+                </div>
               </div>
-              <div className="modelo-detalles">
-                <h4>{modelo.nombre}</h4>
-                {grupos === null ? (
-                <p>Cargando asignaciones...</p>
-                ) : (
-                  <select value={asignaciones[modelo.url] || ""} onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}>
-                    <option value="">Selecciona grupo</option>
-                    {grupos.map((g, idx) => <option key={idx} value={g}>{g}</option>)}
-                  </select>
-                )}
-  
-                <button className="eliminar-modelo-btn" onClick={() => eliminarModelo(modelo.url)}>❌ Eliminar</button>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p>No hay modelos seleccionados.</p>
-        )}
+            ))
+          ) : (
+            <p>No hay modelos seleccionados aún. Haz clic en <strong>+ Agregar modelos</strong> para elegir los modelos 3D que deseas clasificar en esta actividad.</p>
+          )}
+        </div>
       </div>
+
 
       <div className="seccion-celebracion">
         <h3>Celebración</h3>
@@ -248,50 +294,33 @@ const cargarConfiguracion = async () => {
         )}
       </div>
 
-      <button
-        className="vista-previa-btn"
-        onClick={() => {
-          const modelosConGrupo = modelosSeleccionados.map((m) => ({
-            ...m,
-            grupo: asignaciones[m.url] || null,
-          }));
-          sessionStorage.setItem("modoVistaPrevia", "true");
-          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
-          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
-          sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
-          sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
-          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-
-          navigate("/estudiante/vista-previa-clasificacion-modelos");
-        }}
-      >
-        Vista previa como estudiante
-      </button>
-
       <div className="acciones-plantilla">
-        <button onClick={guardarConfiguracion}>💾 Guardar configuración</button>
-        <button onClick={() => {
+          <button
+              className="vista-previa-btn"
+              onClick={() => {
+                const modelosConGrupo = modelosSeleccionados.map((m) => ({
+                  ...m,
+                  grupo: asignaciones[m.url] || null,
+                }));
+                sessionStorage.setItem("modoVistaPrevia", "true");
+                sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
+                sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
+                sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
+                sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+                sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
 
-          sessionStorage.setItem("juegoId", juegoId);
-          sessionStorage.setItem("casillaId", casillaId);
-          sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          
-          sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
-          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-          sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
-          sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
-          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-                
-          navigate("/docente/banco-modelos", {
-            state: {
-              desdePlantilla: true,
-              juegoId,
-              casillaId,
-            },
-          });
-        }}>Seleccionar modelos</button>
-        
+                navigate("/estudiante/vista-previa-clasificacion-modelos");
+              }}
+            >
+              Vista previa como estudiante
+            </button>
+
+            <button className="guardar-btn" onClick={guardarConfiguracion}>
+              Guardar configuración
+            </button>
+
       </div>
+
     </div>
   );
 };

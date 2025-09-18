@@ -3,7 +3,7 @@ main {
 }
 .docente-clasificacion-container {
   padding: 24px;
-  max-width: 960px;
+  max-width: 900px;
   margin: auto;
   font-family: 'Source Sans Pro', sans-serif;
   color: var(--texto-principal);
@@ -17,6 +17,12 @@ main {
 h2 {
   margin-bottom: 20px;
   color: var(--texto-principal);
+}
+
+.leyenda-clasificacion {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 18px;
 }
 
 .mensaje {
@@ -75,13 +81,6 @@ h2 {
   background-color: #d9697e;
 }
 
-.modelos-config {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
-}
-
 
 .eliminar-modelo-btn {
   background-color: var(--pastel-rosa);
@@ -117,20 +116,12 @@ h2 {
 
 .acciones-plantilla {
   display: flex;
-  gap: 16px;
+  justify-content: center;   
+  align-items: center;
+  gap: 16px;                
   margin-top: 32px;
 }
 
-.acciones-plantilla button {
-  background-color: var(--pastel-azul);
-  color: var(--texto-blanco);
-  border: none;
-  padding: 10px 18px;
-  font-weight: bold;
-  border-radius: var(--borde-suave);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
 
 .acciones-plantilla button:hover {
   background-color: #47bbd3;
@@ -224,3 +215,59 @@ h2 {
   box-shadow: 0 0 0 2px rgba(37,99,235,.15);
   outline: none;
 }
+
+.modelos-config__bar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* título izq, botón der */
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.modelos-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+  grid-auto-flow: row dense; /* rellena huecos si cambian alturas */
+  justify-items: stretch;
+}
+
+/* Tarjeta ocupa su columna completa */
+.modelo-card{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.acciones-plantilla{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin-top:32px;
+}
+.acciones-plantilla button{ margin:0; }  /* para que no se muevan */
+
+/* Colores específicos */
+.vista-previa-btn{
+  background: var(--pastel-azul) !important;
+  color: var(--texto-blanco) !important;
+  padding: 10px 18px;
+  border-radius: var(--borde-suave);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.vista-previa-btn:hover{ filter: brightness(0.95); }
+
+.guardar-btn{
+  background: var(--pastel-rosa) !important;
+  color: var(--texto-blanco) !important;
+  padding: 10px 18px;
+  border-radius: var(--borde-suave);
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+.guardar-btn:hover{ filter: brightness(0.95); }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FiPlus, FiMenu, FiX } from "react-icons/fi";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
-import { obtenerCategorias, eliminarCategoria} from "../../services/categoriasService"; 
+import { obtenerCategorias} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
@@ -9,12 +9,19 @@ import EliminarCategoria from "./EliminarCategoria";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 
+import Breadcrumbs from "../../components/Breadcrumbs";
+
+
 const BancoModelos = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [modelos, setModelos] = useState([]);
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
+  const [busqueda, setBusqueda] = useState("");
+
+  const [setModelosDesvaneciendo] = useState([]);
+
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -50,15 +57,28 @@ const BancoModelos = () => {
       cargarDatos();
     }, []);
 
-  // Filtrar modelos según la categoría seleccionada
- const modelosFiltrados = modelos.filter(
-    modelo => categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada
-  );
+  const norm = (s = "") =>
+    String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-  const manejarSeleccion = (modelo) => {
-    setModelosSeleccionados(prev => {
-      const yaSeleccionado = prev.some(m => m.id === modelo.id);
-      return yaSeleccionado ? prev.filter(m => m.id !== modelo.id) : [...prev, modelo];
+  const q = norm(busqueda);
+
+  const modelosFiltrados = modelos.filter((modelo) => {
+    const coincideCategoria =
+      categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada;
+
+    const enNombre = norm(modelo.nombre).includes(q);
+    const enTexto  = modelo.texto ? norm(modelo.texto).includes(q) : false;
+
+    const coincideBusqueda = q === "" || enNombre || enTexto;
+
+    return coincideCategoria && coincideBusqueda;
+  });
+
+
+const manejarSeleccion = (modelo) => {
+  setModelosSeleccionados(prev => {
+    const yaSeleccionado = prev.some(m => m.id === modelo.id);
+    return yaSeleccionado ? prev.filter(m => m.id !== modelo.id) : [...prev, modelo];
     });
   };
 
@@ -77,7 +97,6 @@ const confirmarSeleccion = () => {
 
   setModelosSeleccionados(nuevosSeleccionados);
 
-  //navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard");
   navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard", {
   state: {
     juegoId,
@@ -104,22 +123,21 @@ const manejarEliminacion = async (modelo) => {
   }
 };
 
-
-
-  return (
-    <div className="banco-modelos">
-      <div className="encabezado-pagina">
-          <button
-            className="btn-menu"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Abrir menú"
-            aria-expanded={menuOpen}
-            aria-controls="menu-drawer"
+return (
+  <div className="banco-modelos">
+    <Breadcrumbs />
+    <div className="encabezado-pagina">
+        <button
+          className="btn-menu"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Abrir menú"
+          aria-expanded={menuOpen}
+          aria-controls="menu-drawer"
           >
             <FiMenu />
-          </button>
+        </button>
         <h1>Banco de Modelos</h1>
-      </div>
+    </div>
 
       {/* Backdrop */}
       {menuOpen && (
@@ -130,8 +148,6 @@ const manejarEliminacion = async (modelo) => {
         />
       )}
 
-
-      {/* Drawer */}
       <nav
         id="menu-drawer"
         className={`menu-drawer ${menuOpen ? "open" : ""}`}
@@ -250,6 +266,34 @@ const manejarEliminacion = async (modelo) => {
           </div>
         </>
       )}
+      {/* Filtros: categoría + búsqueda */}
+      <div className="filtros-modelos">
+        <select
+          value={categoriaSeleccionada}
+          onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+          aria-label="Filtrar por categoría"
+        >
+          {categorias.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
+        </select>
+
+        <div className="search">
+          <input
+            type="text"
+            placeholder="Buscar modelo..."
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            aria-label="Buscar modelo por nombre o texto"
+          />
+          {busqueda && (
+            <button type="button" className="btn-clear" onClick={() => setBusqueda("")}>
+              Limpiar
+            </button>
+          )}
+        </div>
+      </div>
+
 
       {/* Lista de modelos */}
       <div className="lista-modelos">
