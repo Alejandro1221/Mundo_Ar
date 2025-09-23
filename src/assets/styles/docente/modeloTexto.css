@@ -23,8 +23,7 @@
 .modelo-texto-container h2 {
   font-size: 1.8rem;
   font-weight: bold;
-  color: var(--pastel-azul);
-  margin-bottom: 20px;
+  margin-bottom: 50px;
 }
 
 .mensaje {
@@ -126,3 +125,4 @@
 .eliminar-modelo-btn:hover {
   transform: scale(1.05);
 }
+

@@ -6,7 +6,6 @@ main {
   max-width: 900px;
   margin: auto;
   font-family: 'Source Sans Pro', sans-serif;
-  color: var(--texto-principal);
   height: 100vh; 
   overflow-y: auto; 
   box-sizing: border-box;
@@ -16,8 +15,8 @@ main {
 
 h2 {
   margin-bottom: 20px;
+  text-align: center;
 }
-
 .grupos-config li .btn { margin-left: 10px; }
 
 .leyenda-clasificacion {

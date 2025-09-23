@@ -148,7 +148,6 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   return (
     <div className="actividad-ra-container">
       <HeaderActividad titulo="Clasifica los modelos en la categoria correspondiente" />
-
       <a-scene
         arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
         vr-mode-ui="enabled: false"

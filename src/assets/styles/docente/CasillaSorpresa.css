@@ -6,13 +6,8 @@
 }
 
 .contenido-scrollable {
-  max-height: 80vh;
+  max-height: vh;
   overflow-y: auto;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 1.5rem;
 }
 
 .mensaje {
@@ -48,6 +43,11 @@ h2 {
   border: 2px solid #59c3e6; 
 }
 
+.modelo-item textarea:focus {
+  outline: none;
+  border-color: var(--pastel-azul);
+  box-shadow: 0 0 0 3px rgba(99,206,224,.25);
+}
 
 .modelo-item label {
   display: block;
@@ -65,42 +65,22 @@ h2 {
   resize: vertical;
 }
 
-.limpiar-btn {
-  background-color: var(--pastel-amarillo);
-  color: #333;
-  border: none;
-  padding: 0.4rem 1rem;
-  margin-top: 0.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.limpiar-btn:hover {
-  transform: scale(1.05);
-  transition: transform 0.2s ease;
-}
 
 .acciones-plantilla {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
   margin-top: 2rem;
+  
 }
 
-.vista-previa-btn {
-  background-color: #59c3e6;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  margin-top: 1rem;
-  margin-right: 0.5rem;
-  border-radius: 6px;
-  cursor: pointer;
+.modelo-item .btn--warning {
+  margin-top: 16px;
+  align-self: center;   
+}
+
+.leyenda-casilla {
   font-size: 1rem;
-  font-weight: bold;
-  transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.vista-previa-btn:hover {
-  background-color: #45a6c7;
-  transform: scale(1.05);
+  color: #555;
+  margin-bottom: 18px;
 }

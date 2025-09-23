@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../assets/styles/docente/CasillaSorpresa.css";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const CasillaSorpresa = () => {
   const navigate = useNavigate();
@@ -93,8 +94,12 @@ const cargarConfiguracion = async () => {
 
   return (
     <div className="modelo-texto-container">
+        <Breadcrumbs />
       <div className="contenido-scrollable">
-        <h2>Plantilla: Casilla Sorpresa</h2>
+        <h2>Casilla Sorpresa</h2>
+        <p className="leyenda-casilla">
+          En esta plantilla puedes configurar un texto sorpresa que los estudiantes verán al caer en la casilla. Escribe un mensaje breve y motivador para personalizar la experiencia de juego.
+        </p>
 
         {mensaje.texto && (
           <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
@@ -109,18 +114,17 @@ const cargarConfiguracion = async () => {
           />
           {texto.trim().length > 0 && (
             <button
-              type="button"
-              className="limpiar-btn"
+              className="btn btn--warning"
               onClick={() => setTexto("")}
             >
-              🧹 Limpiar texto
+              Limpiar texto
             </button>
           )}
         </div>
 
         <div className="acciones-plantilla">
           <button
-            className="vista-previa-btn"
+            className="btn btn--secondary"
             onClick={() => {
               sessionStorage.setItem(
                 "casillaSorpresaTexto",
@@ -131,14 +135,11 @@ const cargarConfiguracion = async () => {
               navigate("/estudiante/vista-previa-casilla-sorpresa");
             }}
           >
-            Vista previa
+            Vista previa como estudiante
           </button>
 
-          <button onClick={guardarConfiguracion}>💾 Guardar</button>
-          <button
-            onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}
-          >
-            ⬅️ Volver
+          <button className="btn btn--primary" onClick={guardarConfiguracion}>
+            Guardar configuración
           </button>
         </div>
       </div>

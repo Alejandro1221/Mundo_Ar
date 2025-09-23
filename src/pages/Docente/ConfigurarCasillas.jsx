@@ -43,13 +43,17 @@ const ConfigurarCasillas = () => {
     eliminarPlantilla
   } = useCasillas(juegoId);
 
-  const rutasPlantillas = {
-    "modelo-sonido": "/docente/plantilla-sonido-modelo",
-    "clasificacion-modelos": "/docente/clasificacion-modelos",
-    "rompecabezas-modelo": "/docente/rompecabezas-modelo",
-    "modelo-texto": "/docente/modelo-texto",
-    "casilla-sorpresa": "/docente/casilla-sorpresa"
-  };
+  const slugRuta = {
+  "modelo-sonido": "plantilla-sonido-modelo",
+  "clasificacion-modelos": "clasificacion-modelos",
+  "rompecabezas-modelo": "rompecabezas-modelo",
+  "modelo-texto": "modelo-texto",
+  "casilla-sorpresa": "casilla-sorpresa",
+};
+
+  const rutaPlantilla = (plantilla, juegoId) =>
+    `/docente/configurar-casillas/${juegoId}/${slugRuta[plantilla] || plantilla}`;
+  
 
   useEffect(() => {
       if (!juegoId) return navigate("/docente/dashboard");
@@ -240,13 +244,14 @@ const eliminarJuego = async () => {
                     onClick={() => {
                       setModalVisible(false);
                       const plantilla = casillas[casillaSeleccionada]?.plantilla;
-                      const ruta = rutasPlantillas[plantilla];
-                      if (ruta) {
-                        sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                        sessionStorage.setItem("juegoId", juegoId);
-                        sessionStorage.setItem("casillaId", casillaSeleccionada);
-                        navigate(ruta);
-                      }
+                      if (!plantilla) return;
+                      
+                      sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                      sessionStorage.setItem("juegoId", juegoId);
+                      sessionStorage.setItem("casillaId", casillaSeleccionada);
+                      
+                      const ruta = rutaPlantilla(plantilla, juegoId);
+                      navigate(ruta);
                     }}
                   >
                     ✏️ Editar Plantilla
