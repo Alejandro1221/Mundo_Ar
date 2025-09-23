@@ -45,7 +45,7 @@ const DashboardEstudiante = () => {
               }}
             > 
               <h3>🎲{juego.nombre}</h3>
-              <p>{juego.descripcion || "Sin descripción"}</p>
+             
             </div>
           ))
         ) : (

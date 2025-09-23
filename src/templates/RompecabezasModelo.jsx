@@ -4,6 +4,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import { uploadFile } from "../services/storageService";
 import "../assets/styles/docente/RompecabezasModelo.css";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const RompecabezasModelo = () => {
   const navigate = useNavigate();
@@ -109,15 +110,25 @@ const RompecabezasModelo = () => {
 
   return (
     <div className="docente-modelo-container">
+      <div className="topbar-bc"><Breadcrumbs /></div>
+      
       {mensaje.texto && (
         <div className={`mensaje ${mensaje.tipo}`}>
           {mensaje.texto}
         </div>
       )}
 
+      <h2>Arma el rompecabezas</h2>
+      <p className="leyenda-rompecabezas">
+        Sube una imagen para convertirla en rompecabezas. La vista previa te mostrará
+        la imagen completa y cómo se verán las piezas. Luego selecciona la celebración
+        y guarda la configuración.
+      </p>
+
+
       <div className="docente-modelos-seleccionados">
         <div className="docente-modelo-item">
-          <p className="nombre-modelo">📷 Imagen del rompecabezas</p>
+          <p className="nombre-modelo">Imagen del rompecabezas</p>
 
           <input type="file" accept="image/*" onChange={handleFileChange} />
           {previewUrl && (
@@ -126,7 +137,7 @@ const RompecabezasModelo = () => {
     <div className="imagen-completa-preview">
       <p className="nombre-modelo">🖼 Vista completa</p>
       <img src={previewUrl} alt="Imagen completa" className="imagen-preview-completa" />
-      <button className="btn-rojo" onClick={() => {
+      <button className="btn btn--danger btn--sm" onClick={() => {
         setImagen(null);
         setPreviewUrl(null);
         mostrarMensaje("🗑 Imagen eliminada.", "info");
@@ -188,45 +199,45 @@ const RompecabezasModelo = () => {
         )}
 
         {celebracion.tipo === "mensaje" && (
-          <input
-            type="text"
-            placeholder="Mensaje personalizado"
-            value={celebracion.opciones.mensaje || ""}
-            onChange={(e) =>
-              setCelebracion({
-                ...celebracion,
-                opciones: { mensaje: e.target.value }
-              })
-            }
-          />
-        )}
+            <textarea
+              placeholder="Mensaje personalizado"
+              rows={3}
+              style={{ width: "100%", resize: "vertical" }}
+              value={celebracion.opciones.mensaje || ""}
+              onChange={(e) =>
+                setCelebracion({
+                  ...celebracion,
+                  opciones: { mensaje: e.target.value }
+                })
+              }
+            />
+          )}
+
       </section>
 
-      <button
-        className="vista-previa-btn"
-        onClick={() => {
-          sessionStorage.setItem("modoVistaPrevia", "true");
-          sessionStorage.setItem("paginaAnterior", window.location.pathname);
-          sessionStorage.setItem("imagenRompecabezas", previewUrl);
-          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-          navigate("/estudiante/vista-previa-rompecabezas");
-        }}
-      >
-        Vista previa como estudiante
-      </button>
-
-      <div className="acciones-finales">
-        <button className="guardar-btn" onClick={guardarConfiguracion} disabled={guardando}>
-          {guardando ? "💾 Guardando..." : "💾 Guardar Configuración"}
+      <div className="acciones-plantilla">
+        <button
+          className="btn btn--secondary"
+          onClick={() => {
+            sessionStorage.setItem("modoVistaPrevia", "true");
+            sessionStorage.setItem("paginaAnterior", window.location.pathname);
+            sessionStorage.setItem("imagenRompecabezas", previewUrl);
+            sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+            navigate("/estudiante/vista-previa-rompecabezas");
+          }}
+        >
+          Vista previa como estudiante
         </button>
 
         <button
-          className="volver-btn"
-          onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}
+          className="btn btn--primary"
+          onClick={guardarConfiguracion}
+          disabled={guardando}
         >
-          ⬅️ Volver
+          {guardando ? "Guardando..." : "Guardar configuración"}
         </button>
       </div>
+
     </div>
   );
 };
