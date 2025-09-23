@@ -56,25 +56,22 @@ const cargarConfiguracion = async () => {
 
         
         setModelosSeleccionados(prev => {
-          // usar un Map para no duplicar
           const mapa = new Map(prev.map(m => [m.id || m.url, m]));
           modelos.forEach(m => mapa.set(m.id || m.url, m));
           return Array.from(mapa.values());
         });
 
-        //setModelosSeleccionados(modelos || []);
-        setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); // usa grupos guardados o crea por defecto
+     
+        setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); 
         setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
         setAsignaciones(asignacionesGuardadas || {});
         return;
       }
     }
-
-    // Si no hay casilla o configuración, es primera vez
     setGrupos(["Grupo 1", "Grupo 2"]);
   } catch (error) {
     console.error("Error al cargar configuración:", error);
-    setGrupos(["Grupo 1", "Grupo 2"]); // fallback si algo falla
+    setGrupos(["Grupo 1", "Grupo 2"]); 
   }
 };
 
@@ -182,11 +179,11 @@ const cargarConfiguracion = async () => {
             {grupos.map((g, i) => (
               <li key={i}>
                 <input value={g} onChange={(e) => renombrarGrupo(i, e.target.value)} />
-                <button onClick={() => eliminarGrupo(g)}>❌</button>
+                <button className="btn btn--danger btn--sm" onClick={() => eliminarGrupo(g)}>❌</button>
               </li>
             ))}
           </ul>
-          <button onClick={agregarGrupo}>➕ Agregar grupo</button>
+          <button className="btn btn--secondary" onClick={agregarGrupo}>Agregar grupo</button>
         </>
       )}
     </div>
@@ -196,9 +193,8 @@ const cargarConfiguracion = async () => {
           <h3>Modelos seleccionados</h3>
 
           <button
-            className="btn btn-primario"
+            className="btn btn--secondary"
               onClick={() => {
-                // mismo flujo que tu botón “Seleccionar modelos”
                 sessionStorage.setItem("juegoId", juegoId);
                 sessionStorage.setItem("casillaId", casillaId);
                 sessionStorage.setItem("paginaAnterior", window.location.pathname);
@@ -214,7 +210,7 @@ const cargarConfiguracion = async () => {
                 });
               }}
             >
-              + Agregar modelos
+              Agregar modelos
             </button>
         </div>
 
@@ -251,7 +247,7 @@ const cargarConfiguracion = async () => {
                   )}
 
                   <button
-                    className="eliminar-modelo-btn"
+                    className="btn btn--danger"
                     onClick={() => eliminarModelo(modelo.url)}
                   >
                     Eliminar
@@ -296,7 +292,7 @@ const cargarConfiguracion = async () => {
 
       <div className="acciones-plantilla">
           <button
-              className="vista-previa-btn"
+              className="btn btn--secondary"
               onClick={() => {
                 const modelosConGrupo = modelosSeleccionados.map((m) => ({
                   ...m,
@@ -315,7 +311,7 @@ const cargarConfiguracion = async () => {
               Vista previa como estudiante
             </button>
 
-            <button className="guardar-btn" onClick={guardarConfiguracion}>
+            <button className="btn btn--primary" onClick={guardarConfiguracion}>
               Guardar configuración
             </button>
 
