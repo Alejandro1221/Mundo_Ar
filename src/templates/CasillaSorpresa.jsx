@@ -11,6 +11,8 @@ const CasillaSorpresa = () => {
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [texto, setTexto] = useState("");
+  const palabras = texto.trim() ? texto.trim().split(/\s+/).length : 0;
+  const restante = 10 - palabras;
 
   useEffect(() => {
     if (!juegoId || !casillaId) {
@@ -106,16 +108,22 @@ const cargarConfiguracion = async () => {
         )}
 
         <div className="modelo-item">
-          <label>Texto:</label>
+          <label htmlFor="texto-sorpresa">Texto:</label>
           <textarea
+            id="texto-sorpresa"
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             placeholder="Escribe aquí el texto sorpresa (máximo 50 palabras)"
           />
+          <div className="ayuda-texto" aria-live="polite">
+            {restante} palabra{restante === 1 ? "" : "s"} restantes
+          </div>
           {texto.trim().length > 0 && (
             <button
+              type="button"
               className="btn btn--warning"
               onClick={() => setTexto("")}
+              aria-label="Limpiar texto"
             >
               Limpiar texto
             </button>

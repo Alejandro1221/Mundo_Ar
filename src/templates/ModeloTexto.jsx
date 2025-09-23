@@ -4,6 +4,9 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import "@google/model-viewer";
+import Breadcrumbs from "../components/Breadcrumbs";
+
+
 import "../assets/styles/docente/modeloTexto.css";
 
 const ModeloTexto = () => {
@@ -152,11 +155,31 @@ const cargarConfiguracion = async () => {
 
   return (
     <div className="modelo-texto-container">
+      <div className="topbar-bc"><Breadcrumbs /></div>
+
       <div className="contenido-scrollable">
-        <h2>Plantilla: Modelo con Texto</h2>
+        <h2>Modelo con Texto</h2>
+        <p className="leyenda-modelo-texto">
+          En esta plantilla puedes seleccionar modelos 3D y escribir un concepto breve para cada uno.
+          Sirve para reforzar ideas clave asociadas a cada modelo y evaluar la comprensión.
+        </p>
 
         {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
-
+        <div className="modelos-config__bar">
+          <h3>Modelos seleccionados</h3>
+          <button
+            className="btn btn--secondary"
+            onClick={() => {
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+              navigate("/docente/banco-modelos", {
+                state: { desdePlantilla: true, juegoId, casillaId },
+              });
+            }}
+          >
+            Agregar modelos
+          </button>
+        </div>
         <div className="modelos-lista">
           {modelosSeleccionados.length > 0 ? (
             modelosSeleccionados.map((modelo) => (
@@ -167,8 +190,8 @@ const cargarConfiguracion = async () => {
                   camera-controls
                   auto-rotate
                   shadow-intensity="1"
-                  style={{ width: "200px", height: "200px" }}
                 ></model-viewer>
+
                 <p>{modelo.nombre}</p>
                 <textarea
                   placeholder="Escribe aquí el concepto del modelo"
@@ -176,16 +199,16 @@ const cargarConfiguracion = async () => {
                   onChange={(e) => asignarTexto(modelo.url, e.target.value)}
                 ></textarea>
                 <button
-                  className="eliminar-modelo-btn"
+                  className="btn btn--danger btn--sm"
                   onClick={() => {
                     if (confirm("¿Estás seguro de eliminar este modelo?")) {
-                      eliminarModelo(modelo.id);   
+                      eliminarModelo(modelo.id);
                     }
                   }}
                 >
-                  Eliminar
+                  🗑️ Eliminar
                 </button>
-              </div>
+                              </div>
             ))
 
           ) : (
@@ -194,7 +217,7 @@ const cargarConfiguracion = async () => {
         </div>
 
         <section className="seccion-celebracion" style={{ marginTop: 16 }}>
-          <h3>🎉 Celebración</h3>
+          <h3>Celebración</h3>
           <select
             value={celebracion.tipo}
             onChange={(e) =>
@@ -222,53 +245,41 @@ const cargarConfiguracion = async () => {
           )}
 
           {celebracion.tipo === "mensaje" && (
-            <input
-              type="text"
-              placeholder="Mensaje personalizado"
-              value={celebracion.opciones.mensaje || ""}
-              onChange={(e) =>
-                setCelebracion({
-                  ...celebracion,
-                  opciones: { mensaje: e.target.value },
-                })
-              }
-              style={{ marginTop: 8, width: "100%" }}
-            />
-          )}
+              <textarea
+                placeholder="Mensaje personalizado"
+                rows={3}
+                style={{ width: "100%", resize: "vertical", marginTop: 8 }}
+                value={celebracion.opciones.mensaje || ""}
+                onChange={(e) =>
+                  setCelebracion({
+                    ...celebracion,
+                    opciones: { mensaje: e.target.value },
+                  })
+                }
+              />
+            )}
         </section>
 
-        <button
-          className="vista-previa-btn"
-          onClick={() => {
-            const modelosConTexto = modelosSeleccionados.map((m) => ({
-              ...m,
-              texto: m.texto || "",
-            }));
-            sessionStorage.setItem("modoVistaPrevia", "true");
-            sessionStorage.setItem("paginaAnterior", window.location.pathname);
-            sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
-            sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-            navigate("/estudiante/vista-previa-modelo-texto");
-          }}
-        >
-          Vista previa
-        </button>
-
         <div className="acciones-plantilla">
-          <button onClick={guardarConfiguracion}>💾 Guardar</button>
-          <button
+         <button
+            className="btn btn--secondary"
             onClick={() => {
+              const modelosConTexto = modelosSeleccionados.map((m) => ({
+                ...m,
+                texto: m.texto || "",
+              }));
+              sessionStorage.setItem("modoVistaPrevia", "true");
               sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-              navigate("/docente/banco-modelos", {
-                state: { desdePlantilla: true, juegoId, casillaId },
-              });
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
+              sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+              navigate("/estudiante/vista-previa-modelo-texto");
             }}
           >
-            Seleccionar Modelos
+            Vista previa como estudiante
           </button>
-          <button onClick={() => navigate(`/docente/configurar-casillas/${juegoId}`)}>
-            ⬅️ Volver
+
+          <button className="btn btn--primary" onClick={guardarConfiguracion}>
+            Guardar configuración
           </button>
         </div>
       </div>

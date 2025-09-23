@@ -330,3 +330,26 @@
     align-items: stretch; 
   } 
 }
+
+/* Botón flotante siempre visible */
+.btn-confirmar{
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(12px, env(safe-area-inset-bottom));
+  z-index: 120;                         /* por encima del contenido, por debajo de los modales (1100+) */
+
+  /* Mantiene tu estética; hereda colores arriba */
+  padding: 10px 18px;
+  border-radius: var(--borde-suave);
+  box-shadow: var(--sombra-suave);
+  width: auto;
+  max-width: 420px;
+}
+
+/* En tablet/móvil que sea casi full-width */
+@media (max-width: 768px){
+  .btn-confirmar{
+    width: calc(100% - 32px);
+  }
+}

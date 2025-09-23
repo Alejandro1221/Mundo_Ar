@@ -1,6 +1,7 @@
 import React, { useEffect,useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCasillas } from "../../hooks/useCasillas";
+
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

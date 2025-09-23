@@ -1,31 +1,35 @@
-main {
-  min-height: 100vh;
-}
-.docente-clasificacion-container {
+.docente-clasificacion-container{
   padding: 24px;
-  max-width: 900px;
+  max-width: 1100px;             
   margin: auto;
   font-family: 'Source Sans Pro', sans-serif;
-  height: 100vh; 
-  overflow-y: auto; 
+  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
   box-sizing: border-box;
   padding-bottom: 120px;
   scroll-behavior: smooth;
+
+  display: flex;
+  flex-direction: column;
 }
 
-h2 {
-  margin-bottom: 20px;
+/* ===== Título y leyenda ===== */
+h2{
+  margin: 12px 0;
   text-align: center;
 }
-.grupos-config li .btn { margin-left: 10px; }
-
-.leyenda-clasificacion {
+.leyenda-clasificacion{
   font-size: 1rem;
+  line-height: 1.6;
   color: #555;
-  margin-bottom: 18px;
+  margin: 0 0 12px 0;
+  text-align: left;
+  max-width: 800px;
 }
 
-.mensaje {
+/* ===== Mensajes ===== */
+.mensaje{
   padding: 10px 15px;
   margin-bottom: 16px;
   border-radius: var(--borde-suave);
@@ -34,32 +38,20 @@ h2 {
   background-color: var(--pastel-amarillo);
   color: var(--texto-principal);
 }
+.mensaje.success{ background-color: var(--pastel-verde); }
+.mensaje.error{ background-color: var(--pastel-rosa); }
 
-.mensaje.success {
-  background-color: var(--pastel-verde);
-}
-
-.mensaje.error {
-  background-color: var(--pastel-rosa);
-}
-
-.grupos-config {
-  margin-bottom: 24px;
-}
-
-.grupos-config ul {
-  list-style: none;
-  padding: 0;
-}
-
-.grupos-config li {
+/* ===== Configuración de grupos ===== */
+.grupos-config{ margin-bottom: 24px; }
+.grupos-config ul{ list-style: none; padding: 0; }
+.grupos-config li{
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
-
-.grupos-config input {
+.grupos-config li .btn{ margin-left: 10px; }
+.grupos-config input{
   flex: 1;
   padding: 6px 10px;
   border: 2px solid var(--pastel-azul);
@@ -67,14 +59,9 @@ h2 {
   background-color: var(--fondo-claro);
 }
 
-.seccion-celebracion {
-  margin-bottom: 24px;
-}
-
-.seccion-celebracion h3 {
-  margin-bottom: 8px;
-}
-
+/* ===== Selección de celebración ===== */
+.seccion-celebracion{ margin: 24px 0; }
+.seccion-celebracion h3{ margin-bottom: 8px; }
 .seccion-celebracion select{
   padding: 6px 10px;
   border: 2px solid var(--pastel-indigo);
@@ -85,72 +72,7 @@ h2 {
   width: 100%;
   max-width: 400px;
 }
-
-.acciones-plantilla {
-  display: flex;
-  justify-content: center;   
-  align-items: center;
-  gap: 16px;                
-  margin-top: 32px;
-}
-
-
-.modelo-card {
-  background: var(--fondo-claro);
-  border: 2px solid var(--pastel-azul);
-  border-radius: 16px;
-  box-shadow: var(--sombra-suave);
-  width: 100%;
-  max-width: 240px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px;
-  transition: transform 0.2s ease;
-}
-
-.modelo-card:hover {
-  transform: translateY(-4px);
-}
-
-.modelo-preview {
-  width: 100%;
-  height: 180px;
-  border-radius: 12px;
-  overflow: hidden;
-  background: #f9f9f9;
-}
-
-.modelo-preview model-viewer {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-
-.modelo-detalles {
-  text-align: center;
-  margin-top: 10px;
-  width: 100%;
-}
-
-.modelo-detalles h4 {
-  margin: 8px 0 4px;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--texto-principal);
-}
-
-.modelo-detalles select {
-  margin-top: 6px;
-  width: 100%;
-  padding: 6px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-
-.seccion-celebracion textarea {
+.seccion-celebracion textarea{
   width: 100%;
   min-height: 60px;
   font-size: 1rem;
@@ -162,49 +84,100 @@ h2 {
   margin-top: 8px;
   margin-bottom: 12px;
 }
-
-.seccion-celebracion textarea:focus {
+.seccion-celebracion textarea:focus{
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37,99,235,.15);
   outline: none;
 }
 
+/* ===== Barra: “Modelos seleccionados” + botón ===== */
 .modelos-config__bar{
   display: flex;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 10px;
+  margin: 16px 0 12px;
 }
 
+/* ===== Cuadrícula de modelos (más espacio lateral que vertical) ===== */
 .modelos-grid{
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 200px));
+  column-gap: 75px;   /* 👉 separación lateral */
+  row-gap: 12px;      /* 👉 separación vertical */
+  justify-content: center;
   align-items: start;
-  grid-auto-flow: row dense; 
-  justify-items: stretch;
 }
 
+/* ===== Card de modelo: con “línea” y aire ===== */
 .modelo-card{
+  background: var(--fondo-claro, #fff);
+  border: 2px solid var(--pastel-azul);
+  border-radius: 12px;
+  box-shadow: var(--sombra-suave);
   width: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  padding: 14px;
+  text-align: center;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.modelo-card:hover{
+  transform: translateY(-2px);
+  /* si tu navegador soporta color-mix; si no, puedes omitir esta línea */
+  border-color: color-mix(in srgb, var(--pastel-azul) 70%, #1e90ff);
 }
 
-.acciones-plantilla{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:16px;
-  margin-top:32px;
+/* Visor */
+.modelo-preview{
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9f9f9;
 }
-.acciones-plantilla button{ margin:0; }  
+.modelo-preview model-viewer{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-.modelo-detalles select {
+/* Detalles + controles del card */
+.modelo-detalles{
+  text-align: center;
+  margin-top: 10px;
+  width: 100%;
+  padding-top: 10px;                 /* separador visual del visor */
+  border-top: 1px solid #eef2f7;     /* línea interna sutil */
+}
+.modelo-detalles h4{
+  margin: 8px 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--texto-principal);
+}
+.modelo-detalles select{
+  width: 100%;
   margin-top: 6px;
-  margin-bottom: 15px; 
+  margin-bottom: 12px;
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+.modelo-detalles .btn{
+  width: 100%;                        /* botón ancho del card */
+  justify-content: center;
+  min-height: 36px;
+  margin-top: 6px;
 }
 
-
-
+/* ===== Acciones (pie de pantalla) ===== */
+.acciones-plantilla{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+.acciones-plantilla button{ margin: 0; }

@@ -82,3 +82,11 @@ canvas {
   opacity: 0.6;
 }
 
+.leyenda-casilla {
+  font-size: 1rem;
+  line-height: 1.6;        
+  margin: 0 0 18px 0;    
+  text-align: justify;   
+  max-width: 800px;       
+}
+

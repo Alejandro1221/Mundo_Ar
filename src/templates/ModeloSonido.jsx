@@ -5,6 +5,8 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "@google/model-viewer";
 import imagenSonido from "../assets/images/imag_sonido.png";
+import Breadcrumbs from "../components/Breadcrumbs";
+
 import "../assets/styles/docente/modeloSonido.css";
 
 const ModeloSonido = () => {
@@ -183,13 +185,14 @@ const ModeloSonido = () => {
 
   return (
     <div className="docente-modelo-container">
+      <Breadcrumbs />
       <div className="contenido-scrollable">
         {mensaje.texto && (
           <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
         )}
 
         <div className="titulo-con-icono">
-          <h2 className="titulo-vista">Configurar Modelo-Sonido</h2>
+          <h2 className="titulo-vista">Modelo-Sonido</h2>
           <img
             src={imagenSonido}
             alt="Reproducir sonido"
@@ -197,6 +200,25 @@ const ModeloSonido = () => {
             onClick={manejarReproduccion}
           />
         </div>
+        <p className="leyenda-modelo-sonido">
+          En esta plantilla puedes seleccionar modelos 3D y asignarles sonidos. 
+          El objetivo es crear una experiencia interactiva y multisensorial, permitiendo que los estudiantes 
+          exploren los modelos y escuchen el sonido asociado al interactuar con cada uno.
+        </p>
+
+        <div className="modelos-config__bar">
+          <h3>Modelos seleccionados</h3>
+          <button
+            className="btn btn--secondary"
+            onClick={() => {
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId } });
+            }}
+          >
+            Agregar modelos
+          </button>
+        </div>
+
 
         <div className="docente-modelos-seleccionados">
           {modelosSeleccionados.length > 0 ? (
@@ -213,21 +235,24 @@ const ModeloSonido = () => {
 
                 <p className="nombre-modelo">{modelo.nombre}</p>
 
-                <button className="btn-rojo" onClick={() => eliminarModelo(modelo.url)}>
-                  🗑️ Eliminar
-                </button>
+                <div className="acciones-modelo">
 
-                <button
-                  className="asignar-sonido-btn"
-                  onClick={() => {
-                    sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
-                    sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
-                    sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                    navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
-                  }}
-                >
-                  🎵 Asignar Sonido
-                </button>
+                  <button className="btn btn--danger btn--sm" onClick={() => eliminarModelo(modelo.url)}>
+                    🗑️ Eliminar
+                  </button>
+
+                  <button
+                    className="btn btn--secondary btn--sm"
+                    onClick={() => {
+                      sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+                      sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
+                      sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                      navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
+                    }}
+                  >
+                    🎵 Asignar Sonido
+                  </button>
+                </div>
 
                 {modelo.sonido?.url ? (
                   <div className="sonido-asignado">
@@ -242,12 +267,12 @@ const ModeloSonido = () => {
               </div>
             ))
           ) : (
-            <p className="mensaje-vacio">⚠️ No se han seleccionado modelos.</p>
+            <p className="mensaje-vacio">No se han seleccionado modelos. Haz clic en <strong>Agregar modelos</strong> para elegir los modelos 3D.</p>
           )}
         </div>
 
         <section className="seccion-celebracion">
-          <label htmlFor="tipoCelebracion">🎈 Tipo de Celebración:</label>
+          <label htmlFor="tipoCelebracion">Celebración:</label>
           <select
             id="tipoCelebracion"
             value={celebracion.tipo}
@@ -256,7 +281,6 @@ const ModeloSonido = () => {
             <option value="confeti">🎉 Confeti (visual)</option>
             <option value="gif">🎥 GIF animado</option>
             <option value="mensaje">✅ Mensaje de texto</option>
-            <option value="animacion">🌈 Animación suave</option>
           </select>
 
           {celebracion.tipo === "gif" && (
@@ -274,9 +298,10 @@ const ModeloSonido = () => {
           )}
 
           {celebracion.tipo === "mensaje" && (
-            <input
-              type="text"
+            <textarea
               placeholder="Mensaje personalizado"
+              rows={3}
+              style={{ width: "100%", resize: "vertical" }}
               value={celebracion.opciones.mensaje || ""}
               onChange={(e) =>
                 setCelebracion({
@@ -288,19 +313,10 @@ const ModeloSonido = () => {
           )}
         </section>
 
-        <div className="acciones-finales">
-          <button
-            className="btn-secundario"
-            onClick={() => {
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId } });
-            }}
-          >
-            Seleccionar Modelos
-          </button>
+        <div className="acciones-plantilla">
 
           <button
-            className="vista-previa-btn"
+            className="btn btn--secondary"
             onClick={() => {
               sessionStorage.setItem("modoVistaPrevia", "true");
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados)); 
@@ -312,26 +328,11 @@ const ModeloSonido = () => {
             Vista previa como estudiante
           </button>
 
-          <button className="guardar-btn" onClick={sincronizarModelos}>
-            💾 Guardar Configuración
+          <button className="btn btn--primary" onClick={sincronizarModelos}>
+            Guardar Configuración
           </button>
 
-          <button
-            className="volver-btn"
-            onClick={() => {
-              const historial = JSON.parse(sessionStorage.getItem("historialPaginas")) || [];
-              historial.pop();
-              const paginaAnterior = historial.pop();
-              sessionStorage.setItem("historialPaginas", JSON.stringify(historial));
-              if (paginaAnterior) {
-                navigate(paginaAnterior);
-              } else {
-                navigate(`/docente/configurar-casillas/${juegoId}`);
-              }
-            }}
-          >
-            ⬅️ Volver
-          </button>
+        
         </div>
       </div>
     </div>
