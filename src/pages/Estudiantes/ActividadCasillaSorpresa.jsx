@@ -19,9 +19,7 @@ const ActividadCasillaSorpresa = ({ vistaPrevia = false }) => {
       return;
     }
 
-    // Modo normal (jugando): leer de Firestore
     if (!juegoId || casillaId == null) {
-      // si no hay contexto, regresa a dashboard o donde corresponda
       navigate("/estudiante/dashboard");
       return;
     }
@@ -43,45 +41,92 @@ const ActividadCasillaSorpresa = ({ vistaPrevia = false }) => {
     cargar();
   }, [vistaPrevia, navigate]);
 
-return (
-  <div className="actividad-ra-container">
-    <HeaderActividad titulo="Casilla Sorpresa (AR)" />
+  useEffect(() => {
+    const textEl = document.getElementById("troikaText");
+    const bgEl   = document.getElementById("bgPanel");
+    if (!textEl || !bgEl) return;
 
-    {/* Escena AR */}
-    <a-scene
-      arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
-      vr-mode-ui="enabled: false"
-      renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
-      background="transparent: true"
-    >
+    const updateBG = () => {
+      const mesh = textEl.getObject3D("mesh");
+      if (!mesh || !mesh.geometry) return;
+      if (!mesh.geometry.boundingBox) mesh.geometry.computeBoundingBox();
 
-      <a-entity position="0 0 -2">
- 
-        <a-text
-          value={(texto || "—").replace(/\r?\n/g, "\n")}
-          align="center"
-          color="#111111"
-          width="2.8"           
-          position="0 0 0.1"    
-          side="double"         
-          font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-          anchor="center"
-          baseline="center"
-          letter-spacing="0.05"
-          line-height="60"
-          wrap-count="30"
+      const bb = mesh.geometry.boundingBox;
+      const w  = bb.max.x - bb.min.x;
+      const h  = bb.max.y - bb.min.y;
 
-        ></a-text>
-      </a-entity>
+      // padding basado en el font-size (m)
+      const fs = parseFloat(textEl.getAttribute("font-size") || "0.16");
+      const PAD_X = fs * 2.0;  // margen lateral
+      const PAD_Y = fs * 1.4;  // margen arriba/abajo
 
-      <a-entity camera="fov: 95" position="0 0 0"></a-entity>
-    </a-scene>
+      bgEl.setAttribute("width",  (w + PAD_X).toFixed(3));
+      bgEl.setAttribute("height", (h + PAD_Y).toFixed(3));
+      bgEl.setAttribute("position", "0 0 0");
+    };
 
-    <div style={{ padding: 12, textAlign: "center", fontSize: 14, opacity: 0.8 }}>
-      Si no ves la cámara, revisa permisos y que estés en HTTPS/localhost.
+    textEl.addEventListener("textlayoutcomplete", updateBG);
+    const t = setTimeout(updateBG, 0); 
+
+    return () => {
+      clearTimeout(t);
+      textEl.removeEventListener("textlayoutcomplete", updateBG);
+    };
+  }, [texto]);
+
+  return (
+    <div className="actividad-ra-container">
+      <HeaderActividad titulo="Casilla Sorpresa (AR)" />
+
+      {/* Escena AR */}
+      <a-scene
+        arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+        vr-mode-ui="enabled: false"
+        renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
+        background="transparent: true"
+      >
+        <a-entity position="0 0 -2">
+          <a-plane
+            id="bgPanel"
+            width="1" height="0.5"
+            position="0 0 0"
+            material="color: #ffffff; opacity: 0.85; shader: flat"
+            side="double"
+          ></a-plane>
+                    
+          <a-troika-text
+            value={(texto || "—").replace(/\r?\n/g, "\n")}
+            color="#111111"
+            font="/fonts/NotoSans-Regular.ttf" 
+            font-size="0.1"                   
+            depth="0.5"
+            max-width="0.8"   
+            line-height="1.15"
+            letter-spacing="0.01"
+            overflow-wrap="break-word"
+            text-align="center"
+            anchor="center"
+            position="0 0 0.01"
+            outline-width="0.012"
+            outline-color="#ffffff"
+            outline-blur="0.004"
+          ></a-troika-text>
+        </a-entity>
+
+        <a-entity camera="fov: 95" position="0 0 0"></a-entity>
+      </a-scene>
+
+      <div
+        style={{
+          padding: 12,
+          textAlign: "center",
+          fontSize: 14,
+          opacity: 0.8,
+        }}
+      >
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default ActividadCasillaSorpresa;

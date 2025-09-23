@@ -26,12 +26,15 @@ const cargarConfiguracion = async () => {
     const juegoSnap = await getDoc(juegoRef);
     if (!juegoSnap.exists()) return;
 
-    const idx = Number(casillaId); // usar índice numérico
-    const casillas = juegoSnap.data().casillas || [];
-    const casilla = Array.isArray(casillas) ? casillas[idx] : casillas?.[idx];
+    const idx = parseInt(casillaId, 10);
+    if (Number.isNaN(idx)) { mostrarMensaje("ID de casilla inválido", "error"); return; }
+    const casillas = Array.isArray(juegoSnap.data().casillas)
+      ? juegoSnap.data().casillas
+      : [];
+
+    const casilla = casillas[idx] ?? null;
 
     const cfg = casilla?.configuracion || {};
-    // Acepta ambos formatos: textos (array) o texto (string)
     const textos = Array.isArray(cfg.textos)
       ? cfg.textos
       : (cfg.texto ? [cfg.texto] : []);
@@ -64,12 +67,11 @@ const cargarConfiguracion = async () => {
       }
 
       const idx = Number(casillaId);                      
-      const origen = juegoSnap.data().casillas;
-      const casillasActuales = Array.isArray(origen) ? [...origen] : [];
-
-      if (casillasActuales.length <= idx) {
-        casillasActuales.length = idx + 1;                 
-      }
+      const origen = Array.isArray(juegoSnap.data().casillas)
+   ? juegoSnap.data().casillas
+        : [];
+      const casillasActuales = [...origen];
+      while (casillasActuales.length <= idx) casillasActuales.push(null);
 
       casillasActuales[idx] = {
         plantilla: "casilla-sorpresa",
