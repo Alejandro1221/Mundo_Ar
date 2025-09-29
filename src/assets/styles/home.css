@@ -1,15 +1,18 @@
-.home-container {
-  min-height: 100vh;
+.home-container{
+  min-height: 100svh;             
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background-color: var(--pastel-azul); 
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center bottom;
+  justify-content: space-between;  
+  padding: 16px;
   overflow: hidden;
+
+  background:
+    var(--pastel-azul)
+    url("../../assets/images/home.png")
+    center bottom / cover
+    no-repeat;
 }
 
 .home-wrapper {
@@ -26,8 +29,10 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 20px;
-}
+  padding: 0;                         
+  margin: 0;
+  gap: clamp(12px, 3vh, 28px);       
+  }
 
 .home-content h1 {
   font-size: 2.5rem;
@@ -42,14 +47,15 @@
 }
 
 .home-buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 20px;
-  width: 100%;                                  
-  max-width: 500px; 
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  column-gap: 28px;
+  row-gap: 16px;
+  margin-top: 24px;
+  width: min(90vw, 520px);
+  margin-inline: auto;
+  align-items: stretch;
 }
-
 /* Botones */
 .role-btn {
   display: flex;
@@ -65,6 +71,7 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   text-align: center;
+  box-sizing: border-box; width: 100%; 
 }
 
 /* Botón Docente */
@@ -92,12 +99,16 @@
 }
 
 .logo-home {
-  width: 150px;
-  height: auto;
-  margin-bottom: 295px;
+  width: clamp(250px, 22vw, 260px);
+  margin-top: 0;                            
+  margin-bottom: clamp(80px, 3vh, 24px);
+  transform: translateY(-4vh);              
 }
 
+
+
 @media (min-width: 1024px) {
+
   .home-content {
     flex-direction: column;
     align-items: center;
@@ -107,13 +118,16 @@
   }
 
   .home-buttons {
-    flex-direction: row;
-    justify-content: center;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    column-gap: 32px;
+    row-gap: 16px;
   }
 
   .logo-home {
     width: 200px;
     margin-bottom: 40px;
+    transform: translateY(-4vh);
   }
 
   .role-btn {
@@ -124,9 +138,11 @@
   .home-footer {
     font-size: 0.9rem;
     text-align: right;
-    position: absolute;
+    position: static;
     bottom: 20px;
     right: 40px;
+    text-align: center; 
   }
+
 }
 

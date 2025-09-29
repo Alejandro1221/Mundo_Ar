@@ -1,21 +1,11 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import "../assets/styles/home.css"; 
 import logoMundoAR from "../assets/images/logo.png";
-import homeBackground from "../assets/images/home.png"; 
+
 
 const Home = () => {
   return (
-    <div
-      className="home-container"
-      style={{
-        backgroundImage: `url(${homeBackground})`,
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center bottom',
-        backgroundColor: 'var(--pastel-azul)', 
-      }}
-    >
+    <div className="home-container">
       <div className="home-content">
 
       <img src={logoMundoAR} alt="Logo Mundo AR" className="logo-home" />
