@@ -129,7 +129,7 @@ const BancoSonidos = () => {
                 onClick={manejarEliminacionCategoria}
                 disabled={!categoriaAEliminar.trim()}
               >
-                🗑️ Confirmar Eliminar
+                Confirmar Eliminar
               </button>
             </div>
           )}

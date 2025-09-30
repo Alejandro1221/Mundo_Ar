@@ -33,3 +33,23 @@
   font-weight: bold;
   color: #2563eb;
 }
+
+/* Breadcrumbs dentro de la barra (topbar) */
+.topbar-left .breadcrumbs{
+  margin: 0;                 
+  padding: 0;
+  background: transparent;   
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;          
+}
+
+.topbar-left .breadcrumbs ul{
+  align-items: center;      
+  gap: 8px;                  
+}
+
+.topbar-left .breadcrumbs li{
+  white-space: nowrap;       /* que no hagan salto raro */
+}
+

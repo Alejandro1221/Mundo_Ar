@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FiPlus, FiMenu, FiX } from "react-icons/fi";
 import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
 import { obtenerCategorias} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -9,11 +8,11 @@ import EliminarCategoria from "./EliminarCategoria";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 
-import Breadcrumbs from "../../components/Breadcrumbs";
+import { FiPlus } from "react-icons/fi";
+import MenuHamburguesa from "../../components/MenuHamburguesa";
 
 
 const BancoModelos = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const [activeModal, setActiveModal] = useState(null);
   const [modelos, setModelos] = useState([]);
   const [categorias, setCategorias] = useState(["Todos"]);
@@ -21,11 +20,6 @@ const BancoModelos = () => {
   const [busqueda, setBusqueda] = useState("");
 
   const [setModelosDesvaneciendo] = useState([]);
-
-
-  const closeMenu = () => {
-    setMenuOpen(false);
-  };
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -125,73 +119,19 @@ const manejarEliminacion = async (modelo) => {
 
 return (
   <div className="banco-modelos">
-    <Breadcrumbs />
-    <div className="encabezado-pagina">
-        <button
-          className="btn-menu"
-          onClick={() => setMenuOpen(true)}
-          aria-label="Abrir menú"
-          aria-expanded={menuOpen}
-          aria-controls="menu-drawer"
-          >
-            <FiMenu />
+    <MenuHamburguesa showBreadcrumbs={true} />
+    <h1 className="titulo-pagina">Banco de Modelos</h1>
+
+    <div className="page-toolbar">
+      {!desdePlantilla && (
+        <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
+          + Subir modelo
         </button>
-        <h1>Banco de Modelos</h1>
-    </div>
-
-      {/* Backdrop */}
-      {menuOpen && (
-        <div
-          className="menu-backdrop"
-          onClick={closeMenu}
-          aria-hidden="true"
-        />
       )}
-
-      <nav
-        id="menu-drawer"
-        className={`menu-drawer ${menuOpen ? "open" : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="menu-title"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="menu-header">
-          <h2 id="menu-title">Menú</h2>
-          <button type="button" className="menu-close" onClick={() => setMenuOpen(false)} aria-label="Cerrar">
-             <FiX />
-          </button>
-        </div>
-
-        <ul className="menu-list">
-          {!desdePlantilla && (
-            <li>
-              <button
-                className="menu-item"
-                onClick={() => {
-                  setMenuOpen(false);
-                  setActiveModal("subir");
-                }}
-              >
-                <FiPlus /> Subir modelo
-              </button>
-            </li>
-          )}
-          <li>
-            <button
-              className="menu-item danger"
-              onClick={() => {
-                setMenuOpen(false);
-                setActiveModal("eliminarCategoria");
-                
-              }}
-            >
-              🗑️ Eliminar categoría
-            </button>
-          </li>
-        </ul>
-      </nav>
-
+      <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
+        Eliminar categoría
+      </button>
+    </div>
       {/* Modal: Subir Modelo */}
       {activeModal === "subir" && (
         <>
@@ -319,7 +259,7 @@ return (
 
       {/* Confirmar selección si viene de plantilla */}
       {desdePlantilla && (
-        <button className="btn-confirmar" onClick={confirmarSeleccion}>
+        <button className="btn btn--primary btn--block" onClick={confirmarSeleccion}>
           ✅ Confirmar Selección
         </button>
       )}

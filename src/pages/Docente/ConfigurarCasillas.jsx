@@ -1,20 +1,14 @@
 import React, { useEffect,useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCasillas } from "../../hooks/useCasillas";
-
-import Breadcrumbs from "../../components/Breadcrumbs";
+import { db } from "../../services/firebaseConfig";
+import { doc, getDoc } from "firebase/firestore";
+import { eliminarJuegoPorId, actualizarJuego } from "../../services/juegosService";
+import { useNotify, useConfirm } from "../../components/NotifyProvider";
+import MenuHambuguesa from "../../components/MenuHamburguesa";
 import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/docente/configurarCasillas.css";
-
-import { db } from "../../services/firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
-
-import HamburguesaMenu from "../../components/HamburguesaMenu";
-import { eliminarJuegoPorId, actualizarJuego } from "../../services/juegosService";
-import "../../assets/styles/componentes/hamburguesaMenu.css";
-import { useNotify, useConfirm } from "../../components/NotifyProvider";
-
 
 const ConfigurarCasillas = () => {
   const { juegoId } = useParams(); 
@@ -139,23 +133,34 @@ const eliminarJuego = async () => {
   }
 };
 
-
   return (
     <div className="configurar-casillas-container">
-      <Breadcrumbs />
+      <div>
+          <MenuHambuguesa />
+      </div>
       <section className={`juego-panel ${editMode ? "is-editing" : ""}`}>
         <div className="juego-panel__bar">
-          <HamburguesaMenu
-            options={[
-              { label: "Editar juego", onClick: startEdit },
-              { label: "Eliminar juego", onClick: eliminarJuego, danger: true },
-            ]}
-            placement="over"   
-            anchor=""        
-            offset={0}        
-          />
           <h2 className="juego-panel__titulo">Información del juego</h2>
-          
+
+          <div className="juego-panel__toolbar">
+            {!editMode ? (
+              <>
+                <button className="btn btn--warning" onClick={startEdit}>Editar</button>
+                <button className="btn btn--danger" onClick={eliminarJuego}>Eliminar</button>
+              </>
+            ) : (
+              <>
+                <button className="btn btn--danger" onClick={cancelEdit}>Cancelar</button>
+                <button
+                  className="btn btn--primary"
+                  onClick={guardarDetallesJuego}
+                  disabled={savingJuego || !nombreJuego.trim()}
+                >
+                  {savingJuego ? "Guardando..." : "Guardar"}
+                </button>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="juego-panel__fila">
@@ -192,22 +197,6 @@ const eliminarJuego = async () => {
             </label>
           </div>
         </div>
-
-
-        {editMode && (
-          <div className="juego-panel__acciones">
-            <button className="btn secundario" onClick={cancelEdit} disabled={savingJuego}>
-              Cancelar
-            </button>
-            <button
-              className="juego-panel__btn-guardar"
-              onClick={guardarDetallesJuego}
-              disabled={savingJuego || !nombreJuego.trim()}
-            >
-              {savingJuego ? "Guardando..." : "Guardar cambios"}
-            </button>
-          </div>
-        )}
       </section>
   
       <div className="encabezado-horizontal">
@@ -255,7 +244,7 @@ const eliminarJuego = async () => {
                       navigate(ruta);
                     }}
                   >
-                    ✏️ Editar Plantilla
+                    Editar Plantilla
                   </button>
 
                   <button
@@ -277,7 +266,7 @@ const eliminarJuego = async () => {
                     cargarCasillas();
                   }}
                   >
-                    🗑️ Eliminar Plantilla
+                    Eliminar Plantilla
                   </button>
 
                   <button className="cancelar-btn" onClick={() => setModalVisible(false)}>Cancelar</button>

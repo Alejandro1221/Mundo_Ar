@@ -1,5 +1,5 @@
 .dashboard-container {
-  min-height: 100vh;
+  min-height: 100svh; 
   width: 100%;
   background: var(--fondo-claro);
   padding: 40px 0;   
@@ -7,21 +7,25 @@
   flex-direction: column;
   align-items: stretch;
   color: var(--texto-principal);
-  text-align: center;
+  overflow-y: auto;
 }
-
-.dashboard-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  justify-content: flex-start;
-  width: 100%;         
-  max-width: var(--page-w);
-  margin: 0;          
-  padding-left: 0;  
-  margin-left: -20px;
-  margin-bottom: 30px;
-  
+.dashboard-header .topbar-bc{
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  width: auto;          
+  display: inline-flex; /
+}
+.dashboard-header{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  justify-content:flex-start;
+  width: min(100% - 32px, var(--page-w));
+  margin: 0 auto 30px;
+  padding: 0 16px;
 }
 
 .dashboard-header h1 {
@@ -30,12 +34,6 @@
   margin: 0;
   
 }
-
-.header-actions {
-  display: flex;  
-  order: -1;     
-}
-
 /* Barra del bloque: título + botón a extremos */
 .bloque-juegos__bar {
   padding: 0 55px;
@@ -286,95 +284,6 @@ input:checked + .slider::before {
   background-color: var(--pastel-azul);
 }
 
-.hamburger-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: var(--pastel-azul);
-  color: var(--texto-blanco);
-  box-shadow: var(--sombra-suave);
-  transition: transform .15s ease;
-  font-size: 1.2rem;
-  margin-left: 50px;
-  
-}
-.hamburger-btn:hover { transform: scale(1.05); }
-.hamburger-btn svg { width: 22px; height: 22px; } 
-/* Capa oscura detrás */
-.menu-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.25);
-  z-index: 80;
-}
-
-/* Drawer anclado a la izquierda */
-.menu-drawer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: auto;
-
-  height: auto;
-  width: min(86vw, 250px);
-  background: var(--fondo-claro);
-  box-shadow: 4px 0 24px rgba(0,0,0,.15);
-  transform: translateX(-100%);
-  transition: transform .25s ease;
-  z-index: 90;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  border-top-right-radius: 12px;
-  border-bottom-right-radius: 12px;
-}
-.menu-drawer.open { transform: translateX(0); }
-
-.menu-close {
-  align-self: flex-end;
-  border: none;
-  background: transparent;
-  font-size: 1.4rem;
-  cursor: pointer;
-  color: var(--texto-principal);
-}
-.menu-close svg { width: 22px; height: 22px; }
-
-/* Lista sin viñetas ni márgenes */
-.menu-list {
-  list-style: none !important;
-  margin: 12px 0 0 !important;
-  padding: 0 !important;
-  display: grid;
-  gap: 10px;
-}
-
-/* Botones del menú bonitos */
-.menu-item {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  text-align: left;
-  padding: 12px 14px;
-  border-radius: var(--borde-suave);
-  background: var(--fondo-claro);
-  color: var(--texto-principal);
-  border: 1px solid var(--ui-disabled-border);
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: background .15s ease, transform .1s ease;
-}
-.menu-item:hover { background: #f5f8fb; transform: translateY(-1px); }
-.menu-item.danger { color: #c0392b; border-color: #f0d4d1; background: var(--fondo-claro); }
-.menu-item.danger:hover { background: #fdecea; }
-
-
 /* Móvil pequeño (aprieta un poco) */
 @media (max-width: 480px){
   :root{ --page-w: 100%; }              
@@ -393,3 +302,4 @@ input:checked + .slider::before {
   :root{ --page-w: 760px; }              
   .dashboard-header h1{ font-size: 2.2rem; }
 }
+

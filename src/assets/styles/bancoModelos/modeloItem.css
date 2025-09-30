@@ -1,141 +1,47 @@
-/*Contenedor principal de cada modelo */
-.modelo-item {
-  background: #ffffff;
-  border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  width: 180px; 
-  height: auto; 
+.modelo-item{
+  box-sizing: border-box;
+  width: 100%;
+  background: #fff;
+  border: 1px solid var(--ui-disabled-border, #e9eef3);
+  border-radius: 14px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  box-shadow: var(--sombra-suave);
+  transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
 }
-
-/* Efecto hover en modelo */
-.modelo-item:hover {
-  transform: scale(1.05);
-  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+.modelo-item:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.12);
 }
 
 /*Imagen del modelo */
-.modelo-img {
-  width: 100px;
-  height: 100px;
+.modelo-img{
+  width: 90px; height: 90px;
   object-fit: contain;
-  border-radius: 6px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  background: #f7f9fc;
+  margin-bottom: 6px;
 }
 
-/* Título del modelo */
-.modelo-item p {
+.modelo-item p{
+  margin: 0;
+  text-align: center;
+  line-height: 1.25;
   font-size: 14px;
-  font-weight: bold;
   color: #333;
-  margin-bottom: 5px;
 }
-
-/* Categoría del modelo */
-.modelo-item p strong {
+.modelo-item p strong{
+  display: block;
+  margin-bottom: 2px;
   color: #555;
   font-size: 13px;
 }
 
-/* Agrupador de acciones */
-.acciones-modelo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  margin-top: 10px;
-}
 
-/* Botones */
-.btn-eliminar,
-.btn-ver {
-  padding: 8px 14px;
-  font-size: 13px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  width: 100%;
-  max-width: 130px;
-  font-weight: bold;
-}
-
-/* Botón eliminar */
-.btn-eliminar {
-  background: var(--pastel-rojo);
-  color: white;
-  border: none;
-}
-
-.btn-eliminar:hover {
-  background: #c0392b;
-  transform: scale(1.05);
-}
-
-/* Botón ver */
-.btn-ver {
-  background: var(--pastel-azul) !important;
-  color: white;
-  border: 2px solid #1f6397;
-}
-
-.btn-ver:hover,
-.btn-ver:active {
-  transform: scale(1.05);
-}
-
-/* Estilos del checkbox en modo selección */
-input[type="text"] {
-  width: 80%;
-  max-width: 350px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-sizing: border-box;
-}
-
-/* 🔹 Diseño responsivo */
-@media (max-width: 768px) {
-  .modelo-item {
-    width: 160px;
-  }
-
-  .modelo-img {
-    width: 90px;
-    height: 90px;
-  }
-
-  .btn-eliminar,
-  .btn-ver {
-    font-size: 12px;
-    padding: 5px 10px;
-  }
-
-}
-
-@media (max-width: 480px) {
-  .modelo-item {
-    width: 140px;
-  }
-
-  .modelo-img {
-    width: 80px;
-    height: 80px;
-  }
-
-  .btn-eliminar,
-  .btn-ver {
-    font-size: 11px;
-    padding: 4px 8px;
-  }
-}
 
 .modal-vista-previa {
   position: fixed;
@@ -177,14 +83,7 @@ input[type="text"] {
   }
 }
 
-
-.lista-modelos.modal-bloqueo .modelo-item {
-  pointer-events: none;
-  user-select: none;
-  opacity: 0.6;
-}
-
-.modal-vista-previa,
-.modal-vista-previa * {
-  pointer-events: auto !important;
+.modelo-item .btn{
+  width: 50%;
+  justify-content: center;
 }

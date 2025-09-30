@@ -1,4 +1,3 @@
-/* ==== Botón base ==== */
 .btn{
   -webkit-tap-highlight-color: transparent;
   display:inline-flex; align-items:center; justify-content:center;
@@ -34,16 +33,7 @@
 .btn--warning   { background: var(--pastel-amarillo);color: var(--texto-principal); }
 .btn--danger    { background: var(--pastel-rosa);    color: var(--texto-blanco); }
 
-.btn--outline{ background: transparent; box-shadow:none; }
-.btn--outline-primary   { border:2px solid var(--pastel-azul);    color: var(--pastel-azul); }
-.btn--outline-secondary { border:2px solid var(--pastel-indigo);  color: var(--pastel-indigo); }
-.btn--outline-success   { border:2px solid var(--pastel-verde);   color: var(--pastel-verde); }
-.btn--outline-warning   { border:2px solid var(--pastel-amarillo);color: var(--pastel-amarillo); }
-.btn--outline-danger    { border:2px solid var(--pastel-rosa);    color: var(--pastel-rosa); }
-
-
 .btn--sm{ padding:6px 12px; font-size:.9rem; }
 .btn--lg{ padding:12px 22px; font-size:1.05rem; }
-
 
 .btn--block{ display:flex; width:100%; }
