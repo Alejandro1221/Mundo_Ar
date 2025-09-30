@@ -26,7 +26,7 @@ const SonidoItem = ({ sonido, setSonidos }) => {
         <source src={sonido.url} type="audio/mp3" />
         Tu navegador no soporta el elemento de audio.
       </audio>
-      <button className="btn-eliminar-sonido" onClick={handleEliminar}>
+      <button className="btn btn--danger btn--sm" onClick={handleEliminar}>
         🗑️ Eliminar
       </button>
     </div>

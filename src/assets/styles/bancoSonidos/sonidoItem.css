@@ -1,44 +1,51 @@
-
-.sonido-card {
+.sonido-card{
+  box-sizing: border-box;
+  width: 100%;
   background: var(--fondo-claro);
+  border: 1px solid var(--ui-disabled-border, #e9eef3);
   border-radius: 12px;
   box-shadow: var(--sombra-suave);
-  padding: 20px;
+  padding: 12px;                 /* antes 20px */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: 280px;
+  gap: 8px;
+  transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.sonido-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+  border-color: rgba(0,0,0,.12);
 }
 
-
-.sonido-card-header {
+.sonido-card-header{
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.sonido-card-header .sonido-nombre{ 
+  text-transform: capitalize; 
+  font-weight: 700;
+}
+.sonido-categoria{
+  display: block;
+  font-size: .85rem;
+  color: var(--texto-principal);
+  opacity: .75;
 }
 
-.sonido-categoria {
-  display: block;
-  font-size: 0.85rem;
-  color: var(--texto-principal);
+.sonido-audio{
+  width: 100%;
+  height: 36px;                  
+  max-width: 100%;
+  border-radius: 8px;
+  background: #f7f9fc;
+  outline: none;
   margin-top: 4px;
 }
-
-.sonido-audio {
-  width: 100%;
-  max-width: 240px;
-}
-
-.btn-eliminar-sonido {
-  background-color: var(--pastel-rosa);
-  color: var(--texto-blanco);
-  border: none;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  font-weight: bold;
-}
-
-.btn-eliminar-sonido:hover {
-  transform: scale(1.05);
+.sonido-card .btn{
+  width: 70%;
+  justify-content: center;
+  margin-top: 6px;             
 }

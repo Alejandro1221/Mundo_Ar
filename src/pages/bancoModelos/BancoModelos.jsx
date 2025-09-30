@@ -7,8 +7,6 @@ import FormularioSubida from "./FormularioSubida";
 import EliminarCategoria from "./EliminarCategoria";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
-
-import { FiPlus } from "react-icons/fi";
 import MenuHamburguesa from "../../components/MenuHamburguesa";
 
 
@@ -18,19 +16,17 @@ const BancoModelos = () => {
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
-
   const [setModelosDesvaneciendo] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
-    //const { juegoId, casillaId } = location.state || {};
-    const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
-    const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
+  const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
+  const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
 
-    console.log("BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
+  console.log("BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
 
-    const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
+  const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
   useEffect(() => {
       const cargarDatos = async () => {
         try {
@@ -55,10 +51,9 @@ const BancoModelos = () => {
     String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
   const q = norm(busqueda);
-
   const modelosFiltrados = modelos.filter((modelo) => {
     const coincideCategoria =
-      categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada;
+    categoriaSeleccionada === "Todos" || modelo.categoria === categoriaSeleccionada;
 
     const enNombre = norm(modelo.nombre).includes(q);
     const enTexto  = modelo.texto ? norm(modelo.texto).includes(q) : false;
@@ -233,7 +228,6 @@ return (
           )}
         </div>
       </div>
-
 
       {/* Lista de modelos */}
       <div className="lista-modelos">
