@@ -3,7 +3,6 @@ import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore"
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import { db, storage } from "./firebaseConfig";
 
-// 🔹 Función reutilizable para subir archivos con progreso
 const subirArchivo = async (archivo, ruta, setProgreso = () => {}) => {
     if (!archivo) throw new Error("El archivo no puede estar vacío.");
 
@@ -15,7 +14,7 @@ const subirArchivo = async (archivo, ruta, setProgreso = () => {}) => {
             "state_changed",
             (snapshot) => {
                 const progreso = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                if (typeof setProgreso === "function") {  // ← Verificación aquí
+                if (typeof setProgreso === "function") {
                     setProgreso(Math.round(progreso));
                 }
             },
@@ -34,8 +33,7 @@ const obtenerRutaDesdeURL = (url) => {
   return parts[1]; 
 };
 
-// 🔹 Subir modelo optimizado (con manejo claro de errores)
-export const subirModelo = async (nombre, categoria, archivo, miniatura, setProgreso) => {
+export const subirModelo = async (nombre, categoria, archivo, setProgreso) => {
     const auth = getAuth();
     const usuario = auth.currentUser;
 
@@ -44,24 +42,18 @@ export const subirModelo = async (nombre, categoria, archivo, miniatura, setProg
     }
 
     try {
-        if (!archivo || !miniatura) {
-            throw new Error("Falta el archivo o miniatura.");
+        if (!archivo) {
+            throw new Error("Falta el archivo.");
         }
 
         const rutaModelo = `modelos3D/${categoria}/${archivo.name}`;
-        const rutaMiniatura = `modelos3D/${categoria}/miniaturas/${miniatura.name}`;
 
-        // ✅ Ahora pasamos `setProgreso` a `subirArchivo`
-        const [urlModelo, urlMiniatura] = await Promise.all([
-            subirArchivo(archivo, rutaModelo, setProgreso),
-            subirArchivo(miniatura, rutaMiniatura, setProgreso)
-        ]);
+        const urlModelo = await subirArchivo(archivo, rutaModelo, setProgreso);
 
         const nuevoDoc = await addDoc(collection(db, "modelos3D"), {
             nombre,
             categoria,
             modelo_url: urlModelo,
-            miniatura: urlMiniatura,
             creadoPor: usuario.email,
             fecha_creacion: new Date(),
         });
@@ -73,7 +65,6 @@ export const subirModelo = async (nombre, categoria, archivo, miniatura, setProg
             nombre,
             categoria,
             modelo_url: urlModelo,
-            miniatura: urlMiniatura
         };
 
     } catch (error) {
@@ -94,16 +85,14 @@ export const obtenerModelos = async () => {
     }
 };
 
-export const eliminarModelo = async (id, urlModelo, urlMiniatura) => {
+export const eliminarModelo = async (id, urlModelo) => {
   try {
-    const rutaModelo = obtenerRutaDesdeURL(urlModelo);
-    const rutaMiniatura = obtenerRutaDesdeURL(urlMiniatura);
+    if (urlModelo) {
+      const rutaModelo = obtenerRutaDesdeURL(urlModelo);
+      await deleteObject(ref(storage, rutaModelo));
+    }
 
-    await Promise.all([
-      deleteObject(ref(storage, rutaModelo)),
-      deleteObject(ref(storage, rutaMiniatura)),
-      deleteDoc(doc(db, "modelos3D", id)),
-    ]);
+    await deleteDoc(doc(db, "modelos3D", id));
 
     console.log(`✅ Modelo ${id} eliminado correctamente.`);
   } catch (error) {
@@ -111,3 +100,4 @@ export const eliminarModelo = async (id, urlModelo, urlMiniatura) => {
     throw error;
   }
 };
+

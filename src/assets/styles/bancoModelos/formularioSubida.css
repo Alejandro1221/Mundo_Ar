@@ -179,12 +179,6 @@
   cursor: not-allowed;
 }
 
-.nueva-categoria-container.columna {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
 
 /*Adaptación móvil */
 @media (max-width: 480px) {

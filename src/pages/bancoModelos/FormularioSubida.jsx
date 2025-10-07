@@ -3,7 +3,6 @@ import { subirModelo } from "../../services/modelosService";
 import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
 import "../../assets/styles/bancoModelos/formularioSubida.css";
 
-"const FormularioSubida = ({ setModelos }) => {"
 const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [nombre, setNombre] = useState("");
   const [nombreTouched, setNombreTouched] = useState(false);
@@ -13,7 +12,6 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [nuevaCategoria, setNuevaCategoria] = useState("");
   const [mostrarInputCategoria, setMostrarInputCategoria] = useState(false);
   const [archivo, setArchivo] = useState(null);
-  const [miniatura, setMiniatura] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
 
@@ -35,8 +33,8 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
       setNombreTouched(true);
       return;
     }
-    if (!categoria || !archivo || !miniatura) {
-      alert("⚠️ Completa todos los campos");
+    if (!categoria || !archivo) {
+      alert("Completa todos los campos");
       return;
     }
 
@@ -44,7 +42,7 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
     setProgreso(0);
 
     try {
-      const nuevoModelo = await subirModelo(nombreTrim, categoria, archivo, miniatura, setProgreso);
+      const nuevoModelo = await subirModelo(nombreTrim, categoria, archivo, setProgreso);
       if (nuevoModelo) {
         setModelos((prev) => [nuevoModelo, ...prev]);
         setProgreso(100);
@@ -54,7 +52,6 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
         setNombreTouched(false);
         setCategoria("");
         setArchivo(null);
-        setMiniatura(null);
 
         onSuccess && onSuccess();
       }
@@ -82,7 +79,7 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
   };
 
   const puedeSubir =
-  nombreValido && categoria && archivo && miniatura && !subiendo;
+  nombreValido && categoria && archivo  && !subiendo;
 
   return (
     <form className="form-subida" onSubmit={manejarSubida}>
@@ -137,14 +134,6 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
           type="file"
           accept=".glb"
           onChange={(e) => setArchivo(e.target.files[0])}
-          required
-        />
-
-        <label>Miniatura (Imagen PNG)</label>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setMiniatura(e.target.files[0])}
           required
         />
 

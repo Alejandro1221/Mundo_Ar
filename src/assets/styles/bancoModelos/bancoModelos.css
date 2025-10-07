@@ -1,14 +1,11 @@
-.lista-sonidos{
+.lista-modelos{
   width: min(100% - 32px, var(--frame-w, 960px));
-  margin: 0 auto 40px;
+  margin: 0 auto 24px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 0;
-  max-height: calc(100vh - 260px); 
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
+
 .fade-out {
   opacity: 0;
   transform: scale(0.95);
@@ -149,15 +146,43 @@
   .page-toolbar{ grid-template-columns: 1fr; }
 }
 
-@media (min-width: 1280px){
-  .lista-modelos{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+
+/* mínimo 2 columnas en pantallas medianas */
+@media (min-width: 680px){
+  .lista-modelos{ grid-template-columns: repeat(2, 1fr); }
 }
-@media (max-width: 480px){
-  .lista-modelos{ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+/* 3 columnas en desktop */
+@media (min-width: 1024px){
+  .lista-modelos{ grid-template-columns: repeat(3, 1fr); }
 }
-.banco-sonidos{
-  display: block;
-  padding-bottom: 64px;
-  margin-top: 0.5rem !important;
-  padding-top: 0 !important;
+
+/* 4 columnas en pantallas grandes (opcional) */
+@media (min-width: 1400px){
+  .lista-modelos{ grid-template-columns: repeat(4, 1fr); }
 }
+
+/* Paginador */
+.paginador{
+  width: min(100% - 32px, var(--frame-w, 960px));
+  margin: 12px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.paginador button{
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e6ed;
+  background: #fff;
+  cursor: pointer;
+}
+.paginador button:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+}
+.paginador .info{
+  font-weight: 600;
+}
+

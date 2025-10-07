@@ -16,15 +16,19 @@ const BancoModelos = () => {
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [busqueda, setBusqueda] = useState("");
-  const [setModelosDesvaneciendo] = useState([]);
+  const [, setModelosDesvaneciendo] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
   const desdePlantilla = Boolean(location.state?.desdePlantilla);
   const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
   const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
+  const [pagina, setPagina] = useState(1);
+  const TAM_PAGINA = 8;
 
-  console.log("BancoModelos → juegoId:", juegoId, "| casillaId:", casillaId);
+  useEffect(() => {
+    setPagina(1);
+  }, [categoriaSeleccionada, busqueda]);
 
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
   useEffect(() => {
@@ -63,6 +67,11 @@ const BancoModelos = () => {
     return coincideCategoria && coincideBusqueda;
   });
 
+  const totalPaginas = Math.max(1, Math.ceil(modelosFiltrados.length / TAM_PAGINA));
+  const inicio = (pagina - 1) * TAM_PAGINA;
+  const modelosVisibles = modelosFiltrados.slice(inicio, inicio + TAM_PAGINA);
+  const irA = (p) => setPagina(Math.min(Math.max(1, p), totalPaginas));
+
 
 const manejarSeleccion = (modelo) => {
   setModelosSeleccionados(prev => {
@@ -76,7 +85,6 @@ const confirmarSeleccion = () => {
     id: m.id,
     nombre: m.nombre,
     url: m.url || m.modelo_url,
-    miniatura: m.miniatura,
     categoria: m.categoria,
     texto: m.texto || ""
   }));
@@ -100,13 +108,13 @@ const manejarEliminacion = async (modelo) => {
     try {
       setModelosDesvaneciendo(prev => [...prev, modelo.id]); 
       setTimeout(async () => {
-        await eliminarModelo(modelo.id, modelo.modelo_url, modelo.miniatura);
+        await eliminarModelo(modelo.id, modelo.modelo_url);
         setModelos(prev => prev.filter(m => m.id !== modelo.id));
         setModelosDesvaneciendo(prev => prev.filter(id => id !== modelo.id)); 
-        console.log(`✅ Modelo "${modelo.nombre}" eliminado correctamente.`);
+        console.log(`Modelo "${modelo.nombre}" eliminado correctamente.`);
       }, 500); 
     } catch (error) {
-      console.error("❌ Error al eliminar modelo:", error);
+      console.error("Error al eliminar modelo:", error);
       alert("Hubo un error al eliminar el modelo. Inténtalo de nuevo.");
     }
   }
@@ -232,7 +240,7 @@ return (
       {/* Lista de modelos */}
       <div className="lista-modelos">
         {modelosFiltrados.length > 0 ? (
-          modelosFiltrados.map((modelo) => (
+          modelosVisibles.map((modelo) => (
             <ModeloItem
               key={modelo.id}
               modelo={modelo}
@@ -250,6 +258,14 @@ return (
           <p>⚠️ No hay modelos disponibles.</p>
         )}
       </div>
+
+      {totalPaginas > 1 && (
+        <div className="paginador">
+          <button onClick={() => irA(pagina - 1)} disabled={pagina === 1}>← Anterior</button>
+          <span className="info">Página {pagina} de {totalPaginas}</span>
+          <button onClick={() => irA(pagina + 1)} disabled={pagina === totalPaginas}>Siguiente →</button>
+        </div>
+      )}
 
       {/* Confirmar selección si viene de plantilla */}
       {desdePlantilla && (
