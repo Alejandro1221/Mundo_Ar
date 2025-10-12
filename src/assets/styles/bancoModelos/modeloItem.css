@@ -11,14 +11,24 @@
   gap: 10px;
   box-shadow: var(--sombra-suave);
   transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+  touch-action: pan-y;
 }
 
+.modelo-viewer {
+  display: block;
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f3f3f3;
+  margin-bottom: 6px;
+  touch-action: pan-y;       
+}
 .modelo-item:hover{
   transform: translateY(-2px);
   box-shadow: 0 8px 22px rgba(0,0,0,.08);
   border-color: rgba(0,0,0,.12);
 }
-
 
 .modelo-item p{
   margin: 0;
@@ -34,19 +44,31 @@
   font-size: 13px;
 }
 
-.modelo-viewer {
-  display: block;
-  width: 100%;
-  height: 160px;      
-  border-radius: 12px;
-  overflow: hidden;
-  background: #f3f3f3; 
-  margin-bottom: 6px;  
-}
-
-
 .modelo-item .btn{
   width: 50%;
   justify-content: center;
 }
 
+.modelo-item p:nth-of-type(1) strong{
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.modelo-item p:nth-of-type(2){
+  margin-top: 6px;
+  line-height: 1.35;
+  text-align: center;
+  font-size: 14px;        
+  color: #374151;         
+  font-weight: 600;
+}
+
+.modelo-item p:nth-of-type(2) strong{
+  font-size: 12px;
+  color: #6b7280;        
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  margin-bottom: 4px;
+}

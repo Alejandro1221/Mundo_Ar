@@ -1,4 +1,3 @@
-import React from "react";
 import "@google/model-viewer";
 import "../assets/styles/bancoModelos/modeloItem.css";
 
@@ -16,9 +15,7 @@ const ModeloItem = ({ modelo, esPlantilla, manejarSeleccion, manejarEliminacion,
           shadow-intensity="1"
           interaction-policy="allow-when-focused"
           disable-zoom
-          loading="lazy"
-          reveal="interaction"
-        ></model-viewer>
+        />
         <p><strong>{modelo.nombre}</strong></p>
         <p><strong>Categoría:</strong> {modelo.categoria}</p>
 

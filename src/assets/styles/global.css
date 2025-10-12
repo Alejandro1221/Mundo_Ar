@@ -26,8 +26,9 @@ html, body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  overscroll-behavior: none;  
-  touch-action: manipulation; 
+  overflow-y: auto;        
+  overscroll-behavior: auto; 
+  touch-action: auto;        
 }
 
 /* ENCABEZADOS */
@@ -46,7 +47,7 @@ a-scene, a-scene .a-canvas, a-scene canvas {
   height: 100vh !important;
   max-height: 100vh !important;
   object-fit: cover !important;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Animación aparecer */

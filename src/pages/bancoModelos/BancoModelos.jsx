@@ -128,14 +128,13 @@ return (
     <div className="page-toolbar">
       {!desdePlantilla && (
         <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
-          + Subir modelo
+          Subir modelo
         </button>
       )}
       <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
         Eliminar categoría
       </button>
     </div>
-      {/* Modal: Subir Modelo */}
       {activeModal === "subir" && (
         <>
           <div
@@ -200,7 +199,6 @@ return (
                 categorias={categorias}
                 onClose={() => setActiveModal(null)}
                 onDeleted={(cat) => {
-                  // actualiza estado local
                   setCategorias((prev) => prev.filter((c) => c !== cat));
                   setCategoriaSeleccionada("Todos");
                 }}
@@ -237,35 +235,32 @@ return (
         </div>
       </div>
 
-      {/* Lista de modelos */}
-      <div className="lista-modelos">
-        {modelosFiltrados.length > 0 ? (
-          modelosVisibles.map((modelo) => (
-            <ModeloItem
-              key={modelo.id}
-              modelo={modelo}
-              esPlantilla={desdePlantilla}
-              manejarSeleccion={desdePlantilla ? manejarSeleccion : null}
-              manejarEliminacion={manejarEliminacion}
-              seleccionado={
-                desdePlantilla
-                  ? modelosSeleccionados.some((m) => m.id === modelo.id)
-                  : false
-              }
-            />
-          ))
-        ) : (
-          <p>⚠️ No hay modelos disponibles.</p>
-        )}
+      <div className="modelos-scroll">
+        <div className="lista-modelos">
+          {modelosFiltrados.length > 0 ? (
+            modelosVisibles.map((modelo) => (
+              <ModeloItem
+                key={modelo.id}
+                modelo={modelo}
+                esPlantilla={desdePlantilla}
+                manejarSeleccion={desdePlantilla ? manejarSeleccion : null}
+                manejarEliminacion={manejarEliminacion}
+                seleccionado={desdePlantilla ? modelosSeleccionados.some((m) => m.id === modelo.id) : false}
+              />
+            ))
+          ) : (
+            <p>No hay modelos disponibles.</p>
+          )}
+        </div>
       </div>
 
       {totalPaginas > 1 && (
-        <div className="paginador">
-          <button onClick={() => irA(pagina - 1)} disabled={pagina === 1}>← Anterior</button>
-          <span className="info">Página {pagina} de {totalPaginas}</span>
-          <button onClick={() => irA(pagina + 1)} disabled={pagina === totalPaginas}>Siguiente →</button>
-        </div>
-      )}
+          <div className="paginador">
+            <button onClick={() => irA(pagina - 1)} disabled={pagina === 1}>← Anterior</button>
+            <span className="info">Página {pagina} de {totalPaginas}</span>
+            <button onClick={() => irA(pagina + 1)} disabled={pagina === totalPaginas}>Siguiente →</button>
+          </div>
+        )}
 
       {/* Confirmar selección si viene de plantilla */}
       {desdePlantilla && (
