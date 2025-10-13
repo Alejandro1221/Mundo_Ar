@@ -48,7 +48,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
     try {
       const nuevoSonido = await subirSonido(
         archivo,
-        nombretrim,
+        nombreTrim,
         categoria,
         setProgreso
       );
@@ -104,9 +104,9 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
 
       <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
         <option value="">Selecciona una categoría</option>
-        {categorias.map((cat, index) => (
-          <option key={index} value={cat.nombre}>
-            {cat.nombre}
+        {categorias.map((categoria) => (
+          <option key={categoria.nombre ?? categoria} value={categoria.nombre ?? categoria}>
+            {categoria.nombre ?? categoria}
           </option>
         ))}
       </select>
@@ -116,7 +116,7 @@ const FormularioSubidaSonidos = ({ setSonidos }) => {
         className="btn-nueva-categoria"
         onClick={() => setMostrarCampoNuevaCategoria((prev) => !prev)}
       >
-        {mostrarCampoNuevaCategoria ? "Cancelar" : "➕ Nueva Categoría"}
+        {mostrarCampoNuevaCategoria ? "Cancelar" : "Nueva Categoría"}
       </button>
 
       {mostrarCampoNuevaCategoria && (

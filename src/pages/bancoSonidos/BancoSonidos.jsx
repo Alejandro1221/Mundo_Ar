@@ -15,8 +15,13 @@ const BancoSonidos = () => {
   const [categorias, setCategorias] = useState(["Todos"]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("Todos");
   const [categoriaAEliminar, setCategoriaAEliminar] = useState("");
-  const [activeModal, setActiveModal] = useState(null); 
+  const [activeModal, setActiveModal] = useState(null);
   const [busqueda, setBusqueda] = useState("");
+
+  // CAMBIO: paginación
+  const [pagina, setPagina] = useState(1);
+  const TAM_PAGINA = 8;
+
   const norm = (s = "") =>
     String(s).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
@@ -28,14 +33,28 @@ const BancoSonidos = () => {
           obtenerSonidos(),
           obtenerCategorias(),
         ]);
-        setSonidos(listaSonidos);
-        setCategorias(["Todos", ...listaCategorias.map((c) => c.nombre)]);
+
+        setSonidos(listaSonidos || []);
+
+        // CAMBIO: normalizar categorias a strings siempre
+        const cats = (listaCategorias || [])
+          .map((c) => (typeof c === "string" ? c : c?.nombre))
+          .filter(Boolean);
+
+        setCategorias(["Todos", ...cats]);
       } catch (error) {
         console.error("❌ Error al cargar datos:", error);
+        setSonidos([]);
+        setCategorias(["Todos"]);
       }
     };
     cargarDatos();
   }, []);
+
+  // CAMBIO: reset de página cuando cambian filtros o búsqueda
+  useEffect(() => {
+    setPagina(1);
+  }, [categoriaSeleccionada, busqueda]);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && setActiveModal(null);
@@ -66,7 +85,7 @@ const BancoSonidos = () => {
         setCategoriaAEliminar("");
         alert(`✅ Categoría "${categoriaAEliminar}" eliminada.`);
       } catch (error) {
-        alert("❌ Error al eliminar la categoría: " + error.message);
+        alert("❌ Error al eliminar la categoría: " + (error?.message || String(error)));
       }
     }
   };
@@ -74,10 +93,16 @@ const BancoSonidos = () => {
   const q = norm(busqueda);
   const sonidosFiltrados = sonidos.filter((s) => {
     const okCat = categoriaSeleccionada === "Todos" || s.categoria === categoriaSeleccionada;
-    const enNombre = norm(s.nombre).includes(q);
+    const enNombre = norm(s?.nombre || "").includes(q); // CAMBIO: defensivo
     const okSearch = q === "" || enNombre;
     return okCat && okSearch;
-   });
+  });
+
+  // CAMBIO: cálculos de paginación
+  const totalPaginas = Math.max(1, Math.ceil(sonidosFiltrados.length / TAM_PAGINA));
+  const inicio = (pagina - 1) * TAM_PAGINA;
+  const sonidosVisibles = sonidosFiltrados.slice(inicio, inicio + TAM_PAGINA);
+  const irA = (p) => setPagina(Math.min(Math.max(1, p), totalPaginas));
 
   return (
     <div className="banco-sonidos">
@@ -106,11 +131,13 @@ const BancoSonidos = () => {
               onChange={(e) => setCategoriaSeleccionada(e.target.value)}
               aria-label="Filtrar por categoría"
             >
-              {categorias.map((cat, index) => (
-                <option key={index} value={cat}>{cat}</option>
+              {categorias.map((categoria) => (
+                <option key={categoria} value={categoria}>
+                  {categoria}
+                </option>
               ))}
             </select>
-
+              
             <div className="search">
               <input
                 type="text"
@@ -177,9 +204,11 @@ const BancoSonidos = () => {
                     className="modal-input"
                   />
                   <datalist id="categorias-lista">
-                    {categorias.filter((c) => c !== "Todos").map((c, i) => (
-                      <option key={i} value={c} />
-                    ))}
+                    {categorias
+                      .filter((c) => c !== "Todos")
+                      .map((c) => (
+                        <option key={c} value={c} />
+                      ))}
                   </datalist>
 
                   <div className="modal-actions">
@@ -198,16 +227,24 @@ const BancoSonidos = () => {
               </div>
             </>
           )}
+          <div className="sonidos-scroll">
+            <div className="lista-sonidos">
+              {sonidosFiltrados.length > 0 ? (
+                sonidosVisibles.map((sonido) => (
+                  <SonidoItem key={sonido.id} sonido={sonido} setSonidos={setSonidos} />
+                ))
+              ) : (
+                <p>No hay sonidos disponibles.</p>
+              )}
+            </div>
 
-          {/* Lista */}
-          <div className="lista-sonidos">
-            {sonidosFiltrados.length > 0 ? (
-              sonidosFiltrados.map((sonido) => (
-                <SonidoItem key={sonido.id} sonido={sonido} setSonidos={setSonidos} />
-              ))
-            ) : (
-              <p>No hay sonidos disponibles.</p>
-            )}
+          {Math.ceil(sonidosFiltrados.length / TAM_PAGINA) > 1 && (
+            <div className="paginador">
+              <button onClick={() => irA(pagina - 1)} disabled={pagina === 1}>← Anterior</button>
+              <span className="info">Página {pagina} de {totalPaginas}</span>
+              <button onClick={() => irA(pagina + 1)} disabled={pagina === totalPaginas}>Siguiente →</button>
+            </div>
+          )}
           </div>
         </>
       )}

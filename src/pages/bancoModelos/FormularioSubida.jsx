@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { subirModelo } from "../../services/modelosService";
 import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
 import "../../assets/styles/bancoModelos/formularioSubida.css";
+
+const MAX_GLTF_MB = 50; // ajusta el límite si quieres
 
 const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [nombre, setNombre] = useState("");
@@ -11,103 +13,165 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [categorias, setCategorias] = useState(["Seleccione una categoría"]);
   const [nuevaCategoria, setNuevaCategoria] = useState("");
   const [mostrarInputCategoria, setMostrarInputCategoria] = useState(false);
+
   const [archivo, setArchivo] = useState(null);
   const [subiendo, setSubiendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
+
+  const [catLoading, setCatLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const fileRef = useRef(null);
 
   const nombreTrim = nombre.trim();
   const nombreValido = nombreTrim.length > 0;
 
   useEffect(() => {
     const cargarCategorias = async () => {
-      const categoriasCargadas = await obtenerCategorias();
-      setCategorias(categoriasCargadas);
+      try {
+        const categoriasCargadas = await obtenerCategorias();
+        // Normaliza, desduplica, filtra vacíos
+        const limpias = Array.from(
+          new Set(
+            (categoriasCargadas || [])
+              .map(c => String(c).trim())
+              .filter(Boolean)
+          )
+        );
+        setCategorias(limpias);
+      } catch (e) {
+        console.error("Error cargando categorías:", e);
+        setCategorias([]);
+      }
     };
     cargarCategorias();
   }, []);
 
+  const validarArchivo = (file) => {
+    if (!file) return "Debes seleccionar un archivo .glb";
+    const isGlb = file.name.toLowerCase().endsWith(".glb") || file.type === "model/gltf-binary";
+    if (!isGlb) return "El archivo debe ser .glb";
+    const tooBig = file.size > MAX_GLTF_MB * 1024 * 1024;
+    if (tooBig) return `El archivo supera ${MAX_GLTF_MB} MB`;
+    return "";
+  };
+
   const manejarSubida = async (e) => {
     e.preventDefault();
+    setErrorMsg("");
 
     if (!nombreValido) {
       setNombreTouched(true);
+      setErrorMsg("Debes escribir un nombre.");
       return;
     }
-    if (!categoria || !archivo) {
-      alert("Completa todos los campos");
+    if (!categoria) {
+      setErrorMsg("Selecciona una categoría.");
       return;
     }
-
-    setSubiendo(true);
-    setProgreso(0);
+    const fileError = validarArchivo(archivo);
+    if (fileError) {
+      setErrorMsg(fileError);
+      return;
+    }
 
     try {
+      setSubiendo(true);
+      setProgreso(0);
+
       const nuevoModelo = await subirModelo(nombreTrim, categoria, archivo, setProgreso);
       if (nuevoModelo) {
-        setModelos((prev) => [nuevoModelo, ...prev]);
-        setProgreso(100);
-        setTimeout(() => setProgreso(0), 2000);
+        setModelos(prev => [nuevoModelo, ...prev]);
 
         setNombre("");
         setNombreTouched(false);
         setCategoria("");
         setArchivo(null);
+        setProgreso(100);
+        if (fileRef.current) fileRef.current.value = "";
 
         onSuccess && onSuccess();
+        setTimeout(() => setProgreso(0), 1200);
       }
     } catch (error) {
       console.error("❌ Error en la subida:", error);
-      alert("Ocurrió un error al subir el modelo.");
+      setErrorMsg("Ocurrió un error al subir el modelo.");
+    } finally {
+      setSubiendo(false);
     }
-
-    setSubiendo(false);
   };
 
   const manejarNuevaCategoria = async () => {
+    setErrorMsg("");
+
     if (!mostrarInputCategoria) {
       setMostrarInputCategoria(true);
       return;
     }
 
-    if (nuevaCategoria.trim() === "") return;
+    const nueva = nuevaCategoria.trim();
+    if (!nueva) {
+      setErrorMsg("Escribe un nombre para la nueva categoría.");
+      return;
+    }
 
-    await agregarCategoria(nuevaCategoria);
-    setCategorias((prev) => [...prev, nuevaCategoria]);
-    setCategoria(nuevaCategoria);
-    setNuevaCategoria("");
-    setMostrarInputCategoria(false);
+    const yaExiste = categorias.some(c => c.toLowerCase() === nueva.toLowerCase());
+    if (yaExiste) {
+      setCategoria(categorias.find(c => c.toLowerCase() === nueva.toLowerCase()));
+      setNuevaCategoria("");
+      setMostrarInputCategoria(false);
+      return;
+    }
+
+    try {
+      setCatLoading(true);
+      await agregarCategoria(nueva);
+      setCategorias(prev => [...prev, nueva]);
+      setCategoria(nueva);
+      setNuevaCategoria("");
+      setMostrarInputCategoria(false);
+    } catch (e) {
+      console.error("Error agregando categoría:", e);
+      setErrorMsg("No se pudo agregar la categoría.");
+    } finally {
+      setCatLoading(false);
+    }
   };
 
-  const puedeSubir =
-  nombreValido && categoria && archivo  && !subiendo;
+  const puedeSubir = nombreValido && categoria && archivo && !subiendo;
 
   return (
-    <form className="form-subida" onSubmit={manejarSubida}>
+    <form className="form-subida" onSubmit={manejarSubida} noValidate>
       <fieldset disabled={subiendo}>
-        <label>Nombre del modelo </label>
+
+        <label htmlFor="nombre">Nombre del modelo</label>
         <input
+          id="nombre"
           type="text"
           placeholder="Escribe el nombre del modelo"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
           onBlur={() => setNombreTouched(true)}
-          aria-invalid={nombreTouched && !nombreValido ? "true" : "false"}
+          aria-invalid={nombreTouched && !nombreValido}
+          aria-describedby="err-nombre"
           required
           maxLength={60}
         />
         {nombreTouched && !nombreValido && (
-          <small className="error">Debes escribir un nombre.</small>
+          <small id="err-nombre" className="error" aria-live="polite">
+            Debes escribir un nombre.
+          </small>
         )}
 
-        <label>Seleccionar Categoría:</label>
+        <label htmlFor="categoria">Seleccionar Categoría</label>
         <select
+          id="categoria"
           value={categoria}
           onChange={(e) => setCategoria(e.target.value)}
           required
         >
           <option value="">-- Seleccionar --</option>
           {categorias.map((cat, index) => (
-            <option key={index} value={cat}>{cat}</option>
+            <option key={`${cat}-${index}`} value={cat}>{cat}</option>
           ))}
         </select>
 
@@ -118,35 +182,47 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
               placeholder="Nueva Categoría"
               value={nuevaCategoria}
               onChange={(e) => setNuevaCategoria(e.target.value)}
+              maxLength={40}
             />
           )}
+          {/* Botón Nueva Categoría */}
           <button
             type="button"
-            className="btn-nueva-categoria"
+            className="btn btn--success btn--sm btn-nueva-categoria"
             onClick={manejarNuevaCategoria}
+            disabled={catLoading}
           >
-            {mostrarInputCategoria ? "✔ Agregar" : "➕ Nueva Categoría"}
+            {catLoading ? "Agregando..." : (mostrarInputCategoria ? "✔ Agregar" : "Nueva Categoría")}
           </button>
         </div>
 
-        <label>Modelo (.glb)</label>
+        <label htmlFor="archivo">Modelo (.glb)</label>
         <input
+          id="archivo"
+          ref={fileRef}
           type="file"
-          accept=".glb"
-          onChange={(e) => setArchivo(e.target.files[0])}
+          accept=".glb,model/gltf-binary"
+          onChange={(e) => setArchivo(e.target.files?.[0] || null)}
           required
         />
 
         {subiendo && (
-          <div className="progreso-container">
+          <div className="progreso-container" aria-live="polite">
             <p>📊 Subiendo... {progreso}%</p>
             <div className="progreso-barra">
-              <div className="progreso" style={{ width: `${progreso}%` }}></div>
+              <div className="progreso" style={{ width: `${progreso}%` }} />
             </div>
           </div>
         )}
 
-        <button type="submit" className="btn-subir" disabled={!puedeSubir}>
+        {errorMsg && (
+          <div className="form-error" role="alert" aria-live="assertive">
+            {errorMsg}
+          </div>
+        )}
+
+        {/* Botón Subir */}
+        <button type="submit" className="btn btn--primary btn-subir" disabled={!puedeSubir}>
           {subiendo ? "Subiendo..." : "Subir Modelo"}
         </button>
       </fieldset>

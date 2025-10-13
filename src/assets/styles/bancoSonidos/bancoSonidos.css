@@ -1,14 +1,26 @@
 .banco-sonidos{
-  display: block;
-  padding-bottom: 64px;
+  max-width: 960px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--sombra-suave);
+  position: relative;
+  z-index: 0;
+
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  padding-top: 0;
 }
 
 .titulo-pagina{
   width: min(100% - 32px, var(--frame-w, 960px));
-  margin: 6px auto 8px;   /* antes: 6px auto 10px */
+  margin: 12px auto 12px;
   text-align: center;
 }
-/* Botonera bajo el título: mismo tamaño, no muy anchos y centrados */
+
 .page-toolbar{
   width: min(100% - 32px, var(--frame-w, 960px));
   display: grid;
@@ -20,18 +32,15 @@
   width: 100%;
   max-width: 220px;
   justify-self: center;
-  margin: 20px auto 20px; 
-}
-@media (max-width: 520px){
-  .page-toolbar{ grid-template-columns: 1fr; }
+  margin: 20px auto 20px;
 }
 
-/* Filtros: sólo el select, centrado al mismo marco */
+/* ===== Filtros ===== */
 .filtros-sonidos{
   width: min(100% - 32px, var(--frame-w, 960px));
   margin: 8px auto 18px;
   display: grid;
-  grid-template-columns: 220px 1fr;  
+  grid-template-columns: 220px 1fr;
   gap: 12px;
   align-items: center;
 }
@@ -43,57 +52,66 @@
   background: #fff;
 }
 .filtros-sonidos .search{
-   display: flex;
-   align-items: center;
-   gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .filtros-sonidos .search input{
-   width: 100%;
-   padding: 10px 12px;
-   font-size: 1rem;
-   border: 1px solid #ccc;
-   border-radius: 8px;
-   background: #fff;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
 }
+/* Deja solo esta versión con fallbacks */
 .filtros-sonidos .btn-clear{
-   background: var(--pastel-rosa);
-   color: var(--texto-blanco);
-   border: none;
-   padding: 8px 12px;
-   border-radius: 8px;
-   cursor: pointer;
+  background: var(--pastel-rosa, #ff6b8a);
+  color: var(--texto-blanco, #fff);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
 }
-@media (max-width: 640px){
-  .filtros-sonidos{ grid-template-columns: 1fr; }
+
+.sonidos-scroll{
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  padding-top: 20px;
+  flex-direction: column;
+  
 }
-/* Grilla de tarjetas (sonidos) centrada, sin scroll interno */
+
 .lista-sonidos{
   width: min(100% - 32px, var(--frame-w, 960px));
-  margin: 0 auto 40px;
+  margin: 0 auto;
   display: grid;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 15px;
-  padding: 0;
-  overflow: visible;  
-  max-height: none;   
-}
-@media (min-width: 1280px){
-  .lista-sonidos{ grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
-}
-@media (max-width: 480px){
-  .lista-sonidos{ grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  padding-bottom: 12px;
+  min-height: 40vh;
+  
 }
 
-/* ---------- Modales (como en Modelos) ---------- */
-body.modal-open{ overflow: hidden; }
+/* ===== Modales ===== */
+body.modal-open{
+  overflow: hidden;
+  height: 100%;
+}
 
 .modal-backdrop{
-  position: fixed; inset: 0;
+  position: fixed;
+  inset: 0;
   background: rgba(0,0,0,.35);
   z-index: 1100;
 }
+
 .modal-window{
-  position: fixed; left: 50%; top: 50%;
+  position: fixed;
+  left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   width: min(640px, 92vw);
   max-height: 85vh;
@@ -101,19 +119,30 @@ body.modal-open{ overflow: hidden; }
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,.2);
   z-index: 1101;
-  display: flex; flex-direction: column;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   animation: modalIn .2s ease;
+  overscroll-behavior: contain; /* evita scroll bleed */
 }
+
 @keyframes modalIn{
   from { opacity: 0; transform: translate(-50%, -48%) scale(.98); }
   to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
+
 .modal-header{
   display: flex; align-items: center; justify-content: space-between;
   padding: 12px 16px; border-bottom: 1px solid #eee;
 }
-.modal-body{ padding: 16px; overflow: auto; }
+
+.modal-body{
+  padding: 16px;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(85vh - 56px - 24px); /* header aprox + padding */
+}
+
 .modal-input{
   width: 100%;
   padding: 10px 12px;
@@ -121,7 +150,52 @@ body.modal-open{ overflow: hidden; }
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+
 .modal-actions{
   display: flex; justify-content: flex-end; gap: 10px;
   margin-top: 14px;
 }
+
+.paginador{
+  --pag-h: 48px;         
+  height: var(--pag-h);
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(0px, env(safe-area-inset-bottom));
+  width: min(100%, var(--frame-w, 960px));
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 -4px 10px rgba(0,0,0,.04);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 12px;
+}
+.paginador button{
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e6ed;
+  background: #fff;
+  cursor: pointer;
+}
+.paginador button:hover:not(:disabled){ background: #f6f6f6; }
+.paginador button:disabled{ opacity: .5; cursor: not-allowed; }
+.paginador .info{ font-weight: 600; }
+
+/* ===== Media queries ===== */
+@media (max-width: 640px){
+  .filtros-sonidos{ grid-template-columns: 1fr; }
+}
+@media (min-width: 680px){
+  .lista-sonidos{ grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px){
+  .lista-sonidos{ grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 1400px){
+  .lista-sonidos{ grid-template-columns: repeat(4, 1fr); }
+}
+

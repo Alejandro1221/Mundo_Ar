@@ -13,9 +13,9 @@
   --borde-suave: 12px;
   --sombra-suave: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-  --ui-disabled-bg: #e9ecef;     
-  --ui-disabled-text: #ffffff;   
-  --ui-disabled-border: #dfe3e8; 
+  --ui-disabled-bg: #e5e7eb;      
+  --ui-disabled-text: #6b7280;    
+  --ui-disabled-border: #cfd8e3;  
 
   --page-w: 760px;
   --page-gutter: clamp(1px, 0vw, 20px);
@@ -178,9 +178,9 @@ a-scene, a-scene .a-canvas, a-scene canvas {
 button:disabled,
 .btn:disabled,
 .is-disabled {
-  background: var(--ui-disabled-bg);
-  color: var(--ui-disabled-text);
-  border: 1px solid var(--ui-disabled-border);
+  background: #e5e7eb;
+  color: #6b7280;
+  border: 1px solid #cfd8e3;
   cursor: not-allowed;
   box-shadow: none;
   opacity: 1;
@@ -192,7 +192,6 @@ button:disabled:hover,
 .is-disabled:hover {
   transform: none;
 }
-
 /* Inputs deshabilitados */
 input[disabled],
 select[disabled],
