@@ -221,8 +221,8 @@
   align-items: center;
   gap: 10px;
   margin: 12px 0;
-  gap: 12px;            /* un poco más de aire */
-  grid-template-columns: 140px 1fr;  /* etiquetas más cómodas */
+  gap: 12px;            
+  grid-template-columns: 140px 1fr; 
 }
 
 .juego-panel__input {
@@ -307,8 +307,6 @@
 .juego-panel__toggle input { accent-color: #2563eb; }
 
 
-
-/* Resposive: en pantallas chicas, label arriba del input */
 @media (max-width: 640px) {
   .juego-panel__fila { grid-template-columns: 1fr; }
 }
@@ -350,5 +348,21 @@
 }
 
 
+.juego-panel__fila{
+  grid-template-columns: 140px minmax(280px, 560px);
+  justify-content: center;      
+  column-gap: 12px;            
+}
 
+.juego-panel__input{
+  width: 100%;
+  max-width: 560px;             
+  box-sizing: border-box;
+  justify-self: start;         
+}
+
+@media (max-width: 640px){
+  .juego-panel__fila{ grid-template-columns: 1fr; }
+  .juego-panel__input{ max-width: 100%; }
+}
 

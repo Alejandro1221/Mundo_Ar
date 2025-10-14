@@ -211,3 +211,7 @@
 .paginador .info{
   font-weight: 600;
 }
+
+body.modal-open .paginador{
+  display: none; /* o visibility:hidden; */
+}

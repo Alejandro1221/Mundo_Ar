@@ -77,21 +77,44 @@
   cursor: not-allowed;
 }
 
+/* Base: input + botón a la derecha */
 .nueva-categoria-container{
   display:grid;
-  grid-template-columns:1fr auto;
+  grid-template-columns: 1fr auto;  /* input | botón */
   gap:10px;
   align-items:center;
-  justify-content:center;      
+  justify-items:stretch;            /* <- que los hijos se estiren */
+}
+.nueva-categoria-container input{
+  justify-self: stretch;             /* <- por si acaso */
+  width: 100%;
 }
 
+/* Con input visible: input arriba a todo ancho; abajo Agregar | Cancelar */
 .nueva-categoria-container.columna{
-  grid-template-columns:1fr;                  
-  justify-items:center;                     
+  grid-template-columns: 1fr 1fr;    /* dos columnas simétricas */
+  justify-content: center;
+  column-gap: 20px;
+  row-gap: 10px;
+}
+.nueva-categoria-container.columna input{
+  grid-column: 1 / -1;               /* ocupa todo el ancho */
+  width: 100%;
 }
 
 .nueva-categoria-container input{
   padding:10px; border-radius:8px; font-size:14px;
+}
+
+.form-subida .btn-cancelar{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:150px;
+  width:auto;
+  padding:10px 16px;
+  align-self:center;
+  margin:10px auto 0;   /* coincide con .btn-nueva-categoria */
 }
 
 .progreso-container{ margin-top:10px; text-align:center; }

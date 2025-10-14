@@ -93,12 +93,11 @@ const BancoSonidos = () => {
   const q = norm(busqueda);
   const sonidosFiltrados = sonidos.filter((s) => {
     const okCat = categoriaSeleccionada === "Todos" || s.categoria === categoriaSeleccionada;
-    const enNombre = norm(s?.nombre || "").includes(q); // CAMBIO: defensivo
+    const enNombre = norm(s?.nombre || "").includes(q); 
     const okSearch = q === "" || enNombre;
     return okCat && okSearch;
   });
 
-  // CAMBIO: cálculos de paginación
   const totalPaginas = Math.max(1, Math.ceil(sonidosFiltrados.length / TAM_PAGINA));
   const inicio = (pagina - 1) * TAM_PAGINA;
   const sonidosVisibles = sonidosFiltrados.slice(inicio, inicio + TAM_PAGINA);
@@ -114,10 +113,10 @@ const BancoSonidos = () => {
 
       {!desdePlantilla && (
         <>
-          {/* Toolbar (abre modales) */}
+          {/* Toolbar */}
           <div className="page-toolbar">
             <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
-              + Subir sonido
+              Subir sonido
             </button>
             <button className="btn btn--danger" onClick={() => setActiveModal("eliminar")}>
               Eliminar categoría
@@ -171,8 +170,27 @@ const BancoSonidos = () => {
                 </div>
                 <div className="modal-body">
                   <FormularioSubidaSonidos
-                    setSonidos={setSonidos}
                     onSuccess={() => setActiveModal(null)}
+                    onUploaded={(nuevo) => {
+                      const cat = typeof nuevo.categoria === "string"
+                        ? nuevo.categoria
+                        : (nuevo.categoria?.nombre || "");
+
+                      const normalizado = { ...nuevo, categoria: cat };
+
+                      setSonidos(prev => [normalizado, ...prev]);
+
+                      if (categoriaSeleccionada !== "Todos" && cat !== categoriaSeleccionada) {
+                        setCategoriaSeleccionada("Todos");
+                      }
+
+                      setPagina(1);
+                    }}
+                    onNuevaCategoria={(nombre) => {
+                      if (nombre && !categorias.includes(nombre)) {
+                        setCategorias(prev => [...prev, nombre]); 
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -195,38 +213,37 @@ const BancoSonidos = () => {
                   <button className="menu-close" onClick={() => setActiveModal(null)} aria-label="Cerrar">❌</button>
                 </div>
                 <div className="modal-body">
-                  <input
-                    type="text"
-                    list="categorias-lista"
-                    placeholder="Escribe una categoría a eliminar"
+                    <label htmlFor="categoriaEliminar">Elige la categoría a eliminar</label>
+                  <select
+                    className="modal-select"
                     value={categoriaAEliminar}
                     onChange={(e) => setCategoriaAEliminar(e.target.value)}
-                    className="modal-input"
-                  />
-                  <datalist id="categorias-lista">
+                    aria-label="Selecciona una categoría a eliminar"
+                  >
+                    <option value="">— Selecciona categoría —</option>
                     {categorias
                       .filter((c) => c !== "Todos")
                       .map((c) => (
-                        <option key={c} value={c} />
+                        <option key={c} value={c}>{c}</option>
                       ))}
-                  </datalist>
-
+                  </select>
                   <div className="modal-actions">
-                    <button className="btn btn--outline" onClick={() => setActiveModal(null)}>
+                    <button className="btn btn--secondary" onClick={() => setActiveModal(null)}>
                       Cancelar
                     </button>
                     <button
                       className="btn btn--danger"
                       onClick={async () => { await manejarEliminacionCategoria(); setActiveModal(null); }}
-                      disabled={!categoriaAEliminar.trim()}
+                      disabled={!categoriaAEliminar}  
                     >
-                      Confirmar eliminar
+                      Eliminar
                     </button>
                   </div>
                 </div>
               </div>
             </>
           )}
+          
           <div className="sonidos-scroll">
             <div className="lista-sonidos">
               {sonidosFiltrados.length > 0 ? (

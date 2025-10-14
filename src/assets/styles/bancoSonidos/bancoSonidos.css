@@ -102,6 +102,15 @@ body.modal-open{
   height: 100%;
 }
 
+.modal-body label{
+  display: block;
+  text-align: left;
+  margin: 0 0 8px 2px; 
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
 .modal-backdrop{
   position: fixed;
   inset: 0;
@@ -123,8 +132,27 @@ body.modal-open{
   flex-direction: column;
   overflow: hidden;
   animation: modalIn .2s ease;
-  overscroll-behavior: contain; /* evita scroll bleed */
+  overscroll-behavior: contain; 
 }
+
+.modal-select{
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: border-box;
+}
+.modal-select:focus{
+  outline: none;
+  border-color: var(--pastel-verde);
+  box-shadow: 0 0 5px rgba(0, 91, 112, 0.2);
+}
+
+.modal-body{ overflow-x: hidden; }
+
+.modal-actions{ flex-wrap: wrap; }
 
 @keyframes modalIn{
   from { opacity: 0; transform: translate(-50%, -48%) scale(.98); }

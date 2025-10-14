@@ -145,14 +145,14 @@ const eliminarJuego = async () => {
           <div className="juego-panel__toolbar">
             {!editMode ? (
               <>
-                <button className="btn btn--warning" onClick={startEdit}>Editar</button>
-                <button className="btn btn--danger" onClick={eliminarJuego}>Eliminar</button>
+                <button className="btn btn--secondary" onClick={startEdit}>Editar Juego</button>
+                <button className="btn btn--danger" onClick={eliminarJuego}>Eliminar juego</button>
               </>
             ) : (
               <>
-                <button className="btn btn--danger" onClick={cancelEdit}>Cancelar</button>
+                <button className="btn btn--primary" onClick={cancelEdit}>Cancelar</button>
                 <button
-                  className="btn btn--primary"
+                  className="btn btn--success"
                   onClick={guardarDetallesJuego}
                   disabled={savingJuego || !nombreJuego.trim()}
                 >
@@ -230,7 +230,7 @@ const eliminarJuego = async () => {
                 <p><strong>{casillas[casillaSeleccionada]?.plantilla}</strong></p>
                 <div className="configurar-casillas-container__modal-buttons">
                   <button
-                  className="editar-btn"
+                  className="btn--secondary"
                     onClick={() => {
                       setModalVisible(false);
                       const plantilla = casillas[casillaSeleccionada]?.plantilla;
@@ -269,7 +269,7 @@ const eliminarJuego = async () => {
                     Eliminar Plantilla
                   </button>
 
-                  <button className="cancelar-btn" onClick={() => setModalVisible(false)}>Cancelar</button>
+                  <button className="btn--primary" onClick={() => setModalVisible(false)}>Cancelar</button>
                 </div>
               </>
             ) : (

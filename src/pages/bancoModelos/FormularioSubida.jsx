@@ -3,7 +3,7 @@ import { subirModelo } from "../../services/modelosService";
 import { obtenerCategorias, agregarCategoria } from "../../services/categoriasService";
 import "../../assets/styles/bancoModelos/formularioSubida.css";
 
-const MAX_GLTF_MB = 50; // ajusta el límite si quieres
+const MAX_GLTF_MB = 50; 
 
 const FormularioSubida = ({ setModelos, onSuccess }) => {
   const [nombre, setNombre] = useState("");
@@ -185,15 +185,27 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
               maxLength={40}
             />
           )}
-          {/* Botón Nueva Categoría */}
+
+          {/* Botón Nueva Categoría / Agregar */}
           <button
             type="button"
-            className="btn btn--success btn--sm btn-nueva-categoria"
+            className="btn btn--primary btn-nueva-categoria"
             onClick={manejarNuevaCategoria}
-            disabled={catLoading}
+            disabled={catLoading || (mostrarInputCategoria && !nuevaCategoria.trim())}
+            aria-busy={catLoading ? "true" : "false"}
           >
-            {catLoading ? "Agregando..." : (mostrarInputCategoria ? "✔ Agregar" : "Nueva Categoría")}
+            {catLoading ? "Agregando..." : (mostrarInputCategoria ? "Agregar" : "Nueva Categoría")}
           </button>
+
+          {mostrarInputCategoria && !catLoading && (
+            <button
+              type="button"
+              className="btn btn--danger btn-cancelar"
+              onClick={() => { setMostrarInputCategoria(false); setNuevaCategoria(""); }}
+            >
+              Cancelar
+            </button>
+          )}
         </div>
 
         <label htmlFor="archivo">Modelo (.glb)</label>
@@ -222,7 +234,7 @@ const FormularioSubida = ({ setModelos, onSuccess }) => {
         )}
 
         {/* Botón Subir */}
-        <button type="submit" className="btn btn--primary btn-subir" disabled={!puedeSubir}>
+        <button type="submit" className="btn btn--success btn-subir" disabled={!puedeSubir}>
           {subiendo ? "Subiendo..." : "Subir Modelo"}
         </button>
       </fieldset>

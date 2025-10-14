@@ -11,27 +11,20 @@ const EliminarCategoria = ({ categorias = [], onClose, onDeleted }) => {
     [categorias]
   );
 
-  const disabled =
-    !valor.trim() || valor.trim() === "Todos" || !opciones.includes(valor.trim());
+  const disabled = !valor; 
 
   const handleEliminar = async (e) => {
     e.preventDefault();
-    const nombre = valor.trim();
+    if (disabled) { setMsg("Selecciona una categoría válida."); return; }
 
-    if (disabled) {
-      setMsg("Selecciona una categoría válida.");
-      return;
-    }
-
-    if (!window.confirm(`¿Seguro que deseas eliminar la categoría "${nombre}"?`))
-      return;
+    if (!window.confirm(`¿Seguro que deseas eliminar la categoría "${valor}"?`)) return;
 
     try {
       setLoading(true);
       setMsg("");
-      await eliminarCategoriaAPI(nombre);
-      onDeleted?.(nombre);   // avisa al padre para que actualice estado
-      onClose?.();           // cierra el modal
+      await eliminarCategoriaAPI(valor);
+      onDeleted?.(valor);
+      onClose?.();
     } catch (err) {
       console.error("❌ Error al eliminar categoría:", err);
       setMsg("Hubo un error al eliminar la categoría. Inténtalo de nuevo.");
@@ -43,27 +36,27 @@ const EliminarCategoria = ({ categorias = [], onClose, onDeleted }) => {
   return (
     <form onSubmit={handleEliminar} className="form-subida" style={{ boxShadow: "none", padding: 0, maxWidth: "100%" }}>
       <label htmlFor="categoriaEliminar">Elige la categoría a eliminar</label>
-      <input
+
+      <select
         id="categoriaEliminar"
-        list="lista-categorias"
-        placeholder="Escribe o selecciona…"
+        className="modal-select"
         value={valor}
         onChange={(e) => setValor(e.target.value)}
         aria-invalid={!!msg}
-      />
-      <datalist id="lista-categorias">
+      >
+        <option value="">— Selecciona categoría —</option>
         {opciones.map((c) => (
-          <option key={c} value={c} />
+          <option key={c} value={c}>{c}</option>
         ))}
-      </datalist>
+      </select>
 
       {msg && <small className="error">{msg}</small>}
 
       <div className="modal-actions">
-        <button type="button" className="btn-sec" onClick={onClose} disabled={loading}>
+        <button type="button" className="btn btn--secondary" onClick={onClose} disabled={loading}>
           Cancelar
         </button>
-        <button type="submit" className="btn-danger" disabled={disabled || loading}>
+        <button type="submit" className="btn btn--danger" disabled={disabled || loading}>
           {loading ? "Eliminando…" : "Eliminar"}
         </button>
       </div>

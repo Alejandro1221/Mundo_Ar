@@ -1,95 +1,42 @@
-/* Reutiliza estilos de .form-subida */
-.form-eliminar {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  background: #fff;
-  padding: 20px 24px;
-  border-radius: 12px;
-  box-shadow: var(--sombra-suave);
-  font-family: 'Segoe UI', sans-serif;
-  border: none;
-  max-width: 480px;
-  margin: auto;
+/* Compactar el formulario del modal en Banco Modelos */
+.banco-modelos .modal-body .form-subida{
+  gap: 8px;               /* ↓ antes 18px */
+  margin: 0;
+  padding: 0;             /* ya venía inline; lo reforzamos */
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
 }
 
-/* Input + datalist */
-.form-eliminar input {
-  padding: 12px 14px;
-  border: 1.5px solid #ccc;
-  border-radius: 10px;
-  font-size: 15px;
-  background: #f9f9f9;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  width: 100%;
-}
-
-.form-eliminar input:focus {
-  border-color: var(--pastel-rosa);
-  background: #fff;
-  outline: none;
-  box-shadow: 0 0 6px rgba(207, 27, 27, 0.25);
-}
-
-/* Label */
-.form-eliminar label {
+/* Label alineado e intenso, con poco espacio debajo */
+.banco-modelos .modal-body .form-subida label{
+  margin: 0 0 6px 2px;
+  text-align: left;
   font-weight: 600;
   font-size: 14px;
   color: #333;
-  margin-top: 4px;
+}
+
+/* Menos espacio debajo del select */
+.banco-modelos .modal-body .form-subida select.modal-select{
   margin-bottom: 8px;
-  text-align: left;
-  display: block;
 }
 
-/* Error message */
-.form-eliminar .error {
-  display: block;
-  color: #d32f2f;
-  font-size: 0.85rem;
-  line-height: 1.2;
-  margin: 4px 0 0 4px;
-}
-
-/* Actions */
-.form-eliminar .modal-actions {
-  display: flex;
+/* Botones más arriba y sin hueco extra */
+.banco-modelos .modal-actions{
+  margin-top: 6px;        /* ↓ antes 14/8px */
+  margin-bottom: 0;
+  padding-bottom: 0;
   justify-content: flex-end;
-  gap: 12px;
-  margin-top: 12px;
 }
 
-.form-eliminar .btn-sec {
-  background: #f2f2f2;
-  color: #333;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
+/* Evita márgenes accidentales en botones dentro del modal */
+.banco-modelos .modal-actions .btn{
+  margin: 0;
 }
 
-.form-eliminar .btn-sec:hover {
-  background: #e0e0e0;
-}
-
-.form-eliminar .btn-danger {
-  background: var(--pastel-rosa);
-  color: var(--texto-blanco);
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.form-eliminar .btn-danger:hover {
-  background: #e74c3c;
-  transform: scale(1.05);
-}
-
-.form-eliminar .btn-danger:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+/* Opcional: reduce un poco el relleno inferior del cuerpo del modal */
+.banco-modelos .modal-body{
+  padding-bottom: 10px;
+  overflow-x: hidden;
 }

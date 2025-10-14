@@ -120,6 +120,24 @@ const manejarEliminacion = async (modelo) => {
   }
 };
 
+useEffect(() => {
+  const onKey = (e) => e.key === "Escape" && setActiveModal(null);
+
+  if (activeModal) {
+    document.body.classList.add("modal-open");
+    window.addEventListener("keydown", onKey);
+  } else {
+    document.body.classList.remove("modal-open");
+    window.removeEventListener("keydown", onKey);
+  }
+
+  return () => {
+    document.body.classList.remove("modal-open");
+    window.removeEventListener("keydown", onKey);
+  };
+}, [activeModal]);
+
+
 return (
   <div className="banco-modelos">
     <MenuHamburguesa showBreadcrumbs={true} />

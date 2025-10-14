@@ -16,20 +16,12 @@
 .btn:active{ transform: translateY(1px); filter: brightness(.9); }
 .btn:focus-visible{ outline:0; box-shadow: 0 0 0 3px rgba(0,0,0,.08), 0 0 0 5px rgba(99,206,224,.35); }
 
-.btn:disabled,
-.btn[aria-disabled="true"]{
-  background: var(--ui-disabled-bg) !important;
-  color: var(--ui-disabled-text) !important;
-  border: 1px solid var(--ui-disabled-border) !important;
-  cursor:not-allowed; filter:none; transform:none; box-shadow:none;
-}
-
 .acciones-plantilla .btn.btn--primary   { background: var(--pastel-azul);   color: var(--texto-blanco); }
 .acciones-plantilla .btn.btn--secondary { background: var(--pastel-indigo); color: var(--texto-blanco); }
 
 .btn--primary   { background: var(--pastel-azul);    color: var(--texto-blanco); }
 .btn--secondary { background: var(--pastel-indigo);  color: var(--texto-blanco); }
-.btn--success   { background: var(--pastel-verde);   color: var(--texto-principal); }
+.btn--success   { background: var(--pastel-verde);   color: var(--texto-blanco); }
 .btn--warning   { background: var(--pastel-amarillo);color: var(--texto-principal); }
 .btn--danger    { background: var(--pastel-rosa);    color: var(--texto-blanco); }
 
