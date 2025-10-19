@@ -1,30 +1,45 @@
 .docente-clasificacion-container{
   padding: 24px;
-  max-width: 1100px;             
+  max-width: 1100px;
   margin: auto;
   font-family: 'Source Sans Pro', sans-serif;
-  min-height: 100vh;
-  height: 100vh;
+  height: 100svh;
   overflow-y: auto;
   box-sizing: border-box;
-  padding-bottom: 120px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   scroll-behavior: smooth;
-
+  width: min(100% - 32px, 960px);
   display: flex;
   flex-direction: column;
 }
-
 h2{
-  margin: 12px 0;
+  margin: 12px 0 6px;
   text-align: center;
+  font-size: clamp(1.35rem, 0.8vw + 1.1rem, 1.85rem);
+  font-weight: 700;
+  letter-spacing: .2px;
+  text-wrap: balance;
+  margin-top: 35px;
 }
+
 .leyenda-clasificacion{
-  font-size: 1rem;
-  line-height: 1.6;
-  color: #555;
-  margin: 0 0 12px 0;
-  text-align: left;
-  max-width: 800px;
+  position: relative;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: clamp(1rem, .42vw + .92rem, 1.12rem);
+  line-height: 1.75;
+  color: #2b313b;
+  background: linear-gradient(180deg,#ffffff 0%, #f9fbff 100%);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(0,0,0,.03),
+    0 8px 20px rgba(17,24,39,.08),
+    0 3px 8px rgba(17,24,39,.06);
+  text-wrap: pretty;
+  hyphens: auto;
+  border: 1px solid color-mix(in srgb, var(--pastel-azul) 25%, transparent);
+  padding: 18px 22px;
 }
 
 /* ===== Mensajes ===== */
@@ -89,7 +104,6 @@ h2{
   outline: none;
 }
 
-/* ===== Barra: “Modelos seleccionados” + botón ===== */
 .modelos-config__bar{
   display: flex;
   align-items: center;
@@ -98,17 +112,16 @@ h2{
   margin: 16px 0 12px;
 }
 
-/* ===== Cuadrícula de modelos (más espacio lateral que vertical) ===== */
 .modelos-grid{
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 200px));
-  column-gap: 75px;   /* 👉 separación lateral */
-  row-gap: 12px;      /* 👉 separación vertical */
-  justify-content: center;
+  column-gap: 48px;  
+  row-gap: 12px;
+  justify-content: center; 
+  justify-items: center;   
   align-items: start;
 }
 
-/* ===== Card de modelo: con “línea” y aire ===== */
 .modelo-card{
   background: var(--fondo-claro, #fff);
   border: 2px solid var(--pastel-azul);
@@ -121,14 +134,14 @@ h2{
   padding: 14px;
   text-align: center;
   transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  will-change: transform, box-shadow, border-color;
 }
 .modelo-card:hover{
   transform: translateY(-2px);
-  /* si tu navegador soporta color-mix; si no, puedes omitir esta línea */
   border-color: color-mix(in srgb, var(--pastel-azul) 70%, #1e90ff);
+  box-shadow: 0 10px 20px rgba(17,24,39,.10);
 }
 
-/* Visor */
 .modelo-preview{
   width: 100%;
   height: 180px;
@@ -142,13 +155,12 @@ h2{
   object-fit: contain;
 }
 
-/* Detalles + controles del card */
 .modelo-detalles{
   text-align: center;
   margin-top: 10px;
   width: 100%;
-  padding-top: 10px;                 /* separador visual del visor */
-  border-top: 1px solid #eef2f7;     /* línea interna sutil */
+  padding-top: 10px;                 
+  border-top: 1px solid #eef2f7;     
 }
 .modelo-detalles h4{
   margin: 8px 0 4px;
@@ -165,18 +177,51 @@ h2{
   border: 1px solid #ccc;
 }
 .modelo-detalles .btn{
-  width: 100%;                        /* botón ancho del card */
+  width: 100%;                        
   justify-content: center;
   min-height: 36px;
   margin-top: 6px;
 }
-
-/* ===== Acciones (pie de pantalla) ===== */
 .acciones-plantilla{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-  margin-top: 32px;
+  width: min(100%, 520px);
+  margin: 32px auto 0;
+  align-items: stretch;
 }
-.acciones-plantilla button{ margin: 0; }
+
+.acciones-plantilla button{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px 16px;
+  box-sizing: border-box;
+  line-height: 1.2;
+  white-space: normal; 
+}
+
+.grupos-config input:focus,
+.modelo-detalles select:focus,
+.seccion-celebracion select:focus,
+.seccion-celebracion textarea:focus{
+  outline: none;
+  border-color: var(--pastel-azul);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--pastel-azul) 25%, transparent);
+}
+
+
+@media (min-width: 1280px){
+  .modelos-grid{
+    column-gap: 84px;
+    row-gap: 16px;
+  }
+}
+
+@media (max-width: 560px){
+  .acciones-plantilla{ grid-template-columns: 1fr; }
+}
+

@@ -18,6 +18,30 @@ const ClasificacionModelos = () => {
   const [grupos, setGrupos] = useState(null);
   const [asignaciones, setAsignaciones] = useState({});
   const [cargadoDesdeHook, setCargadoDesdeHook] = useState(false);
+  const MAX_GRUPOS = 3;
+  const MIN_GRUPOS = 2;
+
+  const normalizarGrupos = (grs) => {
+    const base = Array.isArray(grs) && grs.length ? grs.slice(0, MAX_GRUPOS) : ["Grupo 1", "Grupo 2"];
+    const clean = [];
+    base.forEach((g, i) => {
+      const n = String(g || "").trim() || `Grupo ${i + 1}`;
+      if (!clean.includes(n)) clean.push(n);
+    });
+    while (clean.length < MIN_GRUPOS) clean.push(`Grupo ${clean.length + 1}`);
+    return clean.slice(0, MAX_GRUPOS);
+  };
+
+
+  const clampAsignaciones = (grs, asigs) => {
+    const set = new Set(grs || []);
+    const out = {};
+    Object.entries(asigs || {}).forEach(([k, v]) => {
+      if (set.has(v)) out[k] = v;
+    });
+    return out;
+  };
+
 
 useEffect(() => {
   if (modelosSeleccionados.length > 0) {
@@ -43,87 +67,110 @@ useEffect(() => {
   }
 }, [juegoId, casillaId, cargadoDesdeHook, navigate]);
 
-const cargarConfiguracion = async () => {
-  try {
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
+  useEffect(() => {
+    if (!mensaje.texto) return;
+    const t = setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
+    return () => clearTimeout(t);
+  }, [mensaje]);
 
-    if (juegoSnap.exists()) {
-      const casilla = juegoSnap.data().casillas[casillaId];
-
-      if (casilla?.configuracion) {
-        const { modelos, grupos, celebracion, asignaciones: asignacionesGuardadas } = casilla.configuracion;
-
-        
-        setModelosSeleccionados(prev => {
-          const mapa = new Map(prev.map(m => [m.id || m.url, m]));
-          modelos.forEach(m => mapa.set(m.id || m.url, m));
-          return Array.from(mapa.values());
-        });
-
-     
-        setGrupos(grupos ?? ["Grupo 1", "Grupo 2"]); 
-        setCelebracion(celebracion || { tipo: "confeti", opciones: {} });
-        setAsignaciones(asignacionesGuardadas || {});
-        return;
+  const cargarConfiguracion = async () => {
+    try {
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+      if (juegoSnap.exists()) {
+        const idx = Number(casillaId);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
+          setGrupos(["Grupo 1", "Grupo 2"].slice(0, MAX_GRUPOS));
+          return;
+        }
+        const casilla = (juegoSnap.data().casillas || [])[idx];
+        if (casilla?.configuracion) {
+          const { modelos: modelosGuardados, grupos: gruposGuardados, celebracion: celebracionGuardada, asignaciones: asignacionesGuardadas } = casilla.configuracion;
+          setModelosSeleccionados(prev => {
+            const mapa = new Map(prev.map(m => [m.id || m.url, m]));
+            (modelosGuardados || []).forEach(m => mapa.set(m.id || m.url, m));
+            return Array.from(mapa.values());
+          });
+          const topados = normalizarGrupos(gruposGuardados ?? ["Grupo 1", "Grupo 2"]);
+          setGrupos(topados);
+          setCelebracion(celebracionGuardada || { tipo: "confeti", opciones: {} });
+          setAsignaciones(clampAsignaciones(topados, asignacionesGuardadas || {}));
+          return;
+        }
       }
+      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+    } catch (error) {
+      console.error("Error cargarConfiguracion:", error);
+      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
     }
-    setGrupos(["Grupo 1", "Grupo 2"]);
-  } catch (error) {
-    console.error("Error al cargar configuración:", error);
-    setGrupos(["Grupo 1", "Grupo 2"]); 
-  }
-};
-
+  };
 
   const guardarConfiguracion = async () => {
-    const modelosConGrupo = modelosSeleccionados.map((modelo) => ({
-      ...modelo,
-      grupo: asignaciones[modelo.url] || null,
+    if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
+      mostrarMensaje(`❌ Debes tener al menos ${MIN_GRUPOS} grupos.`, "error");
+      return;
+    }
+    const topados = normalizarGrupos(grupos);
+    const asigsOk = clampAsignaciones(topados, asignaciones);
+    const modelosConGrupo = modelosSeleccionados.map(m => ({
+      ...m,
+      grupo: asigsOk[m.url] || null,
     }));
-    
     const modelosSinGrupo = modelosConGrupo.filter(m => !m.grupo);
     if (modelosSinGrupo.length > 0) {
       mostrarMensaje("❌ Todos los modelos deben tener un grupo asignado.", "error");
       return;
     }
-
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
-
       if (juegoSnap.exists()) {
-        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-
-        casillasActuales[casillaId] = {
+        const idx = Number(casillaId);
+        if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
+          mostrarMensaje("❌ Casilla inválida.", "error");
+          return;
+        }
+        const existentes = Array.isArray(juegoSnap.data().casillas) ? juegoSnap.data().casillas : [];
+        const casillasActuales = Array.from({ length: 30 }, (_, i) => existentes[i] ? { ...existentes[i] } : { configuracion: null });
+        casillasActuales[idx] = {
           plantilla: "clasificacion-modelos",
           configuracion: {
             modelos: modelosConGrupo,
-            grupos,
+            grupos: topados,
             celebracion,
-            asignaciones
+            asignaciones: asigsOk
           },
         };
-
         await updateDoc(juegoRef, { casillas: casillasActuales });
         mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
       }
     } catch (error) {
-      console.error("Error al guardar configuración:", error);
+      console.error("Error guardarConfiguracion:", error);
       mostrarMensaje("❌ Error al guardar la plantilla.", "error");
     }
   };
 
+
   const mostrarMensaje = (texto, tipo = "info") => {
     setMensaje({ texto, tipo });
-    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
   };
 
-  const agregarGrupo = () => setGrupos([...grupos, `Grupo ${grupos.length + 1}`]);
-
-  const cambiarGrupo = (modeloUrl, grupo) => {
-    setAsignaciones((prev) => ({ ...prev, [modeloUrl]: grupo }));
+  const agregarGrupo = () => {
+    if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
+      setGrupos(normalizarGrupos(grupos));
+      return;
+    }
+    if (grupos.length >= MAX_GRUPOS) {
+      mostrarMensaje(`Solo se permiten hasta ${MAX_GRUPOS} grupos.`, "error");
+      return;
+    }
+    let nombre = `Grupo ${grupos.length + 1}`;
+    while (grupos.some(g => g.toLowerCase() === nombre.toLowerCase())) {
+      nombre = `${nombre} (1)`;
+    }
+    setGrupos(prev => [...prev, nombre]);
   };
+
 
   const eliminarModelo = (urlModelo) => {
     const nuevosModelos = modelosSeleccionados.filter(m => m.url !== urlModelo);
@@ -133,29 +180,54 @@ const cargarConfiguracion = async () => {
     setAsignaciones(nuevasAsignaciones);
   };
 
-  const eliminarGrupo = (nombreGrupo) => {
-    setGrupos(grupos.filter((g) => g !== nombreGrupo));
-    const nuevasAsignaciones = { ...asignaciones };
-    Object.keys(nuevasAsignaciones).forEach((modeloUrl) => {
-      if (nuevasAsignaciones[modeloUrl] === nombreGrupo) {
-        delete nuevasAsignaciones[modeloUrl];
+  // maneja asignación de grupo para cada modelo
+  const cambiarGrupo = (url, grupo) => {
+    setAsignaciones(prev => {
+      const next = { ...prev };
+      if (!grupo) {
+        delete next[url];
+      } else {
+        next[url] = grupo;
       }
+      return next;
     });
-    setAsignaciones(nuevasAsignaciones);
+  };
+
+  const eliminarGrupo = (nombreGrupo) => {
+    if (!Array.isArray(grupos) || grupos.length <= MIN_GRUPOS) {
+      mostrarMensaje(`Debe existir al menos ${MIN_GRUPOS} grupos.`, "error");
+      return;
+    }
+    const nuevos = grupos.filter(g => g !== nombreGrupo).slice(0, MAX_GRUPOS);
+    const normalizados = normalizarGrupos(nuevos);
+    setGrupos(normalizados);
+
+    const asignacionesFiltradas = {};
+    Object.entries(asignaciones).forEach(([url, g]) => {
+      if (normalizados.includes(g)) asignacionesFiltradas[url] = g;
+    });
+    setAsignaciones(asignacionesFiltradas);
   };
 
   const renombrarGrupo = (index, nuevoNombre) => {
+    const nombre = String(nuevoNombre).trim();
+    if (!nombre) { mostrarMensaje("El nombre no puede estar vacío.", "error"); return; }
+    if (grupos.some((g, i) => i !== index && g.toLowerCase() === nombre.toLowerCase())) {
+      mostrarMensaje("Ya existe un grupo con ese nombre.", "error"); return;
+    }
     const nuevosGrupos = [...grupos];
     const antiguo = nuevosGrupos[index];
-    nuevosGrupos[index] = nuevoNombre;
-    setGrupos(nuevosGrupos);
-
-    const nuevasAsignaciones = {};
-    Object.entries(asignaciones).forEach(([url, grupo]) => {
-      nuevasAsignaciones[url] = grupo === antiguo ? nuevoNombre : grupo;
+    nuevosGrupos[index] = nombre;
+    const topados = nuevosGrupos.slice(0, MAX_GRUPOS);
+    setGrupos(topados);
+    const nuevas = {};
+    Object.entries(asignaciones).forEach(([url, g]) => {
+      const ng = g === antiguo ? nombre : g;
+      if (topados.includes(ng)) nuevas[url] = ng;
     });
-    setAsignaciones(nuevasAsignaciones);
+    setAsignaciones(nuevas);
   };
+
 
   return (
     <div className="docente-clasificacion-container">
@@ -183,7 +255,13 @@ const cargarConfiguracion = async () => {
               </li>
             ))}
           </ul>
-          <button className="btn btn--secondary" onClick={agregarGrupo}>Agregar grupo</button>
+          <button
+            type="button"
+            className="btn btn--secondary"
+            onClick={agregarGrupo}
+            disabled={Array.isArray(grupos) && grupos.length >= MAX_GRUPOS}
+            title={Array.isArray(grupos) && grupos.length >= MAX_GRUPOS ? `Máximo ${MAX_GRUPOS} grupos` : undefined}
+          >Agregar grupo</button>
         </>
       )}
     </div>
@@ -193,6 +271,7 @@ const cargarConfiguracion = async () => {
           <h3>Modelos seleccionados</h3>
 
           <button
+            type="button"
             className="btn btn--secondary"
               onClick={() => {
                 sessionStorage.setItem("juegoId", juegoId);
@@ -209,15 +288,15 @@ const cargarConfiguracion = async () => {
                   state: { desdePlantilla: true, juegoId, casillaId },
                 });
               }}
-            >
-              Agregar modelos
-            </button>
+          >
+            Agregar modelos
+          </button>
         </div>
 
         <div className="modelos-grid">
           {modelosSeleccionados.length > 0 ? (
             modelosSeleccionados.map((modelo, i) => (
-              <div key={i} className="modelo-card">
+               <div key={modelo.id || modelo.url} className="modelo-card">
                 <div className="modelo-preview">
                   <model-viewer
                     src={modelo.url}
@@ -311,7 +390,17 @@ const cargarConfiguracion = async () => {
               Vista previa como estudiante
             </button>
 
-            <button className="btn btn--primary" onClick={guardarConfiguracion}>
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={guardarConfiguracion}
+              disabled={
+                !Array.isArray(grupos) ||
+                grupos.length < MIN_GRUPOS ||
+                modelosSeleccionados.length === 0 ||
+                modelosSeleccionados.some(m => !asignaciones[m.url])
+              }
+            >
               Guardar configuración
             </button>
 
