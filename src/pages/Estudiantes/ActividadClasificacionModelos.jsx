@@ -16,6 +16,8 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
   const [modelosClasificados, setModelosClasificados] = useState([]);
   const [modeloActivo, setModeloActivo] = useState(null);
+  const [instrucciones, setInstrucciones] = useState("");
+  const [mostrarInstrucciones, setMostrarInstrucciones] = useState(false);
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
@@ -56,6 +58,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
         if (casilla?.configuracion) {
           setModelos(casilla.configuracion.modelos || []);
           setGrupos(casilla.configuracion.grupos || []);
+          setInstrucciones(casilla.configuracion.instrucciones || "");
           setCelebracion(casilla.configuracion.celebracion || { tipo: "mensaje", opciones: {} });
         } else {
           alert("⚠️ Esta casilla no tiene configuración.");
@@ -143,6 +146,7 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     console.warn("❗ Tipo de celebración no reconocido:", tipo);
   }
 };
+console.log("Instrucciones:", instrucciones);
 
 
   return (
@@ -215,6 +219,24 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
           </button>
         ))}
       </div>
+      {instrucciones && (
+  <div className="boton-instrucciones">
+    <button
+      onMouseDown={() => setMostrarInstrucciones(true)}
+      onMouseUp={() => setMostrarInstrucciones(false)}
+      onTouchStart={() => setMostrarInstrucciones(true)}
+      onTouchEnd={() => setMostrarInstrucciones(false)}
+    >
+      ℹ️ Instrucciones
+    </button>
+    {mostrarInstrucciones && (
+      <div className="instrucciones-popup">
+        {instrucciones}
+      </div>
+    )}
+  </div>
+)}
+
     </div>
   );
 }

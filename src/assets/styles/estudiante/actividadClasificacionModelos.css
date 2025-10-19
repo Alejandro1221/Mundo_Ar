@@ -13,7 +13,7 @@ html, body {
 .actividad-ra-container {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 9999;
   background: transparent;
 }
 
@@ -90,3 +90,68 @@ canvas {
   max-width: 800px;       
 }
 
+.boton-instrucciones {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1;
+   background-color: red; /* solo para debug visual */
+}
+
+.boton-instrucciones button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.instrucciones-popup {
+  margin-top: 8px;
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #333;
+  max-width: 260px;
+  font-size: 0.85rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: absolute;
+  right: 0;
+  top: 42px;
+}
+.boton-instrucciones-fixed {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+}
+
+.boton-instrucciones-fixed button {
+  background-color: #ff9800;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.instrucciones-popup-fixed {
+  position: fixed;
+  top: 70px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  max-width: 260px;
+  font-size: 14px;
+  z-index: 99999;
+}
