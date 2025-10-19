@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./assets/styles/global.css";
+import "@google/model-viewer"; 
 import App from "./App.jsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { NotifyProvider } from "./components/NotifyProvider";  

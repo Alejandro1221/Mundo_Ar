@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
-import "@google/model-viewer";
 import "../assets/styles/docente/clasificacionModelos.css";
 import Breadcrumbs from "../components/Breadcrumbs";
 
@@ -43,29 +42,32 @@ const ClasificacionModelos = () => {
   };
 
 
-useEffect(() => {
-  if (modelosSeleccionados.length > 0) {
-    console.log("Modelos disponibles desde el hook:", modelosSeleccionados);
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      const idJuego = juegoId || sessionStorage.getItem("juegoId");
+      const idCasilla = casillaId || sessionStorage.getItem("casillaId");
+
+      if (!idJuego || !idCasilla) {
+        setMensaje({ texto: "Error: No se encontró el juego o la casilla.", tipo: "error" });
+        navigate("/docente/configurar-casillas", { replace: true });
+        return;
+      }
+
+      // 👉 siempre carga config (modelos se fusionan, no se pisan)
+      await cargarConfiguracion(() => alive);
+    })();
+
+    return () => { alive = false; };
+  }, []);
+
+  useEffect(() => {
+  if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0) {
     setCargadoDesdeHook(true);
+    if (grupos === null) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
   }
 }, [modelosSeleccionados]);
-
-useEffect(() => {
-  let idJuego = juegoId || sessionStorage.getItem("juegoId");
-  let idCasilla = casillaId || sessionStorage.getItem("casillaId");
-
-  if (!idJuego || !idCasilla) {
-    alert("Error: No se encontró el juego o la casilla.");
-    navigate("/docente/configurar-casillas");
-    return;
-  }
-
-  if (!cargadoDesdeHook) {
-    cargarConfiguracion(); 
-  } else {
-    console.log("✅ Hook ya cargó modelos, no sobreescribimos");
-  }
-}, [juegoId, casillaId, cargadoDesdeHook, navigate]);
 
   useEffect(() => {
     if (!mensaje.texto) return;
@@ -73,37 +75,57 @@ useEffect(() => {
     return () => clearTimeout(t);
   }, [mensaje]);
 
-  const cargarConfiguracion = async () => {
-    try {
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-      if (juegoSnap.exists()) {
-        const idx = Number(casillaId);
-        if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
-          setGrupos(["Grupo 1", "Grupo 2"].slice(0, MAX_GRUPOS));
-          return;
-        }
-        const casilla = (juegoSnap.data().casillas || [])[idx];
-        if (casilla?.configuracion) {
-          const { modelos: modelosGuardados, grupos: gruposGuardados, celebracion: celebracionGuardada, asignaciones: asignacionesGuardadas } = casilla.configuracion;
-          setModelosSeleccionados(prev => {
-            const mapa = new Map(prev.map(m => [m.id || m.url, m]));
-            (modelosGuardados || []).forEach(m => mapa.set(m.id || m.url, m));
-            return Array.from(mapa.values());
-          });
-          const topados = normalizarGrupos(gruposGuardados ?? ["Grupo 1", "Grupo 2"]);
-          setGrupos(topados);
-          setCelebracion(celebracionGuardada || { tipo: "confeti", opciones: {} });
-          setAsignaciones(clampAsignaciones(topados, asignacionesGuardadas || {}));
-          return;
-        }
+
+const cargarConfiguracion = async (isAlive = () => true) => {
+  try {
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+
+    if (!isAlive()) return; // por si tarda la red
+
+    if (juegoSnap.exists()) {
+      const idx = Number(casillaId);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
+        if (isAlive()) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+        return;
       }
-      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
-    } catch (error) {
-      console.error("Error cargarConfiguracion:", error);
-      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+
+      const casilla = (juegoSnap.data().casillas || [])[idx];
+      if (casilla?.configuracion) {
+        const {
+          modelos: modelosGuardados = [],
+          grupos: gruposGuardados,
+          celebracion: celebracionGuardada,
+          asignaciones: asignacionesGuardadas
+        } = casilla.configuracion;
+
+        if (!isAlive()) return;
+
+        setModelosSeleccionados(prev => {
+          const mapa = new Map(prev.map(m => [m.id || m.url, m]));
+          modelosGuardados.forEach(m => {
+            if (!m?.url) return;
+            mapa.set(m.id || m.url, m);
+          });
+          return Array.from(mapa.values());
+        });
+
+        const topados = normalizarGrupos(gruposGuardados ?? ["Grupo 1", "Grupo 2"]);
+        if (isAlive()) setGrupos(topados);
+        if (isAlive()) setCelebracion(celebracionGuardada || { tipo: "confeti", opciones: {} });
+        if (isAlive()) setAsignaciones(clampAsignaciones(topados, asignacionesGuardadas || {}));
+        return;
+      }
     }
-  };
+
+    if (isAlive()) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+  } catch (error) {
+    console.error("Error cargarConfiguracion:", error);
+    if (isAlive()) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+  }
+};
+
+
 
   const guardarConfiguracion = async () => {
     if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
@@ -112,38 +134,48 @@ useEffect(() => {
     }
     const topados = normalizarGrupos(grupos);
     const asigsOk = clampAsignaciones(topados, asignaciones);
-    const modelosConGrupo = modelosSeleccionados.map(m => ({
-      ...m,
-      grupo: asigsOk[m.url] || null,
-    }));
+
+    const modelosValidos = modelosSeleccionados.filter(m => !!m?.url);
+    const modelosConGrupo = modelosValidos.map(m => ({...m,grupo: asigsOk[m.url] ?? asigsOk[m.id] ?? m.grupo ?? null,}));
     const modelosSinGrupo = modelosConGrupo.filter(m => !m.grupo);
+
+    if (modelosValidos.length !== modelosSeleccionados.length) {
+      mostrarMensaje("❌ Hay modelos sin URL válida.", "error");
+      return;
+    }
     if (modelosSinGrupo.length > 0) {
       mostrarMensaje("❌ Todos los modelos deben tener un grupo asignado.", "error");
       return;
     }
+
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
-      if (juegoSnap.exists()) {
-        const idx = Number(casillaId);
-        if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
-          mostrarMensaje("❌ Casilla inválida.", "error");
-          return;
-        }
-        const existentes = Array.isArray(juegoSnap.data().casillas) ? juegoSnap.data().casillas : [];
-        const casillasActuales = Array.from({ length: 30 }, (_, i) => existentes[i] ? { ...existentes[i] } : { configuracion: null });
-        casillasActuales[idx] = {
-          plantilla: "clasificacion-modelos",
-          configuracion: {
-            modelos: modelosConGrupo,
-            grupos: topados,
-            celebracion,
-            asignaciones: asigsOk
-          },
-        };
-        await updateDoc(juegoRef, { casillas: casillasActuales });
-        mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
+      if (!juegoSnap.exists()) {
+        mostrarMensaje("❌ Juego no encontrado.", "error");
+        return;
       }
+      const idx = Number(casillaId);
+      if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
+        mostrarMensaje("❌ Casilla inválida.", "error");
+        return;
+      }
+      const existentes = Array.isArray(juegoSnap.data().casillas) ? juegoSnap.data().casillas : [];
+      const casillasActuales = Array.from({ length: 30 }, (_, i) => (existentes[i] ? { ...existentes[i] } : { configuracion: null }));
+
+      casillasActuales[idx] = {
+        ...(casillasActuales[idx] || {}),
+        plantilla: "clasificacion-modelos",
+        configuracion: {
+          modelos: modelosConGrupo,
+          grupos: topados,
+          celebracion,
+          asignaciones: asigsOk
+        },
+      };
+
+      await updateDoc(juegoRef, { casillas: casillasActuales });
+      mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
     } catch (error) {
       console.error("Error guardarConfiguracion:", error);
       mostrarMensaje("❌ Error al guardar la plantilla.", "error");
@@ -164,9 +196,13 @@ useEffect(() => {
       mostrarMensaje(`Solo se permiten hasta ${MAX_GRUPOS} grupos.`, "error");
       return;
     }
-    let nombre = `Grupo ${grupos.length + 1}`;
-    while (grupos.some(g => g.toLowerCase() === nombre.toLowerCase())) {
-      nombre = `${nombre} (1)`;
+    const base = `Grupo ${grupos.length + 1}`;
+    let nombre = base;
+    let n = 1;
+    const lower = s => s.toLowerCase();
+    const has = s => grupos.some(g => lower(g) === lower(s));
+    while (has(nombre)) {
+      nombre = `${base} (${n++})`;
     }
     setGrupos(prev => [...prev, nombre]);
   };
@@ -265,7 +301,6 @@ useEffect(() => {
         </>
       )}
     </div>
-
       <div className="modelos-config">
         <div className="modelos-config__bar">
           <h3>Modelos seleccionados</h3>
@@ -315,7 +350,7 @@ useEffect(() => {
                     <p>Cargando asignaciones...</p>
                   ) : (
                     <select
-                      value={asignaciones[modelo.url] || ""}
+                      value={asignaciones[modelo.url] ?? asignaciones[modelo.id] ?? ""}
                       onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}
                     >
                       <option value="">Selecciona grupo</option>
@@ -371,26 +406,29 @@ useEffect(() => {
 
       <div className="acciones-plantilla">
           <button
-              className="btn btn--secondary"
-              onClick={() => {
-                const modelosConGrupo = modelosSeleccionados.map((m) => ({
-                  ...m,
-                  grupo: asignaciones[m.url] || null,
-                }));
-                sessionStorage.setItem("modoVistaPrevia", "true");
-                sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
-                sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
-                sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
-                sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
-                sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+            type="button"
+            className="btn btn--secondary"
+            onClick={() => {
+              const gruposNorm = normalizarGrupos(grupos);
+              const modelosConGrupo = modelosSeleccionados.map((m) => ({
+                ...m,
+                grupo: asignaciones[m.url] ?? asignaciones[m.id] ?? m.grupo ?? null,
+              }));
 
-                navigate("/estudiante/vista-previa-clasificacion-modelos");
-              }}
-            >
-              Vista previa como estudiante
-            </button>
+              sessionStorage.setItem("modoVistaPrevia", "true");
+              sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
+              sessionStorage.setItem("gruposSeleccionados", JSON.stringify(gruposNorm));
+              sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+              sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
 
-            <button
+              navigate("/estudiante/vista-previa-clasificacion-modelos");
+            }}
+          >
+            Vista previa como estudiante
+          </button>
+
+          <button
               type="button"
               className="btn btn--primary"
               onClick={guardarConfiguracion}
@@ -398,11 +436,11 @@ useEffect(() => {
                 !Array.isArray(grupos) ||
                 grupos.length < MIN_GRUPOS ||
                 modelosSeleccionados.length === 0 ||
-                modelosSeleccionados.some(m => !asignaciones[m.url])
+                modelosSeleccionados.some(m =>!(asignaciones[m.url] ?? asignaciones[m.id] ?? m.grupo))
               }
             >
               Guardar configuración
-            </button>
+          </button>
 
       </div>
 
