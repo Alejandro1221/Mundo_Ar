@@ -16,6 +16,7 @@ const ClasificacionModelos = () => {
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const [grupos, setGrupos] = useState(null);
   const [asignaciones, setAsignaciones] = useState({});
+  const [edits, setEdits] = useState({});
   const MAX_GRUPOS = 3;
   const MIN_GRUPOS = 2;
 
@@ -287,7 +288,39 @@ const cargarConfiguracion = async (isAlive = () => true) => {
           <ul>
             {grupos.map((g, i) => (
               <li key={i}>
-                <input value={g} onChange={(e) => renombrarGrupo(i, e.target.value)} />
+                <input
+                  value={edits[i] ?? g}
+                  onChange={(e) =>
+                    setEdits(prev => ({ ...prev, [i]: e.target.value }))
+                  }
+                  onBlur={(e) => {
+                    const nuevo = e.target.value.trim();
+
+                    if (!nuevo) {
+                      setEdits(prev => {
+                        const { [i]: _, ...rest } = prev; 
+                        return rest;
+                      });
+                      mostrarMensaje("El nombre no puede quedar vacío.", "error");
+                      return;
+                    }
+                    if (grupos.some((gg, j) => j !== i && gg.toLowerCase() === nuevo.toLowerCase())) {
+                      setEdits(prev => {
+                        const { [i]: _, ...rest } = prev; 
+                        return rest;
+                      });
+                      mostrarMensaje("Ya existe un grupo con ese nombre.", "error");
+                      return;
+                    }
+                    renombrarGrupo(i, nuevo);
+                  
+                    setEdits(prev => {
+                      const { [i]: _, ...rest } = prev; 
+                      return rest;
+                    });
+                  }}
+                  placeholder={`Grupo ${i + 1}`}
+                />
                 <button className="btn btn--danger btn--sm" onClick={() => eliminarGrupo(g)}>❌</button>
               </li>
             ))}

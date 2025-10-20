@@ -160,9 +160,20 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
         background="transparent: true"
       >
         {grupos.map((grupo, index) => {
-          const x = (index - (grupos.length - 1) / 2) * 1; // igual que la caja
-          const yBox = -0.6;
           const z = -3;
+          const yBox = -0.6;
+
+          const count = grupos.length;
+
+          
+          const totalWidth =
+            count <= 1 ? 0
+            : count === 2 ? 1.2   
+            : 1;                 
+
+          const step  = count > 1 ? totalWidth / (count - 1) : 0;
+          const start = -totalWidth / 2;
+          const x = start + index * step; 
 
           return (
             <a-entity key={index}>
@@ -175,24 +186,18 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
               ></a-box>
 
               <a-text
-                value={grupo || ""}
-                position={`${x} ${yBox - 0.25} ${z}`}  // misma x/z; un poco más abajo
+                value={grupo}
+                position={`${x} ${yBox - 0.25} ${z}`}
                 align="center"
-                anchor="center"
+                color="#fff"
                 wrap-count="14"
-                width="1.8"
-                scale="1 1 1"
-                color="#ffffff"
-                side="double"
-                look-at="[camera]"
-                className="texto-grupo"                 // en React usa className
-                /* Si quieres MSDF local:
-                shader="msdf" font="#robotoFont" fontImage="#robotoFontImg"
-                */
-              ></a-text>
+                width="0.5"
+                scale="1 1 1"   
+              />
             </a-entity>
           );
         })}
+
 
 
         {modelos.map((modelo, index) => {
