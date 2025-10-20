@@ -20,7 +20,7 @@ const BancoModelos = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const desdePlantilla = Boolean(location.state?.desdePlantilla);
+  const desdePlantilla = Boolean(location.state?.desdePlantilla) || sessionStorage.getItem("seleccionandoModelos") === "1";
   const juegoId = location.state?.juegoId || sessionStorage.getItem("juegoId");
   const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
   const [pagina, setPagina] = useState(1);
@@ -81,27 +81,32 @@ const manejarSeleccion = (modelo) => {
   };
 
 const confirmarSeleccion = () => {
-  const nuevosSeleccionados = modelosSeleccionados.map(m => ({
-    id: m.id,
-    nombre: m.nombre,
-    url: m.url || m.modelo_url,
-    categoria: m.categoria,
-    texto: m.texto || ""
-  }));
+  if (!Array.isArray(modelosSeleccionados) || modelosSeleccionados.length === 0) {
+    alert("Selecciona al menos un modelo.");
+    return;
+  }
+
+  const normalizados = modelosSeleccionados
+    .map(m => ({
+      id: m.id,
+      nombre: m.nombre,
+      url: m.url ?? m.modelo_url ?? "",
+      categoria: m.categoria ?? "",
+      texto: m.texto ?? ""
+    }))
+    .filter(m => m.url);
 
   const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-  sessionStorage.setItem(key, JSON.stringify(nuevosSeleccionados));
+  sessionStorage.setItem(key, JSON.stringify(normalizados));
+  sessionStorage.setItem("modelosSeleccionados", JSON.stringify(normalizados));
 
-  setModelosSeleccionados(nuevosSeleccionados);
+  sessionStorage.removeItem("seleccionandoModelos");
+  setModelosSeleccionados(normalizados);
 
-  navigate(sessionStorage.getItem("paginaAnterior") || "/docente/dashboard", {
-  state: {
-    juegoId,
-    casillaId
-  }
-});
-
+  const back = sessionStorage.getItem("paginaAnterior") || "/docente/configurar-casillas";
+  navigate(back, { state: { juegoId, casillaId }, replace: true });
 };
+
 
 const manejarEliminacion = async (modelo) => {
   if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {
@@ -144,14 +149,20 @@ return (
     <h1 className="titulo-pagina">Banco de Modelos</h1>
 
     <div className="page-toolbar">
-      {!desdePlantilla && (
-        <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
-          Subir modelo
+      {!desdePlantilla ? (
+        <>
+          <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
+            Subir modelo
+          </button>
+          <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
+            Eliminar categoría
+          </button>
+        </>
+      ) : (
+        <button className="btn btn--primary" onClick={confirmarSeleccion}>
+          ✅ Confirmar selección
         </button>
       )}
-      <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
-        Eliminar categoría
-      </button>
     </div>
       {activeModal === "subir" && (
         <>
@@ -262,7 +273,7 @@ return (
                 modelo={modelo}
                 esPlantilla={desdePlantilla}
                 manejarSeleccion={desdePlantilla ? manejarSeleccion : null}
-                manejarEliminacion={manejarEliminacion}
+                manejarEliminacion={!desdePlantilla ? manejarEliminacion : null}
                 seleccionado={desdePlantilla ? modelosSeleccionados.some((m) => m.id === modelo.id) : false}
               />
             ))

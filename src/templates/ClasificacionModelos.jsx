@@ -16,7 +16,6 @@ const ClasificacionModelos = () => {
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const [grupos, setGrupos] = useState(null);
   const [asignaciones, setAsignaciones] = useState({});
-  const [cargadoDesdeHook, setCargadoDesdeHook] = useState(false);
   const MAX_GRUPOS = 3;
   const MIN_GRUPOS = 2;
 
@@ -55,7 +54,6 @@ const ClasificacionModelos = () => {
         return;
       }
 
-      // 👉 siempre carga config (modelos se fusionan, no se pisan)
       await cargarConfiguracion(() => alive);
     })();
 
@@ -63,11 +61,11 @@ const ClasificacionModelos = () => {
   }, []);
 
   useEffect(() => {
-  if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0) {
-    setCargadoDesdeHook(true);
-    if (grupos === null) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
-  }
-}, [modelosSeleccionados]);
+    if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0 && grupos === null) {
+      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+    }
+  }, [modelosSeleccionados, grupos]);
+
 
   useEffect(() => {
     if (!mensaje.texto) return;
@@ -213,17 +211,20 @@ const cargarConfiguracion = async (isAlive = () => true) => {
     setModelosSeleccionados(nuevosModelos);
     const nuevasAsignaciones = { ...asignaciones };
     delete nuevasAsignaciones[urlModelo];
+    const m = modelosSeleccionados.find(mm => mm.url === urlModelo);
+    if (m?.id) delete nuevasAsignaciones[m.id];
     setAsignaciones(nuevasAsignaciones);
   };
 
-  // maneja asignación de grupo para cada modelo
-  const cambiarGrupo = (url, grupo) => {
+  const cambiarGrupo = (url, grupo, id) => {
     setAsignaciones(prev => {
       const next = { ...prev };
       if (!grupo) {
         delete next[url];
+        if (id) delete next[id];
       } else {
-        next[url] = grupo;
+        next[url] = grupo;     
+        if (id) delete next[id];
       }
       return next;
     });
@@ -318,6 +319,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
                 sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
                 sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
                 sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+                sessionStorage.setItem("seleccionandoModelos", "1");
 
                 navigate("/docente/banco-modelos", {
                   state: { desdePlantilla: true, juegoId, casillaId },
@@ -351,7 +353,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
                   ) : (
                     <select
                       value={asignaciones[modelo.url] ?? asignaciones[modelo.id] ?? ""}
-                      onChange={(e) => cambiarGrupo(modelo.url, e.target.value)}
+                      onChange={(e) => cambiarGrupo(modelo.url, e.target.value, modelo.id)}
                     >
                       <option value="">Selecciona grupo</option>
                       {grupos.map((g, idx) => (
@@ -409,6 +411,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
             type="button"
             className="btn btn--secondary"
             onClick={() => {
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
               const gruposNorm = normalizarGrupos(grupos);
               const modelosConGrupo = modelosSeleccionados.map((m) => ({
                 ...m,

@@ -18,37 +18,36 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   const [modeloActivo, setModeloActivo] = useState(null);
   const [instrucciones, setInstrucciones] = useState("");
   const [mostrarInstrucciones, setMostrarInstrucciones] = useState(false);
+  const enVistaPrevia =
+    Boolean(vistaPrevia) || sessionStorage.getItem("modoVistaPrevia") === "true";
 
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
+
 
   useEffect(() => {
     window.modeloActivoUrl = modeloActivo;
   }, [modeloActivo]);
 
   useEffect(() => {
-    if (vistaPrevia) {
+    if (enVistaPrevia) {
       const modelos = JSON.parse(sessionStorage.getItem("modelosSeleccionados") || "[]");
-      const grupos = modelos.map((m) => m.grupo).filter((g, i, arr) => arr.indexOf(g) === i);
+      const gruposGuardados = JSON.parse(sessionStorage.getItem("gruposSeleccionados") || "[]");
+      const deducidos = [...new Set(modelos.map(m => m.grupo).filter(Boolean))];
+      const grupos = deducidos.length ? deducidos : gruposGuardados;
       const celebracion = JSON.parse(sessionStorage.getItem("celebracionSeleccionada") || "{}");
-    
+
       setModelos(modelos);
       setGrupos(grupos);
       setCelebracion(celebracion);
       return;
     }
 
-    if (!juegoId || !casillaId) {
-    alert("Error: No se encontró el juego o la casilla.");
-    const paginaAnterior = sessionStorage.getItem("paginaAnterior");
-    if (paginaAnterior) {
-      navigate(paginaAnterior); 
-    } else {
-      navigate("/estudiante/dashboard"); 
-    }
-    return;
-  }
-
+   if (!juegoId || !casillaId) {
+     const back = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
+     navigate(back, { replace: true });
+     return;
+   }
     const cargarConfiguracion = async () => {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
@@ -67,8 +66,12 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     };
 
     cargarConfiguracion();
-  }, [juegoId, casillaId, navigate]);
 
+    return () => {
+      if (enVistaPrevia) sessionStorage.removeItem("modoVistaPrevia");
+    };
+  }, [enVistaPrevia, juegoId, casillaId, navigate]);
+  
   useEffect(() => {
     window.verificarClasificacion = (modeloEl) => {
       console.log("Verificando clasificación de:", modeloEl.getAttribute("data-modelo-url")); 
@@ -146,8 +149,6 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     console.warn("❗ Tipo de celebración no reconocido:", tipo);
   }
 };
-console.log("Instrucciones:", instrucciones);
-
 
   return (
     <div className="actividad-ra-container">
@@ -158,29 +159,41 @@ console.log("Instrucciones:", instrucciones);
         renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
         background="transparent: true"
       >
-        {grupos.map((grupo, index) => (
-          <a-entity key={index}>
-            <a-box
-              categoria={grupo}
-              position={`${(index - (grupos.length - 1) / 2) * 1} -0.6 -3`}
-              depth="0.3" height="0.3" width="0.3"
-              color="#4CAF50"
-              material="opacity: 0.5; transparent: true"
-            ></a-box>
-            <a-text
-              value={grupo}
-              position={`${(index - (grupos.length - 1) / 1.9) * 2.3} -0.60 -8`}
-              align="center"
-              anchor="center"
-              baseline="top"
-              wrap-count="11"
-              width="2.4"
-              scale="1 1 1"
-              color="#ffffff"
-              class="texto-grupo"
-            ></a-text>
-          </a-entity>
-        ))}
+        {grupos.map((grupo, index) => {
+          const x = (index - (grupos.length - 1) / 2) * 1; // igual que la caja
+          const yBox = -0.6;
+          const z = -3;
+
+          return (
+            <a-entity key={index}>
+              <a-box
+                categoria={grupo}
+                position={`${x} ${yBox} ${z}`}
+                depth="0.3" height="0.3" width="0.3"
+                color="#4CAF50"
+                material="opacity: 0.5; transparent: true"
+              ></a-box>
+
+              <a-text
+                value={grupo || ""}
+                position={`${x} ${yBox - 0.25} ${z}`}  // misma x/z; un poco más abajo
+                align="center"
+                anchor="center"
+                wrap-count="14"
+                width="1.8"
+                scale="1 1 1"
+                color="#ffffff"
+                side="double"
+                look-at="[camera]"
+                className="texto-grupo"                 // en React usa className
+                /* Si quieres MSDF local:
+                shader="msdf" font="#robotoFont" fontImage="#robotoFontImg"
+                */
+              ></a-text>
+            </a-entity>
+          );
+        })}
+
 
         {modelos.map((modelo, index) => {
           const columnas = 3;
@@ -227,7 +240,7 @@ console.log("Instrucciones:", instrucciones);
       onTouchStart={() => setMostrarInstrucciones(true)}
       onTouchEnd={() => setMostrarInstrucciones(false)}
     >
-      ℹ️ Instrucciones
+      Instrucciones
     </button>
     {mostrarInstrucciones && (
       <div className="instrucciones-popup">
