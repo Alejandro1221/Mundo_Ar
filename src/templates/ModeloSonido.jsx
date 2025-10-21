@@ -24,6 +24,7 @@ const ModeloSonido = () => {
 
   const LIMITE_MODELOS = 3;
 
+  
   const normalizarModelos = (lista = []) => {
     const out = [];
     const seen = new Set();
@@ -55,6 +56,12 @@ const ModeloSonido = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (modelosSeleccionados.length === 3) {
+      mostrarMensaje("Has alcanzado el máximo de 3 modelos para esta plantilla.", "warning", "center");
+    }
+  }, [modelosSeleccionados.length]);
+
   const cargarConfiguracionExistente = async () => {
   try {
     // Cargar sonido desde sessionStorage si existe
@@ -62,8 +69,9 @@ const ModeloSonido = () => {
     if (rawSonido) {
       try {
         const sonido = JSON.parse(rawSonido);
-        const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido") ||
-                          JSON.parse(sessionStorage.getItem("modeloSeleccionadoParaSonido") || "{}")?.url;
+        const modeloAsociado = 
+        sessionStorage.getItem("modeloAsociadoParaSonido") ||
+        JSON.parse(sessionStorage.getItem("modeloSeleccionadoParaSonido") || "{}")?.url;
         if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
         setSonidoSeleccionado(sonido);
       } catch (err) {
@@ -145,6 +153,7 @@ const ModeloSonido = () => {
       setSonidoSeleccionado(null);
       sessionStorage.removeItem("sonidoSeleccionado");
       sessionStorage.removeItem("modeloAsociadoParaSonido");
+      sessionStorage.removeItem("modeloSeleccionadoParaSonido");
     }
 
     setModelosSeleccionados([...nuevosModelos]);
@@ -200,9 +209,11 @@ const ModeloSonido = () => {
 
   const quitarSonidoAsignado = async () => {
     try {
+      if (audioRef.current) { audioRef.current.pause(); }
       setSonidoSeleccionado(null);
       sessionStorage.removeItem("sonidoSeleccionado");
       sessionStorage.removeItem("modeloAsociadoParaSonido");
+      sessionStorage.removeItem("modeloSeleccionadoParaSonido");
 
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
@@ -279,24 +290,18 @@ return (
                 ? "Has alcanzado el máximo (3/3)"
                 : `Puedes agregar hasta 3 (van ${modelosSeleccionados.length}/3)`
             }
-            aria-describedby="limite-modelos-ayuda"
             onClick={() => {
-              if (modelosSeleccionados.length >= 3) return;
+              if (modelosSeleccionados.length >= 3) {
+                mostrarMensaje("Has alcanzado el máximo de 3 modelos para esta plantilla.", "warning", "center");
+                return;
+              }
               sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              navigate("/docente/banco-modelos", { 
-                state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 } 
-              });
+              navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 } });
             }}
           >
             Agregar modelos
           </button>
         </div>
-
-        {modelosSeleccionados.length >= 3 && (
-          <p id="limite-modelos-ayuda" className="ayuda-limite" aria-live="polite">
-            Has alcanzado el máximo de 3 modelos para esta plantilla. Elimina uno para agregar otro.
-          </p>
-        )}
 
         {modelosSeleccionados.length > 0 ? (
           <div className="modelos-grid">
@@ -339,12 +344,22 @@ return (
 
                     {isAsociado ? (
                       <div className="sonido-asignado">
-                        <p>🔊 {sonidoSeleccionado.nombre}</p>
-                        <audio key={sonidoSeleccionado.url} controls>
-                          <source src={sonidoSeleccionado.url} type="audio/mpeg" />
-                        </audio>
-                        <button className="btn btn--secondary" style={{ marginTop: 8 }} onClick={quitarSonidoAsignado}>
-                          Quitar sonido
+                        <button
+                          type="button"
+                          className="btn-sound-chip"
+                          onClick={manejarReproduccion}
+                          aria-pressed={reproduciendo}
+                          aria-label={`${reproduciendo ? "Pausar" : "Reproducir"} ${sonidoSeleccionado?.nombre || "sonido"}`}
+                          title="Reproducir / Pausar"
+                        >
+                          <span className="icon">🔊</span>
+                          <span className="label">{sonidoSeleccionado?.nombre}</span>
+                          <span className="state">{reproduciendo ? "⏸" : "▶︎"}</span>
+                        </button>
+
+                        {/* Opcional: quita esta línea si no quieres mostrar “Quitar” */}
+                        <button type="button" className="link-remove" onClick={quitarSonidoAsignado}>
+                          Quitar
                         </button>
                       </div>
                     ) : (
