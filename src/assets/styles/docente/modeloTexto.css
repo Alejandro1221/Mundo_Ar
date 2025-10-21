@@ -1,64 +1,61 @@
-/* ===== Contenedor y scroll interno (como Modelo-Sonido) ===== */
-.modelo-texto-container{
-  padding: 30px 20px;
-  background-color: var(--fondo-claro);
-  color: var(--texto-principal);
-  border-radius: var(--borde-suave);
-  box-shadow: var(--sombra-suave);
+.modelo-texto-container {
+  padding: 24px;
   max-width: 1100px;
-  margin: 0 auto;
-  text-align: center;
-
-  min-height: 100vh;
-  height: 100vh;
+  margin: auto;
+  font-family: 'Source Sans Pro', sans-serif;
+  height: 100svh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  scroll-behavior: smooth;
+  width: min(100% - 32px, 960px);
   display: flex;
   flex-direction: column;
-  overflow: hidden;            /* el scroll va al hijo */
-}
-
-.contenido-scrollable{
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 180px;       
-}
-
-/* ===== Migas de pan fijas ===== */
-.topbar-bc{
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--fondo-claro, #fff);
-  border: 1px solid rgba(0,0,0,.06);
-  box-shadow: var(--sombra-suave);
-  border-radius: var(--borde-suave);
-  padding: 8px 12px;
-  margin-bottom: 12px;
 }
 
 /* ===== Titular y leyenda ===== */
-.modelo-texto-container h2{
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin: 12px 0;
-}
-.leyenda-modelo-texto{
-  font-size:1rem;
-  line-height:1.6;
-  color:#555;
-  margin:0 0 12px 0;
-  max-width:800px;
-  text-align:left;
+h2 {
+  margin: 12px 0 6px;
+  text-align: center;
+  font-size: clamp(1.35rem, 0.8vw + 1.1rem, 1.85rem);
+  font-weight: 700;
+  letter-spacing: .2px;
+  text-wrap: balance;
+  margin-top: 15px;
 }
 
-/* ===== Mensajes ===== */
-.mensaje{
-  padding: 12px 18px;
-  border-radius: var(--borde-suave);
-  font-weight: bold;
+.leyenda-modelo-texto {
+  position: relative;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: clamp(1rem, .42vw + .92rem, 1.12rem);
+  line-height: 1.75;
+  color: #2b313b;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -1px 0 rgba(0,0,0,.03),
+    0 8px 20px rgba(17,24,39,.08),
+    0 3px 8px rgba(17,24,39,.06);
+  border: 1px solid color-mix(in srgb, var(--pastel-azul) 25%, transparent);
+  text-wrap: pretty;
+  hyphens: auto;
+  padding: 18px 22px;
   margin-bottom: 20px;
 }
-.mensaje.info{ background-color: var(--pastel-azul); color: var(--texto-blanco); }
-.mensaje.success{ background-color: var(--pastel-verde); color: var(--texto-blanco); }
+/* ===== Mensajes ===== */
+.mensaje {
+  padding: 10px 15px;
+  margin-bottom: 16px;
+  border-radius: var(--borde-suave);
+  font-weight: bold;
+  box-shadow: var(--sombra-suave);
+  background-color: var(--pastel-amarillo);
+  color: var(--texto-principal);
+}
+.mensaje.success { background-color: var(--pastel-verde); }
+.mensaje.error { background-color: var(--pastel-rosa); }
 
 /* ===== Barra: “Modelos seleccionados” + botón ===== */
 .modelos-config__bar{
@@ -70,60 +67,72 @@
 }
 
 /* ===== Grid de modelos (más espacio lateral) ===== */
-.modelos-lista{
+.modelos-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 200px));
-  column-gap: 50px;           /* separación lateral */
-  row-gap: 12px;              /* separación vertical */
-  justify-content: center;
+  column-gap: 48px;  
+  row-gap: 12px;
+  justify-content: center; 
+  justify-items: center;   
   align-items: start;
-  margin-bottom: 20px;
 }
 
-/* ===== Card del modelo (con “línea”) ===== */
-.modelo-item{
-  background: #fff;
+.modelo-card {
+  background: var(--fondo-claro, #fff);
   border: 2px solid var(--pastel-azul);
   border-radius: 12px;
   box-shadow: var(--sombra-suave);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 14px;
   text-align: center;
-  width: 100%;
-  transition: transform .15s ease, box-shadow .2s ease;
-}
-.modelo-item:hover{ transform: translateY(-2px); }
-
-/* Visor del modelo dentro de la card */
-.modelo-item model-viewer{
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
+  padding-bottom: 20px;
+  transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  will-change: transform, box-shadow, border-color;
 }
 
-/* Nombre y textarea */
-.modelo-item p{
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--texto-principal);
-  margin: 10px 0 6px;
+.modelo-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--pastel-azul) 70%, #1e90ff);
+  box-shadow: 0 10px 20px rgba(17,24,39,.10);
 }
-.modelo-item textarea{
+
+.modelo-card model-viewer {
   width: 100%;
-  min-height: 72px;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f9f9f9;
+}
+
+.modelo-card textarea {
+   width: calc(100% - 10px); 
+  height: 32px;
+  resize: none;
+  padding: 4px 6px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 10px;
-  font-size: .95rem;
-  resize: vertical;
-  margin-top: 8px;
-}
-.modelo-item textarea:focus{
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+  font-size: 0.9rem;
+  text-align: center;
+  overflow: hidden;
+  margin-bottom: 15px;
 }
 
-/* ===== Acciones finales (usa tus .btn globales) ===== */
+.modelo-card textarea:focus {
+  border-color: var(--pastel-azul);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  outline: none;
+}
+
+.modelo-card .btn--danger {
+  margin-top: auto;       
+  width: 100%;
+  justify-content: center;
+  min-height: 36px;
+  border-radius: 10px;
+}
 .acciones-plantilla{
   display: flex;
   justify-content: center;

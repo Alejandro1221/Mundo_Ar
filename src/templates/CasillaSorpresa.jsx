@@ -97,7 +97,6 @@ const cargarConfiguracion = async () => {
   return (
     <div className="modelo-texto-container">
         <Breadcrumbs />
-      <div className="contenido-scrollable">
         <h2>Casilla Sorpresa</h2>
         <p className="leyenda-casilla">
           En esta plantilla puedes configurar un texto sorpresa que los estudiantes verán al caer en la casilla. Escribe un mensaje breve y motivador para personalizar la experiencia de juego.
@@ -151,7 +150,6 @@ const cargarConfiguracion = async () => {
           </button>
         </div>
       </div>
-    </div>
   );
 };
 

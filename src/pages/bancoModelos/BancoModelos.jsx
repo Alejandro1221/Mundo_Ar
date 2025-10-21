@@ -107,6 +107,9 @@ const confirmarSeleccion = () => {
   navigate(back, { state: { juegoId, casillaId }, replace: true });
 };
 
+useEffect(() => {
+  return () => sessionStorage.removeItem("seleccionandoModelos");
+}, []);
 
 const manejarEliminacion = async (modelo) => {
   if (window.confirm(`¿Seguro que deseas eliminar "${modelo.nombre}"?`)) {

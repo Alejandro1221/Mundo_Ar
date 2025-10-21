@@ -12,6 +12,7 @@
   display: flex;
   flex-direction: column;
 }
+
 h2{
   margin: 12px 0 6px;
   text-align: center;

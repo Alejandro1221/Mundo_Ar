@@ -5,8 +5,6 @@ import { db } from "../services/firebaseConfig";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import "@google/model-viewer";
 import Breadcrumbs from "../components/Breadcrumbs";
-
-
 import "../assets/styles/docente/modeloTexto.css";
 
 const ModeloTexto = () => {
@@ -23,6 +21,7 @@ const ModeloTexto = () => {
   const modelosKey = `modelosSeleccionados_${juegoId}_${casillaId}`;
   const celebracionKey = `celebracion_${juegoId}_${casillaId}`;
 
+
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
@@ -34,10 +33,9 @@ const ModeloTexto = () => {
     }
   }, [juegoId, casillaId]);
 
-  // Cargar configuración de modelos
+
 const cargarConfiguracion = async () => {
   try {
-    // Primero intenta cargar desde sessionStorage
     const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
     const modelosGuardados = sessionStorage.getItem(key);
     const celebracionGuardada = sessionStorage.getItem("celebracionSeleccionada");
@@ -56,7 +54,6 @@ const cargarConfiguracion = async () => {
       return;
     }
 
-    // Si no, cargar desde Firestore
     if (cargadoDesdeSession.current) return;
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
@@ -72,7 +69,7 @@ const cargarConfiguracion = async () => {
         }));
 
         setModelosSeleccionados(modelosConTexto);
-        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); // ⬅️ NUEVO (cachear modelos)
+        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); 
       }
 
       if (casilla?.configuracion?.celebracion) { 
@@ -153,138 +150,127 @@ const cargarConfiguracion = async () => {
   );
 };
 
-  return (
-    <div className="modelo-texto-container">
-      <div className="topbar-bc"><Breadcrumbs /></div>
+return (
+  <div className="modelo-texto-container">
+    <Breadcrumbs/>
+    <h2>Modelo con Texto</h2>
+    <p className="leyenda-modelo-texto">
+      En esta plantilla puedes seleccionar modelos 3D y escribir un concepto breve para cada uno.
+      Sirve para reforzar ideas clave asociadas a cada modelo y evaluar la comprensión.
+    </p>
 
-      <div className="contenido-scrollable">
-        <h2>Modelo con Texto</h2>
-        <p className="leyenda-modelo-texto">
-          En esta plantilla puedes seleccionar modelos 3D y escribir un concepto breve para cada uno.
-          Sirve para reforzar ideas clave asociadas a cada modelo y evaluar la comprensión.
-        </p>
+    {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
-        {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
-        <div className="modelos-config__bar">
-          <h3>Modelos seleccionados</h3>
-          <button
-            className="btn btn--secondary"
-            onClick={() => {
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-              navigate("/docente/banco-modelos", {
-                state: { desdePlantilla: true, juegoId, casillaId },
-              });
-            }}
-          >
-            Agregar modelos
-          </button>
-        </div>
-        <div className="modelos-lista">
-          {modelosSeleccionados.length > 0 ? (
-            modelosSeleccionados.map((modelo) => (
-              <div key={modelo.id} className="modelo-item">
-                <model-viewer
-                  src={modelo.url}
-                  alt={modelo.nombre}
-                  camera-controls
-                  auto-rotate
-                  shadow-intensity="1"
-                ></model-viewer>
-
-                <p>{modelo.nombre}</p>
-                <textarea
-                  placeholder="Escribe aquí el concepto del modelo"
-                  value={modelo.texto || ""}
-                  onChange={(e) => asignarTexto(modelo.url, e.target.value)}
-                ></textarea>
-                <button
-                  className="btn btn--danger btn--sm"
-                  onClick={() => {
-                    if (confirm("¿Estás seguro de eliminar este modelo?")) {
-                      eliminarModelo(modelo.id);
-                    }
-                  }}
-                >
-                  🗑️ Eliminar
-                </button>
-                              </div>
-            ))
-
-          ) : (
-            <p>No hay modelos seleccionados.</p>
-          )}
-        </div>
-
-        <section className="seccion-celebracion" style={{ marginTop: 16 }}>
-          <h3>Celebración</h3>
-          <select
-            value={celebracion.tipo}
-            onChange={(e) =>
-              setCelebracion({ tipo: e.target.value, opciones: {} })
-            }
-          >
-            <option value="confeti">🎉 Confeti</option>
-            <option value="gif">🎥 GIF animado</option>
-            <option value="mensaje">✅ Mensaje</option>
-          </select>
-
-          {celebracion.tipo === "gif" && (
-            <input
-              type="text"
-              placeholder="URL del GIF"
-              value={celebracion.opciones.gifUrl || ""}
-              onChange={(e) =>
-                setCelebracion({
-                  ...celebracion,
-                  opciones: { gifUrl: e.target.value },
-                })
-              }
-              style={{ marginTop: 8, width: "100%" }}
-            />
-          )}
-
-          {celebracion.tipo === "mensaje" && (
-              <textarea
-                placeholder="Mensaje personalizado"
-                rows={3}
-                style={{ width: "100%", resize: "vertical", marginTop: 8 }}
-                value={celebracion.opciones.mensaje || ""}
-                onChange={(e) =>
-                  setCelebracion({
-                    ...celebracion,
-                    opciones: { mensaje: e.target.value },
-                  })
-                }
-              />
-            )}
-        </section>
-
-        <div className="acciones-plantilla">
-         <button
-            className="btn btn--secondary"
-            onClick={() => {
-              const modelosConTexto = modelosSeleccionados.map((m) => ({
-                ...m,
-                texto: m.texto || "",
-              }));
-              sessionStorage.setItem("modoVistaPrevia", "true");
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
-              sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-              navigate("/estudiante/vista-previa-modelo-texto");
-            }}
-          >
-            Vista previa como estudiante
-          </button>
-
-          <button className="btn btn--primary" onClick={guardarConfiguracion}>
-            Guardar configuración
-          </button>
-        </div>
-      </div>
+    <div className="modelos-config__bar">
+      <h3>Modelos seleccionados</h3>
+      <button
+        className="btn btn--secondary"
+        onClick={() => {
+          sessionStorage.setItem("paginaAnterior", window.location.pathname);
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          navigate("/docente/banco-modelos", {
+            state: { desdePlantilla: true, juegoId, casillaId },
+          });
+        }}
+      >
+        Agregar modelos
+      </button>
     </div>
-  );
-};
 
-export default ModeloTexto;
+    <div className="modelos-grid">
+      {modelosSeleccionados.length > 0 ? (
+        modelosSeleccionados.map((modelo) => (
+          <div key={modelo.id} className="modelo-card">
+            <div className="modelo-preview">
+              <model-viewer
+                src={modelo.url}
+                alt={modelo.nombre}
+                camera-controls
+                auto-rotate
+                shadow-intensity="1"
+                style={{ width: "100%", height: "180px" }}
+              ></model-viewer>
+            </div>
+
+            <div className="modelo-detalles">
+              <h4>{modelo.nombre}</h4>
+              <textarea
+                placeholder="Escribe aquí el concepto del modelo"
+                value={modelo.texto || ""}
+                onChange={(e) => asignarTexto(modelo.url, e.target.value)}
+              />
+              <button
+                className="btn btn--danger"
+                onClick={() => eliminarModelo(modelo.id)}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>No hay modelos seleccionados.</p>
+      )}
+    </div>
+
+    <section className="seccion-celebracion" style={{ marginTop: 16 }}>
+      <h3>Celebración</h3>
+      <select
+        value={celebracion.tipo}
+        onChange={(e) => setCelebracion({ tipo: e.target.value, opciones: {} })}
+      >
+        <option value="confeti">🎉 Confeti</option>
+        <option value="gif">🎥 GIF animado</option>
+        <option value="mensaje">✅ Mensaje</option>
+      </select>
+
+      {celebracion.tipo === "gif" && (
+        <input
+          type="text"
+          placeholder="URL del GIF"
+          value={celebracion.opciones.gifUrl || ""}
+          onChange={(e) =>
+            setCelebracion({ ...celebracion, opciones: { gifUrl: e.target.value } })
+          }
+          style={{ marginTop: 8, width: "100%" }}
+        />
+      )}
+
+      {celebracion.tipo === "mensaje" && (
+        <textarea
+          placeholder="Mensaje personalizado"
+          rows={3}
+          style={{ width: "100%", resize: "vertical", marginTop: 8 }}
+          value={celebracion.opciones.mensaje || ""}
+          onChange={(e) =>
+            setCelebracion({ ...celebracion, opciones: { mensaje: e.target.value } })
+          }
+        />
+      )}
+    </section>
+
+    <div className="acciones-plantilla">
+      <button
+        className="btn btn--secondary"
+        onClick={() => {
+          const modelosConTexto = modelosSeleccionados.map((m) => ({
+            ...m,
+            texto: m.texto || "",
+          }));
+          sessionStorage.setItem("modoVistaPrevia", "true");
+          sessionStorage.setItem("paginaAnterior", window.location.pathname);
+          sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
+          sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+          navigate("/estudiante/vista-previa-modelo-texto");
+        }}
+      >
+        Vista previa como estudiante
+      </button>
+
+      <button className="btn btn--primary" onClick={guardarConfiguracion}>
+        Guardar configuración
+      </button>
+    </div>
+  </div>
+);
+};export default ModeloTexto;
