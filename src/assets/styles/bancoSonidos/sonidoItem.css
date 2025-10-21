@@ -44,8 +44,71 @@
   outline: none;
   margin-top: 4px;
 }
-.sonido-card .btn{
-  width: 70%;
-  justify-content: center;
-  margin-top: 6px;             
+.sonido-card > .btn.btn--select{
+   width: 100%;
+   justify-content: center;
+   margin-top: 10px;
 }
+.row-actions{ 
+  display:flex; 
+  gap:8px; 
+  margin-top:10px; 
+}
+
+.form-row{ 
+  display:flex; 
+  flex-direction:column; 
+  gap:6px; margin:8px 0; 
+  text-align:left; 
+}
+.input{ 
+  padding:8px 10px; 
+  border:1px solid #ddd;
+  Border-radius:8px; 
+  outline: none;
+  }
+
+  .input:focus{
+  border-color: var(--pastel-azul, #7cc4d9);
+  box-shadow: 0 0 0 3px rgba(124,196,217,.25);
+}
+
+.file{ 
+  padding:6px 0; 
+}
+
+.sonido-card-header .sonido-nombre{ word-break: break-word; }
+
+
+.row-actions{
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.btn-icon{
+  inline-size: 32px;   /* antes 40px */
+  block-size: 32px;    /* antes 36px */
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e0e6ed;
+  border-radius: 8px;   /* un poco más compacto */
+  background: #fff;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .05s;
+  font-size: 14px;      /* icono/emoji más pequeño */
+  line-height: 1;       /* evita que se descentre */
+}
+.btn-icon:hover{ background:#f6f6f6; }
+.btn-icon:active{ transform: translateY(1px); }
+
+.btn-icon--danger{
+  background:#ffe8e8;
+  border-color:#f0b3b3;
+}
+.btn-icon--danger:hover{ background:#ffdcdc; }

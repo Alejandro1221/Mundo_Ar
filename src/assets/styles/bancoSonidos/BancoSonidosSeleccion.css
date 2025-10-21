@@ -1,71 +1,76 @@
-.banco-sonidos {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: var(--fondo-claro);
-  border-radius: var(--borde-suave);
-  box-shadow: var(--sombra-suave);
-  text-align: center;
-  font-family: 'Segoe UI', sans-serif;
+.banco-sonidos-seleccion{
+  --frame-w: 1200px;
+  width: min(100% - 32px, var(--frame-w));
+  max-width: var(--frame-w);
+  margin: 0 auto;
+  padding: 16px;
+
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+/* Título */
+.banco-sonidos-seleccion > h2{
+  margin: 8px 0 16px;
 }
 
-/* Lista de sonidos */
-.lista-sonidos {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin-top: 20px;
-  max-height: 350px;
-  overflow-y: auto;
-  padding-right: 8px;
-}
+.lista-sonidos-seleccion{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
 
-/* Sonido individual */
-.sonido-item {
+  justify-content: center;      
+  max-width: var(--frame-w);
+  margin: 0 auto;
+}
+/* Tarjeta de sonido */
+.sonido-item{
   background-color: #ffffff;
   padding: 16px;
-  border-radius: var(--borde-suave);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  border-radius: var(--borde-suave, 10px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  align-items: stretch;
+  transition: transform .2s ease, box-shadow .3s ease;
 }
 
-.sonido-item:hover {
-  transform: scale(1.02);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+.sonido-item:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
 }
 
-/* Texto del nombre */
-.sonido-item p {
+.sonido-item p{
   font-size: 1rem;
   font-weight: 600;
-  color: var(--texto-principal);
+  color: var(--texto-principal, #111827);
   margin-bottom: 8px;
+  text-align: left;
 }
 
-/* Reproductor */
-.sonido-item audio {
+.sonido-item audio{
   width: 100%;
-  max-width: 280px;
   margin-bottom: 10px;
 }
 
-/* Botón seleccionar */
-.sonido-item button {
-  background-color: var(--pastel-indigo);
-  color: var(--texto-blanco);
+.sonido-item button{
+  background-color: var(--pastel-indigo, #7c7ae6);
+  color: var(--texto-blanco, #fff);
   border: none;
   padding: 10px 18px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  border-radius: var(--borde-suave);
+  font-size: .95rem;
+  font-weight: 700;
+  border-radius: var(--borde-suave, 10px);
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: background-color .2s, transform .15s;
 }
 
-.sonido-item button:hover {
+.sonido-item button:hover{
   background-color: #6b63d9;
-  transform: scale(1.05);
+  transform: translateY(-1px);
+}
+
+.toolbar-seleccion{
+  display:flex; justify-content:flex-end; margin-bottom:12px;
 }

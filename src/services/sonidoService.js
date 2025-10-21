@@ -1,5 +1,5 @@
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"; 
-import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { app } from "./firebaseConfig";
 
 
@@ -78,7 +78,7 @@ export const eliminarSonido = async (id, url) => {
   
   try {
     // Eliminar de Firebase Storage
-    const sonidoRef = ref(storage, url);
+    const sonidoRef = ref(storage, url) 
     await deleteObject(sonidoRef);
 
     // Eliminar de Firestore
@@ -92,4 +92,52 @@ export const eliminarCategoria = async (nombre) => {
   const snapshot = await getDocs(query(collection(db, "categoriasSonidos"), where("nombre", "==", nombre.trim().toLowerCase())));
   if (snapshot.empty) throw new Error("Categoría no encontrada.");
   await deleteDoc(snapshot.docs[0].ref);
+};
+
+
+export const reemplazarArchivoSonido = async (id, file, oldUrl) => {
+  if (!id || !file) throw new Error("ID y archivo son obligatorios.");
+
+  const ext = file.name.split(".").pop().toLowerCase();
+  if (ext !== "mp3") throw new Error("Solo se permiten archivos .mp3");
+
+  // Subir nuevo archivo
+  const nuevoRef = ref(storage, `sonidos/${Date.now()}_${file.name}`);
+  const uploadTask = uploadBytesResumable(nuevoRef, file);
+
+  const url = await new Promise((resolve, reject) => {
+    uploadTask.on("state_changed",
+      () => {},
+      (err) => reject(err),
+      async () => {
+        const nuevaUrl = await getDownloadURL(uploadTask.snapshot.ref);
+        resolve(nuevaUrl);
+      }
+    );
+  });
+
+  // Actualizar Firestore con la nueva URL
+  await updateDoc(doc(db, "sonidos", id), { url });
+
+ 
+  if (oldUrl) {
+    try {
+      const oldRef = ref(storage, oldUrl);
+      await deleteObject(oldRef);
+    } catch (e) {
+      console.warn("No se pudo borrar el archivo anterior:", e?.message || e);
+    }
+  }
+
+  return { id, url };
+};
+
+
+export const actualizarSonido = async (id, data) => {
+  if (!id || !data || typeof data !== "object") {
+    throw new Error("Parámetros inválidos para actualizar el sonido.");
+  }
+  const docRef = doc(db, "sonidos", id);
+  await updateDoc(docRef, data);
+  return { id, ...data };
 };

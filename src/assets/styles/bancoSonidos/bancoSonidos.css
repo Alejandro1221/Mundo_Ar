@@ -15,6 +15,23 @@
   padding-top: 0;
 }
 
+.banco-sonidos--seleccion{
+  --frame-w: 1200px;                     
+  max-width: var(--frame-w);
+  width: min(100%, var(--frame-w));
+  margin: 20px auto;
+  padding: 24px;
+  height: auto;
+  overflow: visible;
+  padding-top: 0;
+
+}
+
+.banco-sonidos .sonidos-scroll{
+  padding-top: 20px;
+  /* más espacio por si aparece el paginador fijo */
+  padding-bottom: calc(12px + var(--pag-h, 48px) + 12px);
+}
 .titulo-pagina{
   width: min(100% - 32px, var(--frame-w, 960px));
   margin: 12px auto 12px;
@@ -217,12 +234,7 @@ body.modal-open{
 @media (max-width: 640px){
   .filtros-sonidos{ grid-template-columns: 1fr; }
 }
-@media (min-width: 680px){
-  .lista-sonidos{ grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 1024px){
-  .lista-sonidos{ grid-template-columns: repeat(3, 1fr); }
-}
+
 @media (min-width: 1400px){
   .lista-sonidos{ grid-template-columns: repeat(4, 1fr); }
 }
