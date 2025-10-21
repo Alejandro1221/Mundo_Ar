@@ -6,7 +6,6 @@ import { db } from "../services/firebaseConfig";
 import "@google/model-viewer";
 import imagenSonido from "../assets/images/imag_sonido.png";
 import Breadcrumbs from "../components/Breadcrumbs";
-import {normalizarSonido,normalizarModelos,sanitizarSonido,getIdx, asegurarCasillas} from "../utils/normalizarSonido";
 
 import "../assets/styles/docente/modeloSonido.css";
 
@@ -20,7 +19,23 @@ const ModeloSonido = () => {
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "", pos: "inline" });
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const [reproduciendo, setReproduciendo] = useState(false);
+
   const audioRef = useRef(null);
+
+  const LIMITE_MODELOS = 3;
+
+  const normalizarModelos = (lista = []) => {
+    const out = [];
+    const seen = new Set();
+    for (const m of Array.isArray(lista) ? lista : []) {
+      const key = m?.url || m?.id;
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(m);
+      if (out.length === LIMITE_MODELOS) break;
+    }
+    return out;
+  };
 
   useEffect(() => {
     if (!juegoId || !casillaId) {
@@ -40,171 +55,91 @@ const ModeloSonido = () => {
     };
   }, []);
 
-  useEffect(() => {
-    audioRef.current?.load();   
-  }, [sonidoSeleccionado?.url]);
-
-  useEffect(() => {
-  const rehidratarSonidoDesdeSession = () => {
-    const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
-    if (!rawSonido) return;
-
-    try {
-      const sonido = JSON.parse(rawSonido);
-      const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
-      if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
-
-      setSonidoSeleccionado(normalizarSonido(sonido));
-      sessionStorage.removeItem("sonidoSeleccionado");
-      sessionStorage.removeItem("modeloAsociadoParaSonido");
-    } catch (e) {
-      console.warn("⚠️ No se pudo rehidratar el sonido al volver:", e);
-    }
-  };
-
-  window.addEventListener("focus", rehidratarSonidoDesdeSession);
-  window.addEventListener("popstate", rehidratarSonidoDesdeSession);
-
-  rehidratarSonidoDesdeSession();
-
-  return () => {
-    window.removeEventListener("focus", rehidratarSonidoDesdeSession);
-    window.removeEventListener("popstate", rehidratarSonidoDesdeSession);
-  };
-}, []);
-
   const cargarConfiguracionExistente = async () => {
-    try {
-      // 1) Sonido desde sessionStorage
-      const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
-      if (rawSonido) {
-        try {
-          const sonido = JSON.parse(rawSonido);
-          const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
-          if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
-          setSonidoSeleccionado(normalizarSonido(sonido));
-          sessionStorage.removeItem("sonidoSeleccionado");
-          sessionStorage.removeItem("modeloAsociadoParaSonido");
-          const modelos = leerModelosDesdeSession(juegoId, casillaId);
-          if (modelos && modelos.length) {
-            setModelosSeleccionados(normalizarModelos(modelos));
-}
-        } catch (err) {
-          console.error("Error al parsear `sonidoSeleccionado`:", err);
-        }
-      }
-
-      // 2) Modelos desde sessionStorage
-      const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-      const rawModelos = sessionStorage.getItem(key);
-      if (rawModelos) {
-        try {
-          const modelos = JSON.parse(rawModelos);
-          const modelosOk = normalizarModelos(modelos);
-          if (modelosOk.length) {
-            setModelosSeleccionados(modelosOk);
-            sessionStorage.removeItem(key);
-          }
-        } catch (err) {
-          console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
-        }
-      }
-
-      // 3) Firestore
-      const juegoRef = doc(db, "juegos", juegoId);
-      const juegoSnap = await getDoc(juegoRef);
-      if (juegoSnap.exists()) {
-        const data = juegoSnap.data();
-        const idx = getIdx(casillaId);
-        const casillas = asegurarCasillas(data.casillas, idx);
-        const casilla = idx !== null ? casillas[idx] : undefined;
-        const cfg = casilla?.configuracion || null;
-        if (cfg) {
-          setModelosSeleccionados(normalizarModelos(cfg.modelos || []));
-          setSonidoSeleccionado(normalizarSonido(cfg.sonido));
-          setCelebracion(cfg.celebracion || { tipo: "confeti", opciones: {} });
-        }
-      }
-    } catch (error) {
-      console.error("❌ Error al cargar configuración:", error);
-    }
-  };
-
-  const leerModelosDesdeSession = (juegoId, casillaId) => {
-    const keyConSufijo = `modelosSeleccionados_${juegoId}_${casillaId}`;
-    const candidates = [keyConSufijo, "modelosSeleccionados"]; 
-
-    for (const k of candidates) {
-      const raw = sessionStorage.getItem(k);
-      if (!raw) continue;
-      try {
-        const parsed = JSON.parse(raw);
-        const lista = Array.isArray(parsed) ? parsed : [];
-        sessionStorage.removeItem(k);
-        return lista;
-      } catch {
-        // ignora y prueba siguiente
-      }
-    }
-    return null;
-  }
-
-   const rehidratarSonidoDesdeSession = () => {
+  try {
+    // Cargar sonido desde sessionStorage si existe
     const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
-    if (!rawSonido) return;
-
-    try {
-      const sonido = JSON.parse(rawSonido);
-      const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
-      if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
-
-      setSonidoSeleccionado(normalizarSonido(sonido));
-      sessionStorage.removeItem("sonidoSeleccionado");
-      sessionStorage.removeItem("modeloAsociadoParaSonido");
-    } catch (e) {
-      console.warn("⚠️ No se pudo rehidratar el sonido al volver:", e);
+    if (rawSonido) {
+      try {
+        const sonido = JSON.parse(rawSonido);
+        const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido") ||
+                          JSON.parse(sessionStorage.getItem("modeloSeleccionadoParaSonido") || "{}")?.url;
+        if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
+        setSonidoSeleccionado(sonido);
+      } catch (err) {
+        console.error("Error al parsear `sonidoSeleccionado`:", err);
+      }
     }
 
-   const modelos = leerModelosDesdeSession(juegoId, casillaId);
-   if (modelos) setModelosSeleccionados(normalizarModelos(modelos));
-  };
+    const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+    const rawModelos = sessionStorage.getItem(key);
+    if (rawModelos) {
+      try {
+        const modelos = JSON.parse(rawModelos);
+        const modelosOk = normalizarModelos(modelos);
+        if (modelosOk.length) {
+          setModelosSeleccionados(modelosOk);
+          return; // ya quedó cargado desde session
+        }
+      } catch (err) {
+        console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
+      }
+    }
+
+    // Si no se cargó desde sessionStorage, ir a Firestore
+    const juegoRef = doc(db, "juegos", juegoId);
+    const juegoSnap = await getDoc(juegoRef);
+    if (juegoSnap.exists()) {
+      const idx = Number(casillaId);
+      const casilla = Number.isInteger(idx)
+        ? juegoSnap.data().casillas?.[idx]
+        : juegoSnap.data().casillas?.[casillaId];
+      if (casilla?.configuracion) {
+        const modelosOk = normalizarModelos(casilla.configuracion.modelos || []);
+        setModelosSeleccionados(modelosOk);
+        setSonidoSeleccionado(casilla.configuracion.sonido || null);
+        setCelebracion(casilla.configuracion.celebracion || { tipo: "confeti", opciones: {} });
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar configuración:", error);
+  }
+};
+
 
   const sincronizarModelos = async () => {
-    const sonidoOk = sanitizarSonido(sonidoSeleccionado);
-    if (!sonidoOk?.url) {
-      mostrarMensaje("⚠️ Debes asignar un sonido antes de guardar.", "error");
+    if (!sonidoSeleccionado.modeloAsociado) {
+      mostrarMensaje("⚠️ El sonido no tiene modelo asociado.", "error");
       return;
     }
 
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
+
       if (juegoSnap.exists()) {
-        const data = juegoSnap.data();
-        const idx = getIdx(casillaId);
-        if (idx === null) throw new Error("casillaId inválido");
-      const casillasActuales = asegurarCasillas(data.casillas, idx);
-      casillasActuales[idx] = {
-        plantilla: "modelo-sonido",
-        configuracion: {
-          modelos: normalizarModelos(modelosSeleccionados),
-          sonido: sonidoOk || null,
-          celebracion,
-        },
-      };
-      await updateDoc(juegoRef, { casillas: casillasActuales });
-      mostrarMensaje("✅ Plantilla guardada correctamente.", "success", "center");
-    }
-  } catch (error) {
-    console.error("❌ Error al guardar en Firestore:", error);
-    mostrarMensaje("❌ Error al guardar la plantilla.", "error");
+        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+
+        casillasActuales[casillaId] = {
+          plantilla: "modelo-sonido",
+          configuracion: {
+            modelos: modelosSeleccionados,
+            sonido: sonidoSeleccionado,
+            celebracion: celebracion,
+          },
+        };
+
+        await updateDoc(juegoRef, { casillas: casillasActuales });
+        mostrarMensaje("✅ Plantilla guardada correctamente.", "success", "center");
+      }
+    } catch (error) {
+      console.error("❌ Error al guardar en Firestore:", error);
+      mostrarMensaje("❌ Error al guardar la plantilla.", "error");
     }
   };
 
   const eliminarModelo = async (urlModelo) => {
-    const estabaAsociado = sonidoSeleccionado?.modeloAsociado === urlModelo;
-    const nuevoSonido = estabaAsociado ? null : sanitizarSonido(sonidoSeleccionado);
-    const nuevosModelos = modelosSeleccionados.filter(m => m.url !== urlModelo);
+    const nuevosModelos = modelosSeleccionados.filter((modelo) => modelo.url !== urlModelo);
 
     if (sonidoSeleccionado?.modeloAsociado === urlModelo) {
       setSonidoSeleccionado(null);
@@ -217,19 +152,19 @@ const ModeloSonido = () => {
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
+
       if (juegoSnap.exists()) {
-        const data = juegoSnap.data();
-        const idx = getIdx(casillaId);
-        if (idx === null) throw new Error("casillaId inválido");
-        const casillasActuales = asegurarCasillas(data.casillas, idx);
-        casillasActuales[idx] = {
+        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+
+        casillasActuales[casillaId] = {
           plantilla: "modelo-sonido",
           configuracion: {
-            modelos: normalizarModelos(nuevosModelos),
-            sonido: nuevoSonido,
-            celebracion,
+            modelos: nuevosModelos,
+            sonido: sonidoSeleccionado,
+            celebracion: celebracion,
           },
         };
+
         await updateDoc(juegoRef, { casillas: casillasActuales });
       }
     } catch (error) {
@@ -237,13 +172,10 @@ const ModeloSonido = () => {
     }
   };
 
-  const timeoutRef = useRef(null);
   const mostrarMensaje = (texto, tipo = "info", pos = "inline") => {
     setMensaje({ texto, tipo, pos });
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = setTimeout(() => setMensaje({ texto: "", tipo: "", pos: "inline" }), 3000);
+    setTimeout(() => setMensaje({ texto: "", tipo: "", pos: "inline" }), 3000);
   };
-  useEffect(() => () => timeoutRef.current && clearTimeout(timeoutRef.current), []);
 
   const manejarReproduccion = () => {
     if (!sonidoSeleccionado?.url) {
@@ -275,11 +207,9 @@ const ModeloSonido = () => {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
       if (juegoSnap.exists()) {
-        const data = juegoSnap.data();
-        const idx = getIdx(casillaId);
-        const casillasActuales = asegurarCasillas(data.casillas, idx);
-        const cfg = casillasActuales[idx]?.configuracion || {};
-        casillasActuales[idx] = {
+        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
+        const cfg = casillasActuales[casillaId]?.configuracion || {};
+        casillasActuales[casillaId] = {
           plantilla: "modelo-sonido",
           configuracion: {
             ...cfg,
@@ -287,6 +217,10 @@ const ModeloSonido = () => {
           },
         };
         await updateDoc(juegoRef, { casillas: casillasActuales });
+        // Limpia sessionStorage solo cuando ya se guardó
+        sessionStorage.removeItem("sonidoSeleccionado");
+        sessionStorage.removeItem("modeloAsociadoParaSonido");
+        sessionStorage.removeItem("modeloSeleccionadoParaSonido");
       }
       mostrarMensaje("Sonido eliminado.", "success");
     } catch (e) {
@@ -320,12 +254,7 @@ return (
             onClick={manejarReproduccion}
           />
           {sonidoSeleccionado?.url && (
-            <audio
-              ref={audioRef}
-              src={sonidoSeleccionado.url}
-              preload="auto"
-              style={{ display: "none" }}
-            />
+            <audio ref={audioRef} src={sonidoSeleccionado.url} preload="auto" style={{ display: "none" }} />
           )}
         </div>
         <p className="leyenda-modelo-sonido">
@@ -375,25 +304,15 @@ return (
               const isAsociado = sonidoSeleccionado?.modeloAsociado === modelo.url;
               return (
                 <div key={modelo.id || modelo.url} className="modelo-card">
-                  <div
-                    className="modelo-preview"
-                    onClick={isAsociado && sonidoSeleccionado?.url ? manejarReproduccion : undefined}
-                    style={{ cursor: isAsociado && sonidoSeleccionado?.url ? "pointer" : "default" }}
-                  >
-                    {modelo.url ? (
-                      <model-viewer
-                        key={modelo.url}
-                        src={modelo.url}
-                        alt={modelo.nombre}
-                        camera-controls
-                        auto-rotate
-                        shadow-intensity="1"
-                        style={{ width: "100%", height: "180px" }}
-                      />
-                    ) : (
-                  <div style={{ width: "100%", height: 180, background: "#f3f6ff", borderRadius: 8 }} />
-                )}
-              </div>
+                  <div className="modelo-preview">
+                    <model-viewer
+                      src={modelo.url}
+                      alt={modelo.nombre}
+                      camera-controls
+                      auto-rotate
+                      shadow-intensity="1"
+                    />
+                  </div>
 
                   <div className="modelo-detalles">
                     <h4>{modelo.nombre}</h4>
