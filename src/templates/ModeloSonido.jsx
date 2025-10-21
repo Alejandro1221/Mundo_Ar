@@ -6,6 +6,7 @@ import { db } from "../services/firebaseConfig";
 import "@google/model-viewer";
 import imagenSonido from "../assets/images/imag_sonido.png";
 import Breadcrumbs from "../components/Breadcrumbs";
+import {normalizarSonido,normalizarModelos,sanitizarSonido,getIdx, asegurarCasillas} from "../utils/normalizarSonido";
 
 import "../assets/styles/docente/modeloSonido.css";
 
@@ -15,12 +16,10 @@ const ModeloSonido = () => {
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
-
   const [sonidoSeleccionado, setSonidoSeleccionado] = useState(null);
-  const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
+  const [mensaje, setMensaje] = useState({ texto: "", tipo: "", pos: "inline" });
   const [celebracion, setCelebracion] = useState({ tipo: "confeti", opciones: {} });
   const [reproduciendo, setReproduciendo] = useState(false);
-
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -41,58 +40,138 @@ const ModeloSonido = () => {
     };
   }, []);
 
-  const cargarConfiguracionExistente = async () => {
-  try {
-    // Cargar sonido desde sessionStorage si existe
+  useEffect(() => {
+    audioRef.current?.load();   
+  }, [sonidoSeleccionado?.url]);
+
+  useEffect(() => {
+  const rehidratarSonidoDesdeSession = () => {
     const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
-    if (rawSonido) {
-      try {
-        const sonido = JSON.parse(rawSonido);
-        const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
-        if (modeloAsociado) {
-          sonido.modeloAsociado = modeloAsociado;
+    if (!rawSonido) return;
+
+    try {
+      const sonido = JSON.parse(rawSonido);
+      const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
+      if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
+
+      setSonidoSeleccionado(normalizarSonido(sonido));
+      sessionStorage.removeItem("sonidoSeleccionado");
+      sessionStorage.removeItem("modeloAsociadoParaSonido");
+    } catch (e) {
+      console.warn("⚠️ No se pudo rehidratar el sonido al volver:", e);
+    }
+  };
+
+  window.addEventListener("focus", rehidratarSonidoDesdeSession);
+  window.addEventListener("popstate", rehidratarSonidoDesdeSession);
+
+  rehidratarSonidoDesdeSession();
+
+  return () => {
+    window.removeEventListener("focus", rehidratarSonidoDesdeSession);
+    window.removeEventListener("popstate", rehidratarSonidoDesdeSession);
+  };
+}, []);
+
+  const cargarConfiguracionExistente = async () => {
+    try {
+      // 1) Sonido desde sessionStorage
+      const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
+      if (rawSonido) {
+        try {
+          const sonido = JSON.parse(rawSonido);
+          const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
+          if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
+          setSonidoSeleccionado(normalizarSonido(sonido));
+          sessionStorage.removeItem("sonidoSeleccionado");
+          sessionStorage.removeItem("modeloAsociadoParaSonido");
+          const modelos = leerModelosDesdeSession(juegoId, casillaId);
+          if (modelos && modelos.length) {
+            setModelosSeleccionados(normalizarModelos(modelos));
+}
+        } catch (err) {
+          console.error("Error al parsear `sonidoSeleccionado`:", err);
         }
-        setSonidoSeleccionado(sonido);
-      } catch (err) {
-        console.error("Error al parsear `sonidoSeleccionado`:", err);
       }
-    }
 
-    const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
-    const rawModelos = sessionStorage.getItem(key);
-    if (rawModelos) {
-      try {
-        const modelos = JSON.parse(rawModelos);
-        if (Array.isArray(modelos)) {
-      
-          setModelosSeleccionados(modelos);
-          return; 
+      // 2) Modelos desde sessionStorage
+      const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
+      const rawModelos = sessionStorage.getItem(key);
+      if (rawModelos) {
+        try {
+          const modelos = JSON.parse(rawModelos);
+          const modelosOk = normalizarModelos(modelos);
+          if (modelosOk.length) {
+            setModelosSeleccionados(modelosOk);
+            sessionStorage.removeItem(key);
+          }
+        } catch (err) {
+          console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
         }
-      } catch (err) {
-        console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
+      }
+
+      // 3) Firestore
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+      if (juegoSnap.exists()) {
+        const data = juegoSnap.data();
+        const idx = getIdx(casillaId);
+        const casillas = asegurarCasillas(data.casillas, idx);
+        const casilla = idx !== null ? casillas[idx] : undefined;
+        const cfg = casilla?.configuracion || null;
+        if (cfg) {
+          setModelosSeleccionados(normalizarModelos(cfg.modelos || []));
+          setSonidoSeleccionado(normalizarSonido(cfg.sonido));
+          setCelebracion(cfg.celebracion || { tipo: "confeti", opciones: {} });
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error al cargar configuración:", error);
+    }
+  };
+
+  const leerModelosDesdeSession = (juegoId, casillaId) => {
+    const keyConSufijo = `modelosSeleccionados_${juegoId}_${casillaId}`;
+    const candidates = [keyConSufijo, "modelosSeleccionados"]; 
+
+    for (const k of candidates) {
+      const raw = sessionStorage.getItem(k);
+      if (!raw) continue;
+      try {
+        const parsed = JSON.parse(raw);
+        const lista = Array.isArray(parsed) ? parsed : [];
+        sessionStorage.removeItem(k);
+        return lista;
+      } catch {
+        // ignora y prueba siguiente
       }
     }
-
-    // Si no se cargó desde sessionStorage, ir a Firestore
-    const juegoRef = doc(db, "juegos", juegoId);
-    const juegoSnap = await getDoc(juegoRef);
-
-    if (juegoSnap.exists()) {
-      const casilla = juegoSnap.data().casillas[casillaId];
-      if (casilla?.configuracion) {
-        setModelosSeleccionados(casilla.configuracion.modelos || []);
-        setSonidoSeleccionado(casilla.configuracion.sonido || null);
-        setCelebracion(casilla.configuracion.celebracion || { tipo: "confeti", opciones: {} });
-      }
-    }
-  } catch (error) {
-    console.error("❌ Error al cargar configuración:", error);
+    return null;
   }
-};
 
+   const rehidratarSonidoDesdeSession = () => {
+    const rawSonido = sessionStorage.getItem("sonidoSeleccionado");
+    if (!rawSonido) return;
+
+    try {
+      const sonido = JSON.parse(rawSonido);
+      const modeloAsociado = sessionStorage.getItem("modeloAsociadoParaSonido");
+      if (modeloAsociado) sonido.modeloAsociado = modeloAsociado;
+
+      setSonidoSeleccionado(normalizarSonido(sonido));
+      sessionStorage.removeItem("sonidoSeleccionado");
+      sessionStorage.removeItem("modeloAsociadoParaSonido");
+    } catch (e) {
+      console.warn("⚠️ No se pudo rehidratar el sonido al volver:", e);
+    }
+
+   const modelos = leerModelosDesdeSession(juegoId, casillaId);
+   if (modelos) setModelosSeleccionados(normalizarModelos(modelos));
+  };
 
   const sincronizarModelos = async () => {
-    if (!sonidoSeleccionado || !sonidoSeleccionado.url) {
+    const sonidoOk = sanitizarSonido(sonidoSeleccionado);
+    if (!sonidoOk?.url) {
       mostrarMensaje("⚠️ Debes asignar un sonido antes de guardar.", "error");
       return;
     }
@@ -100,30 +179,32 @@ const ModeloSonido = () => {
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
-
       if (juegoSnap.exists()) {
-        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-
-        casillasActuales[casillaId] = {
-          plantilla: "modelo-sonido",
-          configuracion: {
-            modelos: modelosSeleccionados,
-            sonido: sonidoSeleccionado,
-            celebracion: celebracion,
-          },
-        };
-
-        await updateDoc(juegoRef, { casillas: casillasActuales });
-        mostrarMensaje("✅ Plantilla guardada correctamente.", "success");
-      }
-    } catch (error) {
-      console.error("❌ Error al guardar en Firestore:", error);
-      mostrarMensaje("❌ Error al guardar la plantilla.", "error");
+        const data = juegoSnap.data();
+        const idx = getIdx(casillaId);
+        if (idx === null) throw new Error("casillaId inválido");
+      const casillasActuales = asegurarCasillas(data.casillas, idx);
+      casillasActuales[idx] = {
+        plantilla: "modelo-sonido",
+        configuracion: {
+          modelos: normalizarModelos(modelosSeleccionados),
+          sonido: sonidoOk || null,
+          celebracion,
+        },
+      };
+      await updateDoc(juegoRef, { casillas: casillasActuales });
+      mostrarMensaje("✅ Plantilla guardada correctamente.", "success", "center");
+    }
+  } catch (error) {
+    console.error("❌ Error al guardar en Firestore:", error);
+    mostrarMensaje("❌ Error al guardar la plantilla.", "error");
     }
   };
 
   const eliminarModelo = async (urlModelo) => {
-    const nuevosModelos = modelosSeleccionados.filter((modelo) => modelo.url !== urlModelo);
+    const estabaAsociado = sonidoSeleccionado?.modeloAsociado === urlModelo;
+    const nuevoSonido = estabaAsociado ? null : sanitizarSonido(sonidoSeleccionado);
+    const nuevosModelos = modelosSeleccionados.filter(m => m.url !== urlModelo);
 
     if (sonidoSeleccionado?.modeloAsociado === urlModelo) {
       setSonidoSeleccionado(null);
@@ -136,19 +217,19 @@ const ModeloSonido = () => {
     try {
       const juegoRef = doc(db, "juegos", juegoId);
       const juegoSnap = await getDoc(juegoRef);
-
       if (juegoSnap.exists()) {
-        const casillasActuales = juegoSnap.data().casillas || Array(30).fill({ configuracion: null });
-
-        casillasActuales[casillaId] = {
+        const data = juegoSnap.data();
+        const idx = getIdx(casillaId);
+        if (idx === null) throw new Error("casillaId inválido");
+        const casillasActuales = asegurarCasillas(data.casillas, idx);
+        casillasActuales[idx] = {
           plantilla: "modelo-sonido",
           configuracion: {
-            modelos: nuevosModelos,
-            sonido: sonidoSeleccionado,
-            celebracion: celebracion,
+            modelos: normalizarModelos(nuevosModelos),
+            sonido: nuevoSonido,
+            celebracion,
           },
         };
-
         await updateDoc(juegoRef, { casillas: casillasActuales });
       }
     } catch (error) {
@@ -156,10 +237,13 @@ const ModeloSonido = () => {
     }
   };
 
-  const mostrarMensaje = (texto, tipo = "info") => {
-    setMensaje({ texto, tipo });
-    setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
+  const timeoutRef = useRef(null);
+  const mostrarMensaje = (texto, tipo = "info", pos = "inline") => {
+    setMensaje({ texto, tipo, pos });
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => setMensaje({ texto: "", tipo: "", pos: "inline" }), 3000);
   };
+  useEffect(() => () => timeoutRef.current && clearTimeout(timeoutRef.current), []);
 
   const manejarReproduccion = () => {
     if (!sonidoSeleccionado?.url) {
@@ -182,11 +266,49 @@ const ModeloSonido = () => {
     }
   };
 
-  return (
+  const quitarSonidoAsignado = async () => {
+    try {
+      setSonidoSeleccionado(null);
+      sessionStorage.removeItem("sonidoSeleccionado");
+      sessionStorage.removeItem("modeloAsociadoParaSonido");
+
+      const juegoRef = doc(db, "juegos", juegoId);
+      const juegoSnap = await getDoc(juegoRef);
+      if (juegoSnap.exists()) {
+        const data = juegoSnap.data();
+        const idx = getIdx(casillaId);
+        const casillasActuales = asegurarCasillas(data.casillas, idx);
+        const cfg = casillasActuales[idx]?.configuracion || {};
+        casillasActuales[idx] = {
+          plantilla: "modelo-sonido",
+          configuracion: {
+            ...cfg,
+            sonido: null,
+          },
+        };
+        await updateDoc(juegoRef, { casillas: casillasActuales });
+      }
+      mostrarMensaje("Sonido eliminado.", "success");
+    } catch (e) {
+      console.error(e);
+      mostrarMensaje("No se pudo eliminar el sonido.", "error");
+    }
+  };
+
+
+return (
     <div className="modelo-sonido-container">
       <Breadcrumbs />
         {mensaje.texto && (
-          <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
+          mensaje.pos === "center" ? (
+            <div className="mensaje-overlay" role="status" aria-live="polite">
+              <div className={`mensaje mensaje--center ${mensaje.tipo}`}>
+                {mensaje.texto}
+              </div>
+            </div>
+          ) : (
+            <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
+          )
         )}
 
         <div className="titulo-con-icono">
@@ -197,6 +319,14 @@ const ModeloSonido = () => {
             className="icono-titulo-sonido"
             onClick={manejarReproduccion}
           />
+          {sonidoSeleccionado?.url && (
+            <audio
+              ref={audioRef}
+              src={sonidoSeleccionado.url}
+              preload="auto"
+              style={{ display: "none" }}
+            />
+          )}
         </div>
         <p className="leyenda-modelo-sonido">
           En esta plantilla puedes seleccionar modelos 3D y asignarles sonidos. 
@@ -205,69 +335,110 @@ const ModeloSonido = () => {
         </p>
 
         <div className="modelos-config__bar">
-          <h3>Modelos seleccionados</h3>
+          <h3>
+            Modelos seleccionados{" "}
+            <span className={`pill ${modelosSeleccionados.length >= 3 ? "pill--full" : ""}`}>
+              {modelosSeleccionados.length}/3
+            </span>
+          </h3>
+
           <button
             className="btn btn--secondary"
+            disabled={modelosSeleccionados.length >= 3}
+            title={
+              modelosSeleccionados.length >= 3
+                ? "Has alcanzado el máximo (3/3)"
+                : `Puedes agregar hasta 3 (van ${modelosSeleccionados.length}/3)`
+            }
+            aria-describedby="limite-modelos-ayuda"
             onClick={() => {
+              if (modelosSeleccionados.length >= 3) return;
               sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId } });
+              navigate("/docente/banco-modelos", { 
+                state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 } 
+              });
             }}
           >
             Agregar modelos
           </button>
         </div>
 
+        {modelosSeleccionados.length >= 3 && (
+          <p id="limite-modelos-ayuda" className="ayuda-limite" aria-live="polite">
+            Has alcanzado el máximo de 3 modelos para esta plantilla. Elimina uno para agregar otro.
+          </p>
+        )}
 
-        <div className="docente-modelos-seleccionados">
-          {modelosSeleccionados.length > 0 ? (
-            modelosSeleccionados.map((modelo, index) => (
-              <div key={index} className="docente-modelo-item">
-                <model-viewer
-                  src={modelo.url}
-                  alt={`Modelo ${modelo.nombre}`}
-                  camera-controls
-                  auto-rotate
-                  shadow-intensity="1"
-                  style={{ width: "100px", height: "100px" }}
-                ></model-viewer>
-
-                <p className="nombre-modelo">{modelo.nombre}</p>
-
-                <div className="acciones-modelo">
-
-                  <button className="btn btn--danger btn--sm" onClick={() => eliminarModelo(modelo.url)}>
-                    🗑️ Eliminar
-                  </button>
-
-                  <button
-                    className="btn btn--secondary btn--sm"
-                    onClick={() => {
-                      sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
-                      sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
-                      sessionStorage.setItem("paginaAnterior", window.location.pathname);
-                      navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
-                    }}
+        {modelosSeleccionados.length > 0 ? (
+          <div className="modelos-grid">
+            {modelosSeleccionados.map((modelo) => {
+              const isAsociado = sonidoSeleccionado?.modeloAsociado === modelo.url;
+              return (
+                <div key={modelo.id || modelo.url} className="modelo-card">
+                  <div
+                    className="modelo-preview"
+                    onClick={isAsociado && sonidoSeleccionado?.url ? manejarReproduccion : undefined}
+                    style={{ cursor: isAsociado && sonidoSeleccionado?.url ? "pointer" : "default" }}
                   >
-                    🎵 Asignar Sonido
-                  </button>
-                </div>
-
-                {modelo.sonido?.url ? (
-                  <div className="sonido-asignado">
-                    <p>🔊 {modelo.sonido.nombre}</p>
-                    <audio controls>
-                      <source src={modelo.sonido.url} type="audio/mp3" />
-                    </audio>
-                  </div>
-                ) : (
-                  <p className="sin-sonido">❌ Sin sonido asignado</p>
+                    {modelo.url ? (
+                      <model-viewer
+                        key={modelo.url}
+                        src={modelo.url}
+                        alt={modelo.nombre}
+                        camera-controls
+                        auto-rotate
+                        shadow-intensity="1"
+                        style={{ width: "100%", height: "180px" }}
+                      />
+                    ) : (
+                  <div style={{ width: "100%", height: 180, background: "#f3f6ff", borderRadius: 8 }} />
                 )}
               </div>
-            ))
-          ) : (
-            <p className="mensaje-vacio">No se han seleccionado modelos. Haz clic en <strong>Agregar modelos</strong> para elegir los modelos 3D.</p>
-          )}
-        </div>
+
+                  <div className="modelo-detalles">
+                    <h4>{modelo.nombre}</h4>
+
+                    <div className="acciones-modelo">
+                      <button className="btn btn--danger" onClick={() => eliminarModelo(modelo.url)}>
+                        🗑️ Eliminar
+                      </button>
+
+                      {!sonidoSeleccionado && (
+                        <button
+                          className="btn btn--secondary"
+                          onClick={() => {
+                            sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+                            sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
+                            sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                            navigate("/docente/banco-sonidos", { state: { desdePlantilla: true } });
+                          }}
+                        >
+                          Asignar 🎵
+                        </button>
+                      )}
+                    </div>
+
+                    {isAsociado ? (
+                      <div className="sonido-asignado">
+                        <p>🔊 {sonidoSeleccionado.nombre}</p>
+                        <audio key={sonidoSeleccionado.url} controls>
+                          <source src={sonidoSeleccionado.url} type="audio/mpeg" />
+                        </audio>
+                        <button className="btn btn--secondary" style={{ marginTop: 8 }} onClick={quitarSonidoAsignado}>
+                          Quitar sonido
+                        </button>
+                      </div>
+                    ) : (
+                      !sonidoSeleccionado && <p className="sin-sonido">❌ Sin sonido asignado</p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="mensaje-vacio">No se han seleccionado modelos. Haz clic en <strong>Agregar modelos</strong> para elegir los modelos 3D.</p>
+        )}
 
         <section className="seccion-celebracion">
           <label htmlFor="tipoCelebracion">Celebración:</label>
@@ -277,7 +448,6 @@ const ModeloSonido = () => {
             onChange={(e) => setCelebracion({ tipo: e.target.value, opciones: {} })}
           >
             <option value="confeti">🎉 Confeti (visual)</option>
-            <option value="gif">🎥 GIF animado</option>
             <option value="mensaje">✅ Mensaje de texto</option>
           </select>
 
