@@ -34,3 +34,19 @@
 .switch input:focus-visible + .slider{
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--pastel-azul) 35%, transparent);
 }
+.form-row--inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* empuja el switch a la derecha si quieres */
+  gap: 0;                         /* el gap aquí no afecta si el label envuelve todo */
+}
+
+.form-row--inline .switch-label{
+  display: inline-flex !important;   /* clave: que sea flex */
+  align-items: center;
+  gap: 16px;                          /* ajusta el espacio texto ↔ switch */
+}
+
+.form-row--inline .switch{
+  margin-left: 0; /* ya no hace falta si usas gap */
+}
