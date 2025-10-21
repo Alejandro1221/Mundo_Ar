@@ -197,6 +197,8 @@ const confirmarEliminacion = (juegoId, nombreJuego) => {
         onCreated={(nuevo) => {
           setJuegos((prev) => [nuevo, ...prev]);
           setModalCrearOpen(false);
+          sessionStorage.setItem("paginaAnterior", window.location.pathname);
+          navigate(`/docente/configurar-casillas/${nuevo.id}`);
         }}
       />
       <ToastContainer position="top-center" autoClose={1000} />

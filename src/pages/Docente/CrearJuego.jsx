@@ -99,7 +99,7 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
           </div>
 
           <div className="form-row form-row--inline">
-            <div className="switch-label">
+            <label htmlFor="visibilidad" className="switch-label">
               <span>{publico ? "Juego Público" : "Juego Privado"}</span>
               <div className="switch">
                 <input
@@ -110,14 +110,24 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
                 />
                 <span className="slider" />
               </div>
-            </div>
+            </label>
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-secundario" onClick={onClose} disabled={saving}>
+            <button
+              type="button"
+              onClick={onClose}
+              disabled={saving}
+              className="btn btn--secondary"
+            >
               Cancelar
             </button>
-            <button type="submit" className="btn-primario" disabled={saving || !nombre.trim()}>
+
+            <button
+              type="submit"
+              disabled={saving || !nombre.trim()}
+              className="btn btn--primary"
+            >
               {saving ? "Creando..." : "Crear juego"}
             </button>
           </div>

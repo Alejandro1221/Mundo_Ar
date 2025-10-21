@@ -220,7 +220,6 @@ return (
         onChange={(e) => setCelebracion({ tipo: e.target.value, opciones: {} })}
       >
         <option value="confeti">🎉 Confeti</option>
-        <option value="gif">🎥 GIF animado</option>
         <option value="mensaje">✅ Mensaje</option>
       </select>
 

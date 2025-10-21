@@ -179,9 +179,8 @@ const RompecabezasModelo = () => {
           }
         >
           <option value="confeti">🎉 Confeti (visual)</option>
-          <option value="gif">🎥 GIF animado</option>
           <option value="mensaje">✅ Mensaje de texto</option>
-          <option value="animacion">🌈 Animación suave</option>
+    
         </select>
 
         {celebracion.tipo === "gif" && (
