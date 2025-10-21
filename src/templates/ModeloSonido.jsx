@@ -58,7 +58,6 @@ const ModeloSonido = () => {
       }
     }
 
-    // Intentar cargar modelos desde sessionStorage
     const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
     const rawModelos = sessionStorage.getItem(key);
     if (rawModelos) {
@@ -67,7 +66,7 @@ const ModeloSonido = () => {
         if (Array.isArray(modelos)) {
       
           setModelosSeleccionados(modelos);
-          return; // No seguir a Firestore si ya cargamos
+          return; 
         }
       } catch (err) {
         console.warn("⚠️ Error al parsear modelos desde sessionStorage:", err);
@@ -184,9 +183,8 @@ const ModeloSonido = () => {
   };
 
   return (
-    <div className="docente-modelo-container">
+    <div className="modelo-sonido-container">
       <Breadcrumbs />
-      <div className="contenido-scrollable">
         {mensaje.texto && (
           <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>
         )}
@@ -335,7 +333,6 @@ const ModeloSonido = () => {
         
         </div>
       </div>
-    </div>
   );
 };
 

@@ -270,12 +270,12 @@ const cargarConfiguracion = async (isAlive = () => true) => {
   return (
     <div className="docente-clasificacion-container">
       <Breadcrumbs/>
-      <h2>Clasificación de Modelos</h2>
-      <p className="leyenda-clasificacion">
-         Esta actividad permite organizar modelos 3D en grupos según sus características. 
-         El objetivo es que los estudiantes aprendan a identificar, comparar y clasificar 
-         los modelos, reforzando el aprendizaje activo y la comprensión de los conceptos.
-      </p>
+        <h2>Clasificación de Modelos</h2>
+        <p className="leyenda-clasificacion">
+          Esta actividad permite organizar modelos 3D en grupos según sus características. 
+          El objetivo es que los estudiantes aprendan a identificar, comparar y clasificar 
+          los modelos, reforzando el aprendizaje activo y la comprensión de los conceptos.
+        </p>
           
       {mensaje.texto && <div className={`mensaje ${mensaje.tipo}`}>{mensaje.texto}</div>}
 
