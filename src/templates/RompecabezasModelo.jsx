@@ -38,6 +38,9 @@ const RompecabezasModelo = () => {
             if (casilla.configuracion.celebracion) {
               setCelebracion(casilla.configuracion.celebracion);
             }
+            if (casilla.configuracion.grid) {
+              setGrid(casilla.configuracion.grid);
+            }
           }
         }
       } catch (error) {
@@ -103,7 +106,8 @@ const RompecabezasModelo = () => {
         plantilla: "rompecabezas-modelo",
         configuracion: {
           imagen: urlImagen,
-          celebracion
+          celebracion,
+          grid 
         }
       };
   
@@ -242,6 +246,8 @@ return (
             sessionStorage.setItem("paginaAnterior", window.location.pathname);
             sessionStorage.setItem("imagenRompecabezas", previewUrl);
             sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+            sessionStorage.setItem("gridRompecabezas", JSON.stringify(grid));
+
             navigate("/estudiante/vista-previa-rompecabezas");
           }}
         >

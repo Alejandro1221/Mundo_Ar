@@ -21,17 +21,47 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
   const [imagenCargada, setImagenCargada] = useState(false);
   const [mostrarMensajeCelebracion, setMostrarMensajeCelebracion] = useState(false);
   const [completado, setCompletado] = useState(false);
+  const [grid, setGrid] = useState({ cols: 2, rows: 3 });
+  const isLandscape = grid.cols > grid.rows;
 
-
-  const posicionesBase = [
-    { x: -0.8, y: 0.3, z: -2 },
-    { x: -0.45, y: 0.3, z: -2 },
-    { x: -0.8, y: 0.0, z: -2 },
-    { x: -0.45, y: 0.0, z: -2 },
-    { x: -0.8, y: -0.3, z: -2 },
-    { x: -0.45, y: -0.3, z: -2 },
-  ];
+  const EPS = 0.0005;                                    
+  const repeatX = 1 / grid.cols + EPS;
+  const repeatY = 1 / grid.rows + EPS;
   
+  // Medidas base
+  const CUBE = 0.25;          
+  const GAP  = 0.01;           
+  const stepX = CUBE + GAP;
+  const stepY = CUBE + GAP;
+
+  const CENTER_ZONAS  = isLandscape
+  ? { x:  0.00, y:  0.50, z: -2.06 }  // HORIZONTAL: zonas ARRIBA
+  : { x:  0.45, y:  0.10, z: -2.06 }  // VERTICAL:  zonas A LA DERECHA
+
+const CENTER_CUBOS  = isLandscape
+  ? { x:  0.00, y: -0.25, z: -2.00 }  // HORIZONTAL: cubos ABAJO
+  : { x: -0.45, y:  0.10, z: -2.00 }  // VERTICAL:  cubos A LA IZQUIERDA
+  
+  const zonasPos = (i) => {
+    const col = i % grid.cols;
+    const row = Math.floor(i / grid.cols);
+    const x = CENTER_ZONAS.x + (col - (grid.cols - 1) / 2) * CUBE; 
+    const y = CENTER_ZONAS.y - (row - (grid.rows - 1) / 2) * CUBE; 
+    return `${x.toFixed(3)} ${y.toFixed(3)} ${CENTER_ZONAS.z}`;
+  };
+
+  // Base ordenada de cubos sueltos (abajo), que luego barajamos
+  const buildBaseSueltos = () =>
+    Array.from({ length: grid.cols * grid.rows }, (_, i) => {
+      const col = i % grid.cols;
+      const row = Math.floor(i / grid.cols);
+      return {
+        x: CENTER_CUBOS.x + (col - (grid.cols - 1) / 2) * (stepX * 1.15),
+        y: CENTER_CUBOS.y - (row - (grid.rows - 1) / 2) * (stepY * 1.15),
+        z: CENTER_CUBOS.z
+      };
+    });
+
   const shuffleArray = (array) => {
     const newArray = [...array];
     for (let i = newArray.length - 1; i > 0; i--) {
@@ -41,15 +71,23 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
     return newArray;
   };
 
-  const posicionesAleatorias = useRef(shuffleArray(posicionesBase));
+  // Posiciones barajadas de cubos sueltos (se recalculan al cambiar orientación)
+  const posicionesAleatorias = useRef([]);
+  useEffect(() => {
+    const base = buildBaseSueltos();
+    posicionesAleatorias.current = shuffleArray(base);
+  }, [grid.cols, grid.rows]);
 
+  
   useEffect(() => {
     if (vistaPrevia) {
       const imagen = sessionStorage.getItem("imagenRompecabezas");
       const celebracionGuardada = JSON.parse(sessionStorage.getItem("celebracionSeleccionada") || "{}");
+      const gridGuardado = JSON.parse(sessionStorage.getItem("gridRompecabezas") || "null");
   
       if (imagen) setImagenUrl(imagen);
       setCelebracion(celebracionGuardada);
+      if (gridGuardado) setGrid(gridGuardado);
   
       return; 
     }
@@ -69,6 +107,7 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
         const configuracion = docSnap.data()?.casillas?.[casillaId]?.configuracion;
         if (configuracion?.imagen) setImagenUrl(configuracion.imagen);
         if (configuracion?.celebracion) setCelebracion(configuracion.celebracion);
+        if (configuracion?.grid) setGrid(configuracion.grid);
       }
     };
 
@@ -106,20 +145,24 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
     }
   }, [imagenUrl]);
 
-  const offsets = [
-    '0 0.66', '0.5 0.66',
-    '0 0.33', '0.5 0.33',
-    '0 0',    '0.5 0'
-  ];
+  const calcOffsets = (cols, rows) =>
+    Array.from({ length: cols * rows }, (_, i) => {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const ox = col / cols;
+      const oy = (rows - 1 - row) / rows; 
+      return `${ox.toFixed(4)} ${oy.toFixed(4)}`;
+    });
 
-  const shuffledOffsets = useRef(
-    shuffleArray(
-      [...Array(6)].map((_, i) => ({
-        fichaOriginal: i,
-        offset: offsets[i]
-      }))
-    )
-  );
+  const shuffledOffsets = useRef([]);
+  useEffect(() => {
+    const dyn = calcOffsets(grid.cols, grid.rows).map((off, i) => ({
+      fichaOriginal: i,
+      offset: off
+    }));
+    shuffledOffsets.current = shuffleArray(dyn); 
+  }, [grid.cols, grid.rows]);
+
 
   useEffect(() => {
     cubosRef.current.forEach((el, i) => {
@@ -204,25 +247,21 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
         ></a-plane>
 
         <a-entity id="zonas">
-          {[...Array(6)].map((_, i) => {
-            const col = i % 2;
-            const row = Math.floor(i / 2);
-            const pos = `${0.40 + col * 0.25} ${0.25 - row * 0.24} -2.01`;
-            return (
-              <a-box
-                key={i}
-                className="zona"
-                zona-id={i}
-                position={pos}
-                depth="0.25"
-                height="0.26"
-                width="0.26"
-                color="#ffffff"
-                opacity="0.08"
-                ref={(el) => (zonasRef.current[i] = el)}
-              ></a-box>
-            );
-          })}
+          {Array.from({ length: grid.cols * grid.rows }).map((_, i) => (
+            <a-box
+              key={i}
+              className="zona"
+              zona-id={i}
+              position={zonasPos(i)}
+              // zonas un poco más grandes para “capturar” mejor
+              width="0.27"
+              height="0.27"
+              depth="0.35"
+              color="#ffffff"
+              opacity="0.08"
+              ref={(el) => (zonasRef.current[i] = el)}
+            />
+          ))}
         </a-entity>
 
         <a-text
@@ -242,51 +281,71 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
             src={imagenUrl}
             crossOrigin="anonymous"
             preload="true"
-            onLoad={() => setImagenCargada(true)} 
+            onLoad={(e) => {
+              if (!grid || !grid.cols || !grid.rows) {
+                const img = e.target;
+                const isLandscape = img.naturalWidth >= img.naturalHeight;
+                setGrid(isLandscape ? { cols: 3, rows: 2 } : { cols: 2, rows: 3 });
+              }
+              setImagenCargada(true);
+            }}
           />
         </a-assets>
 
         <a-entity id="cubos">
           {imagenUrl && imagenCargada &&
             (() => {
-              window.cubosData = []; 
+              window.cubosData = [];
 
-              return shuffledOffsets.current.map(({ fichaOriginal, offset }, i) => {
-                const pos = posicionesAleatorias.current[i];
+              return Array.from({ length: grid.cols * grid.rows }).map((_, i) => {
+                const pos = posicionesAleatorias.current[i] || { x: 0, y: 0, z: -2 };
+                const { offset, fichaOriginal } =
+                  shuffledOffsets.current[i] || { offset: "0 0", fichaOriginal: i };
+
                 const fichaId = fichaOriginal;
 
-                // Guardar qué ficha representa cada cubo
-                window.cubosData[fichaId] = { fichaOriginal };
+                const isActive = !completado && cuboActivoIndex.current === fichaId;
+
+                const z = (pos.z ?? -2.00);
+
+                window.cubosData[fichaId] = { fichaOriginal, offset };
 
                 return (
                   <a-box
                     key={fichaId}
                     ficha-id={fichaId}
                     cubo-rompecabezas
-                    className={cuboActivoIndex.current === fichaId ? "activo" : ""}
+                    className={isActive ? "activo" : ""}
                     depth="0.25"
                     height="0.25"
                     width="0.25"
-                    position={`${pos.x} ${pos.y} ${pos.z}`}
+                    position={`${pos.x.toFixed(3)} ${pos.y.toFixed(3)} ${z.toFixed(3)}`}
                     shadow="cast: true; receive: true"
-                    material={`src: #imagen-rompecabezas;
-                      repeat: 0.5 0.33;
+                    material={`shader: standard; 
+                      src: #imagen-rompecabezas;
+                      repeat: ${repeatX.toFixed(4)} ${repeatY.toFixed(4)};
                       offset: ${offset};
-                      metalness: 0.1;
-                      roughness: 0.4;
-                      emissive: ${!completado && cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'};
-                      emissiveIntensity: ${!completado && cuboActivoIndex.current === fichaId ? '0.4' : '0'};
+                      color: #FFFFFF;                 /* mantiene color original */
+                      metalness: 0;                   /* sin brillo metálico */
+                      roughness: 1;                   /* superficie mate, fiel a la imagen */
+                      transparent: false;
+                      opacity: 1;
+                      emissive: ${cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'};
+                      emissiveIntensity: ${cuboActivoIndex.current === fichaId ? '0.25' : '0'};
                       side: double;
-                      flatShading: true;
                     `}
+
                     touch-move
                     ref={(el) => (cubosRef.current[fichaId] = el)}
-                  ></a-box>
+                  />
                 );
               });
             })()
           }
+
         </a-entity>
+
+
         
       </a-scene>
       {mostrarMensajeCelebracion && celebracion?.tipo === "mensaje" && (
