@@ -418,10 +418,6 @@ const cargarConfiguracion = async (isAlive = () => true) => {
           <option value="mensaje">✅ Mensaje</option>
         </select>
 
-        {celebracion.tipo === "gif" && (
-          <input type="text" placeholder="URL del GIF" value={celebracion.opciones.gifUrl || ""} onChange={(e) => setCelebracion({ ...celebracion, opciones: { gifUrl: e.target.value } })} />
-        )}
-
         {celebracion.tipo === "mensaje" && (
           <textarea
             placeholder="Mensaje personalizado"

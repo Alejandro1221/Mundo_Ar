@@ -12,6 +12,7 @@ const RompecabezasModelo = () => {
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const [mensaje, setMensaje] = useState({ texto: "", tipo: "" });
   const [guardando, setGuardando] = useState(false);
+  const [grid, setGrid] = useState({ cols: 2, rows: 3 }); 
 
 
   const [imagen, setImagen] = useState(null);
@@ -62,6 +63,16 @@ const RompecabezasModelo = () => {
     setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
   };
 
+  useEffect(() => {
+    if (!previewUrl) return;
+    const img = new Image();
+    img.onload = () => {
+      const isLandscape = img.naturalWidth >= img.naturalHeight; // empates cuentan como horizontal
+      setGrid(isLandscape ? { cols: 3, rows: 2 } : { cols: 2, rows: 3 });
+    };
+    img.src = previewUrl;
+  }, [previewUrl]);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -98,7 +109,7 @@ const RompecabezasModelo = () => {
   
       await updateDoc(juegoRef, { casillas: casillasActuales });
   
-      mostrarMensaje("✅ Plantilla guardada correctamente.", "exito");
+      mostrarMensaje("Plantilla guardada correctamente.", "success");
     } catch (error) {
       console.error("❌ Error al guardar configuración:", error);
       mostrarMensaje("❌ Error al guardar la plantilla.", "error");
@@ -108,34 +119,45 @@ const RompecabezasModelo = () => {
   };
   
 
-  return (
-    <div className="docente-modelo-container">
-      <div className="topbar-bc"><Breadcrumbs /></div>
+return (
+  <div className="docente-modelo-container">
+    <Breadcrumbs/>
       
-      {mensaje.texto && (
-        <div className={`mensaje ${mensaje.tipo}`}>
-          {mensaje.texto}
+    {mensaje.texto && (
+      <div className={`mensaje ${mensaje.tipo}`}>
+        {mensaje.texto}
         </div>
       )}
 
       <h2>Arma el rompecabezas</h2>
-      <p className="leyenda-rompecabezas">
-        Sube una imagen para convertirla en rompecabezas. La vista previa te mostrará
-        la imagen completa y cómo se verán las piezas. Luego selecciona la celebración
-        y guarda la configuración.
-      </p>
-
+        <p className="leyenda-rompecabezas">
+          Sube una imagen para convertirla en rompecabezas. La vista previa te mostrará
+          la imagen completa y cómo se verán las piezas. Luego selecciona la celebración
+          y guarda la configuración.
+        </p>
 
       <div className="docente-modelos-seleccionados">
         <div className="docente-modelo-item">
           <p className="nombre-modelo">Imagen del rompecabezas</p>
 
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          {previewUrl && (
+          <input
+              type="file"
+              id="imagenRompecabezas"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="input-archivo"
+            />
+            <label htmlFor="imagenRompecabezas" className="btn-archivo">
+              📂 Seleccionar imagen
+            </label>
+            <span className="nombre-archivo">
+              {imagen ? imagen.name : "Ningún archivo seleccionado"}
+            </span>
+  {previewUrl && (
   <>
     {/*Imagen completa */}
     <div className="imagen-completa-preview">
-      <p className="nombre-modelo">🖼 Vista completa</p>
+      <p className="nombre-modelo">vista completa</p>
       <img src={previewUrl} alt="Imagen completa" className="imagen-preview-completa" />
       <button className="btn btn--danger btn--sm" onClick={() => {
         setImagen(null);
@@ -147,27 +169,39 @@ const RompecabezasModelo = () => {
     </div>
 
     {/*Vista en cubos */}
-    <div className="preview-cubos-3d">
-            {[0, 1, 2, 3, 4, 5].map((i) => {
-              const row = Math.floor(i / 2);
-              const col = i % 2;
-              const position = `${col * 50}% ${row * 33.33}%`;
-              return (
-                <div className="cubo-3d" key={i}>
-                  <div className="cara cara-front" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                  <div className="cara cara-back" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                  <div className="cara cara-right" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                  <div className="cara cara-left" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                  <div className="cara cara-top" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                  <div className="cara cara-bottom" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
-                </div>
-              );
-            })}
-          </div>
+    <div
+        className="preview-cubos-3d"
+        style={{
+          '--cols': String(grid.cols),
+          '--rows': String(grid.rows),
+          '--bgw': `${grid.cols * 100}%`,
+          '--bgh': `${grid.rows * 100}%`,
+        }}
+      >
+        {Array.from({ length: grid.cols * grid.rows }).map((_, i) => {
+          const row = Math.floor(i / grid.cols);
+          const col = i % grid.cols;
+
+          const posX = grid.cols === 1 ? 0 : (col / (grid.cols - 1)) * 100;
+          const posY = grid.rows === 1 ? 0 : (row / (grid.rows - 1)) * 100;
+          const position = `${posX}% ${posY}%`;
+
+          return (
+            <div className="cubo-3d" key={i}>
+              <div className="cara cara-front"  style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+              <div className="cara cara-back"   style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+              <div className="cara cara-right"  style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+              <div className="cara cara-left"   style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+              <div className="cara cara-top"    style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+              <div className="cara cara-bottom" style={{ backgroundImage: `url(${previewUrl})`, backgroundPosition: position }} />
+            </div>
+          );
+        })}
+      </div>
         </>
       )}
        </div>
-       </div>
+      </div>
 
       <section className="seccion-celebracion">
         <label htmlFor="tipoCelebracion">Tipo de Celebración:</label>
@@ -182,20 +216,6 @@ const RompecabezasModelo = () => {
           <option value="mensaje">✅ Mensaje de texto</option>
     
         </select>
-
-        {celebracion.tipo === "gif" && (
-          <input
-            type="text"
-            placeholder="URL del GIF"
-            value={celebracion.opciones.gifUrl || ""}
-            onChange={(e) =>
-              setCelebracion({
-                ...celebracion,
-                opciones: { gifUrl: e.target.value }
-              })
-            }
-          />
-        )}
 
         {celebracion.tipo === "mensaje" && (
             <textarea

@@ -51,7 +51,7 @@ canvas {
 
 /* Tableros */
 .tablero {
-  opacity: 0.25;
+  opacity: 0;
 }
 
 .tablero-izquierdo,
@@ -64,6 +64,7 @@ canvas {
   opacity: 0.3;
   border-radius: 6px;
   transition: transform 0.2s ease;
+  pointer-events: none;
 }
 
 /* Cubos */

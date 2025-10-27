@@ -207,3 +207,38 @@ h2{
 .acciones-plantilla button:hover {
   background-color: #47bbd3;
 }
+
+/* Oculta el input nativo */
+.input-archivo {
+  display: none;
+}
+
+/* Botón bonito */
+.btn-archivo {
+  display: inline-block;
+  background: var(--pastel-indigo);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: var(--borde-suave);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: var(--sombra-suave);
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+.btn-archivo:hover {
+  transform: translateY(-5px);
+}
+.btn-archivo:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+/* Nombre del archivo */
+.nombre-archivo {
+  margin-left: 10px;
+  font-size: 0.9rem;
+  color: var(--texto-principal);
+  opacity: 0.9;
+  vertical-align: middle;
+}

@@ -39,24 +39,21 @@
   padding: 0 55px;
   display: flex;
   align-items: baseline;
-  justify-content: space-between; /* título izq, botón der */
+  justify-content: space-between; 
   margin-bottom: 5px;
 }
 
-/* Título dentro de la barra: sin márgenes extra */
 .bloque-juegos__bar h3 {
   margin: 0;
   font-size: 1.2rem;
   font-weight: 800;
 }
 
-/* Asegura alineación a la izquierda del bloque (el contenedor general tiene text-align:center) */
 .bloque-juegos { 
   text-align: left; 
 }
 
 
-/* Switch */
 .switch-container {
   margin: 10px 0 20px 0;
 }

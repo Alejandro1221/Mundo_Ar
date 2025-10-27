@@ -20,6 +20,7 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
   const cuboActivoIndex = useRef(0);
   const [imagenCargada, setImagenCargada] = useState(false);
   const [mostrarMensajeCelebracion, setMostrarMensajeCelebracion] = useState(false);
+  const [completado, setCompletado] = useState(false);
 
 
   const posicionesBase = [
@@ -85,6 +86,7 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
   const [, setActualizar] = useState(false);
 
   const cambiarCubo = () => {
+     if (completado) return;
     let siguiente = cuboActivoIndex.current;
     do {
       siguiente = (siguiente + 1) % 6;
@@ -150,6 +152,13 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
       }
 
       if (nuevosEncajados.every(Boolean)) {
+        setCompletado(true);
+
+        cuboActivoIndex.current = -1;
+        window.cuboActivoIndex = -1;
+
+        zonasRef.current.forEach(z => z && z.setAttribute('visible', false));
+
         if (mensajeRef.current) {
           mensajeRef.current.setAttribute("visible", "true");
         }
@@ -157,11 +166,10 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
           const tipo = window.celebracion.tipo;
           const opciones = window.celebracion.opciones || {};
           CELEBRACIONES[tipo].render(opciones);
-
-          if (tipo === "mensaje") {
-            setMostrarMensajeCelebracion(true);
-          }
+          if (tipo === "mensaje") setMostrarMensajeCelebracion(true);
         }
+
+        setActualizar(a => !a);
       }
     };
   }, [encajados]);
@@ -178,7 +186,6 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
         renderer="antialias: true; alpha: true"
       >
         <a-entity camera position="0 0 1"></a-entity>
-
         <a-plane
           color="transparent"
           width="0.6"
@@ -200,18 +207,18 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
           {[...Array(6)].map((_, i) => {
             const col = i % 2;
             const row = Math.floor(i / 2);
-            const pos = `${0.5 + col * 0.2} ${0.3 - row * 0.26} -2.01`;
+            const pos = `${0.40 + col * 0.25} ${0.25 - row * 0.24} -2.01`;
             return (
               <a-box
                 key={i}
                 className="zona"
                 zona-id={i}
                 position={pos}
-                depth="0.45"
+                depth="0.25"
                 height="0.26"
                 width="0.26"
-                color="#EEE"
-                opacity="0.3"
+                color="#ffffff"
+                opacity="0.08"
                 ref={(el) => (zonasRef.current[i] = el)}
               ></a-box>
             );
@@ -262,7 +269,16 @@ const ActividadRompecabezas = ({ vistaPrevia = false }) => {
                     width="0.25"
                     position={`${pos.x} ${pos.y} ${pos.z}`}
                     shadow="cast: true; receive: true"
-                    material={`src: #imagen-rompecabezas; repeat: 0.5 0.33; offset: ${offset}; metalness: 0.2; roughness: 0.8; emissive: ${cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'}; emissiveIntensity: ${cuboActivoIndex.current === fichaId ? '0.4' : '0'}`}
+                    material={`src: #imagen-rompecabezas;
+                      repeat: 0.5 0.33;
+                      offset: ${offset};
+                      metalness: 0.1;
+                      roughness: 0.4;
+                      emissive: ${!completado && cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'};
+                      emissiveIntensity: ${!completado && cuboActivoIndex.current === fichaId ? '0.4' : '0'};
+                      side: double;
+                      flatShading: true;
+                    `}
                     touch-move
                     ref={(el) => (cubosRef.current[fichaId] = el)}
                   ></a-box>

@@ -3,6 +3,7 @@ import { auth, db } from "../../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { crearJuegoEnFirestore, obtenerJuegosPorDocente } from "../../services/juegosService";
 import { toast } from "react-toastify";
+import "../../assets/styles/docente/crearjuego.css"; 
 
 export default function CrearJuego({ isOpen, onClose, onCreated }) {
   const [usuario, setUsuario] = useState(null);
@@ -98,7 +99,7 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
             />
           </div>
 
-          <div className="form-row form-row--inline">
+          <div className="switch-container">
             <label htmlFor="visibilidad" className="switch-label">
               <span>{publico ? "Juego Público" : "Juego Privado"}</span>
               <div className="switch">
@@ -112,7 +113,7 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
               </div>
             </label>
           </div>
-
+          
           <div className="modal-actions">
             <button
               type="button"
