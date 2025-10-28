@@ -215,12 +215,11 @@ const ModeloSonido = () => {
 
     const nuevo = {
       ...sonidoSeleccionado,
-      modeloAsociado: modelo.url,   // mover asociación
+      modeloAsociado: modelo.url,   
     };
 
     setSonidoSeleccionado(nuevo);
 
-    // Mantén trazabilidad en sessionStorage
     sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(nuevo));
     sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
     sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
