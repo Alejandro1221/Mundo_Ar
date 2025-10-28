@@ -72,3 +72,9 @@
   letter-spacing: .02em;
   margin-bottom: 4px;
 }
+
+.acciones-modelo-item{
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

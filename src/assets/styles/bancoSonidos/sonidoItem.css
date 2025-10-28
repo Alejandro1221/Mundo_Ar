@@ -5,7 +5,7 @@
   border: 1px solid var(--ui-disabled-border, #e9eef3);
   border-radius: 12px;
   box-shadow: var(--sombra-suave);
-  padding: 12px;                 /* antes 20px */
+  padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,14 +18,16 @@
   border-color: rgba(0,0,0,.12);
 }
 
+/* Encabezado */
 .sonido-card-header{
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.sonido-card-header .sonido-nombre{ 
-  text-transform: capitalize; 
+.sonido-card-header .sonido-nombre{
+  word-break: break-word;
+  text-transform: capitalize;
   font-weight: 700;
 }
 .sonido-categoria{
@@ -35,80 +37,142 @@
   opacity: .75;
 }
 
+/* Audio */
 .sonido-audio{
   width: 100%;
-  height: 36px;                  
+  height: 36px;
   max-width: 100%;
   border-radius: 8px;
   background: #f7f9fc;
   outline: none;
   margin-top: 4px;
 }
-.sonido-card > .btn.btn--select{
-   width: 100%;
-   justify-content: center;
-   margin-top: 10px;
-}
-.row-actions{ 
-  display:flex; 
-  gap:8px; 
-  margin-top:10px; 
-}
 
-.form-row{ 
-  display:flex; 
-  flex-direction:column; 
-  gap:6px; margin:8px 0; 
-  text-align:left; 
-}
-.input{ 
-  padding:8px 10px; 
-  border:1px solid #ddd;
-  Border-radius:8px; 
-  outline: none;
-  }
-
-  .input:focus{
-  border-color: var(--pastel-azul, #7cc4d9);
-  box-shadow: 0 0 0 3px rgba(124,196,217,.25);
-}
-
-.file{ 
-  padding:6px 0; 
-}
-
-.sonido-card-header .sonido-nombre{ word-break: break-word; }
-
-
+/* Acciones de tarjeta */
 .row-actions{
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
+  display:flex;
+  gap:8px;
+  margin-top:10px;
   justify-content: center;
   width: 100%;
   flex-wrap: wrap;
 }
 
+/* Botón icono */
 .btn-icon{
-  inline-size: 32px;   /* antes 40px */
-  block-size: 32px;    /* antes 36px */
+  inline-size: 32px;
+  block-size: 32px;
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #e0e6ed;
-  border-radius: 8px;   /* un poco más compacto */
+  border-radius: 8px;
   background: #fff;
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease, transform .05s;
-  font-size: 14px;      /* icono/emoji más pequeño */
-  line-height: 1;       /* evita que se descentre */
+  font-size: 14px;
+  line-height: 1;
 }
 .btn-icon:hover{ background:#f6f6f6; }
 .btn-icon:active{ transform: translateY(1px); }
-
-.btn-icon--danger{
-  background:#ffe8e8;
-  border-color:#f0b3b3;
-}
+.btn-icon--danger{ background:#ffe8e8; border-color:#f0b3b3; }
 .btn-icon--danger:hover{ background:#ffdcdc; }
+
+/* ===== Modal Sonidos ===== */
+
+/* Input de texto del modal */
+.modal-window .modal-input{
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--texto-principal);
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+.modal-window .modal-input::placeholder{ color:#9aa3af; }
+.modal-window .modal-input:focus{
+  border-color: var(--pastel-azul, #7cc4d9);
+  box-shadow: 0 0 0 3px rgba(124,196,217,.25);
+  outline: none;
+}
+
+/* Cuerpo del modal (sin overflow horizontal) */
+.modal-window .modal-body{
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden !important;
+  max-width: 100%;
+}
+
+/* (FIX) Asegura que los hijos no desborden */
+.modal-window .modal-body > *{
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Separación entre filas (más espacio entre campos) */
+.modal-window .form-row{
+  display:flex;
+  flex-direction:column;
+  gap: 6px;
+  margin-bottom: 22px;          /* ← más separación */
+  text-align:left;
+}
+.modal-window .form-row label{
+  font-weight:600;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color:#333;
+}
+
+/* Input file nativo */
+.modal-window .form-row .file{
+  display:block;
+  width:100%;
+  max-width:100%;
+  font-size:.95rem;
+  border:1px solid #e5e7eb;
+  border-radius:8px;
+  background:#fff;
+}
+.modal-window .form-row .file::file-selector-button,
+.modal-window .form-row .file::-webkit-file-upload-button{
+  min-width:150px;
+  padding:10px 0;
+  border:none;
+  border-radius:8px;
+  background:var(--pastel-indigo);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  margin-right:12px;
+  transition: filter .15s ease;
+  vertical-align: middle;
+}
+.modal-window .form-row .file:hover::file-selector-button,
+.modal-window .form-row .file:hover::-webkit-file-upload-button{
+  filter:brightness(1.1);
+}
+
+/* Botonera del modal */
+.modal-window .modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  flex-wrap:wrap;
+  max-width:100%;
+}
+.modal-actions .btn{
+  min-width:150px;
+  text-align:center;
+  padding:10px 0;
+  border-radius:8px;
+  font-weight:600;
+  font-size:.95rem;
+}
+.btn--primary{ background:var(--pastel-azul); color:#fff; border:none; }
+.btn--danger{  background:var(--pastel-rosa); color:#fff; border:none; }

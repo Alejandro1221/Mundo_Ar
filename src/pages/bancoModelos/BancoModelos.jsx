@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { obtenerModelos, eliminarModelo } from "../../services/modelosService";
+import { obtenerModelos, eliminarModelo, actualizarModelo,  reemplazarArchivoModelo} from "../../services/modelosService";
 import { obtenerCategorias} from "../../services/categoriasService"; 
 import { useNavigate, useLocation } from "react-router-dom";
 import ModeloItem from "../../components/ModeloItem";
 import FormularioSubida from "./FormularioSubida";
-import EliminarCategoria from "./EliminarCategoria";
+import ModalEditarModelo from "./ModalEditarModelo";
 import { useSeleccionModelos } from "../../hooks/useSeleccionModelos";
 import "../../assets/styles/bancoModelos/bancoModelos.css";
 import MenuHamburguesa from "../../components/MenuHamburguesa";
-
 
 const BancoModelos = () => {
   const [activeModal, setActiveModal] = useState(null);
@@ -18,6 +17,14 @@ const BancoModelos = () => {
   const [busqueda, setBusqueda] = useState("");
   const [, setModelosDesvaneciendo] = useState([]);
 
+  const [editOpen, setEditOpen] = useState(false);
+  const [modeloEdit, setModeloEdit] = useState(null);
+  const [cargando, setCargando] = useState(false);
+  const [progreso, setProgreso] = useState(0);
+
+  const abrirEditar = (m) => { setModeloEdit(m); setEditOpen(true); };
+  const cerrarEditar = () => { setEditOpen(false); setModeloEdit(null); setProgreso(0); setCargando(false); };
+
   const location = useLocation();
   const navigate = useNavigate();
   const desdePlantilla = Boolean(location.state?.desdePlantilla) || sessionStorage.getItem("seleccionandoModelos") === "1";
@@ -25,7 +32,7 @@ const BancoModelos = () => {
   const casillaId = location.state?.casillaId || sessionStorage.getItem("casillaId");
   const [pagina, setPagina] = useState(1);
   const TAM_PAGINA = 8;
-
+ 
   useEffect(() => {
     setPagina(1);
   }, [categoriaSeleccionada, busqueda]);
@@ -41,7 +48,7 @@ const BancoModelos = () => {
   
           if (!modelosCargados) throw new Error("No se pudieron cargar los modelos");
   
-          setCategorias(["Todos", ...categoriasCargadas]);
+          setCategorias(["Todos", ...(categoriasCargadas || [])]);
           setModelos(modelosCargados);
         } catch (error) {
           console.error("❌ Error al cargar modelos:", error);
@@ -129,9 +136,16 @@ const manejarEliminacion = async (modelo) => {
 };
 
 useEffect(() => {
-  const onKey = (e) => e.key === "Escape" && setActiveModal(null);
+  const onKey = (e) => {
+    if (e.key === "Escape") {
+      if (activeModal) setActiveModal(null);
+      else if (editOpen) cerrarEditar();
+    }
+  };
 
-  if (activeModal) {
+  const isOpen = Boolean(activeModal) || Boolean(editOpen);
+
+  if (isOpen) {
     document.body.classList.add("modal-open");
     window.addEventListener("keydown", onKey);
   } else {
@@ -143,7 +157,35 @@ useEffect(() => {
     document.body.classList.remove("modal-open");
     window.removeEventListener("keydown", onKey);
   };
-}, [activeModal]);
+}, [activeModal, editOpen]);
+
+const onSaveEdicion = async ({ nombre, categoria, archivo }) => {
+    try {
+      setCargando(true);
+      setProgreso(0);
+
+      if (archivo) {
+        const res = await reemplazarArchivoModelo({
+          id: modeloEdit.id,
+          archivoNuevo: archivo,
+          categoriaDestino: categoria,
+          urlAnterior: modeloEdit.modelo_url,
+          setProgreso,
+        });
+        setModelos(prev => prev.map(m => m.id === modeloEdit.id ? { ...m, modelo_url: res.modelo_url, categoria: res.categoria, nombre } : m));
+        await actualizarModelo(modeloEdit.id, { nombre });
+      } else {
+        await actualizarModelo(modeloEdit.id, { nombre, categoria });
+        setModelos(prev => prev.map(m => m.id === modeloEdit.id ? { ...m, nombre, categoria } : m));
+      }
+
+      cerrarEditar();
+    } catch (e) {
+      console.error(e);
+      alert("No se pudo guardar la edición.");
+      setCargando(false);
+    }
+  };
 
 
 return (
@@ -157,9 +199,11 @@ return (
           <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
             Subir modelo
           </button>
-          <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
-            Eliminar categoría
-          </button>
+          {/* 
+            <button className="btn btn--danger" onClick={() => setActiveModal("eliminarCategoria")}>
+              Eliminar categoría
+            </button>
+            */}
         </>
       ) : (
         <button className="btn btn--primary" onClick={confirmarSeleccion}>
@@ -203,42 +247,7 @@ return (
         </>
       )}
 
-      {/* Modal: Eliminar Categoría */}
-      {activeModal === "eliminarCategoria" && (
-        <>
-          <div className="modal-backdrop" onClick={() => setActiveModal(null)} aria-hidden="true" />
-          <div
-            className="modal-window"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="modal-eliminar-titulo"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="modal-header">
-              <h2 id="modal-eliminar-titulo">Eliminar categoría</h2>
-              <button
-                type="button"
-                className="menu-close"
-                onClick={() => setActiveModal(null)}
-                aria-label="Cerrar"
-              >
-                ❌
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <EliminarCategoria
-                categorias={categorias}
-                onClose={() => setActiveModal(null)}
-                onDeleted={(cat) => {
-                  setCategorias((prev) => prev.filter((c) => c !== cat));
-                  setCategoriaSeleccionada("Todos");
-                }}
-              />
-            </div>
-          </div>
-        </>
-      )}
+    
       {/* Filtros: categoría + búsqueda */}
       <div className="filtros-modelos">
         <select
@@ -277,6 +286,7 @@ return (
                 esPlantilla={desdePlantilla}
                 manejarSeleccion={desdePlantilla ? manejarSeleccion : null}
                 manejarEliminacion={!desdePlantilla ? manejarEliminacion : null}
+                manejarEditar={!desdePlantilla ? abrirEditar : null}
                 seleccionado={desdePlantilla ? modelosSeleccionados.some((m) => m.id === modelo.id) : false}
               />
             ))
@@ -300,6 +310,15 @@ return (
           ✅ Confirmar Selección
         </button>
       )}
+      <ModalEditarModelo
+        abierto={editOpen}
+        modelo={modeloEdit}
+        categorias={categorias.filter((c) => c !== "Todos")}
+        onClose={cerrarEditar}
+        onSave={onSaveEdicion}
+        cargando={cargando}
+        progreso={progreso}
+      />
     </div>
   );
 }  

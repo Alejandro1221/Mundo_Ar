@@ -1,3 +1,6 @@
+/* Banco de Modelos CSS */
+
+/* Estructura principal */
 .banco-modelos{
   max-width: 960px;
   margin: 20px auto;
@@ -13,7 +16,7 @@
   height: 100dvh;      
   overflow: hidden;     
 }
-
+/* Contenedor scrollable */
 .modelos-scroll{
   flex: 1 1 auto;
   min-height: 0;                 
@@ -23,7 +26,7 @@
   flex-direction: column;
   padding-bottom: 96px;
 }
-
+/* Lista de modelos */
 .lista-modelos{
   width: min(100% - 32px, var(--frame-w, 960px));
   margin: 0 auto;
@@ -32,7 +35,7 @@
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   padding-bottom: 12px;         
 }
-
+/* Modal */
 .fade-out {
   opacity: 0;
   transform: scale(0.95);
@@ -81,22 +84,29 @@
 
 .modal-body {
   padding: 16px;
-  overflow: auto;
+  overflow-y: auto;                         
+  max-height: calc(85vh - 56px); 
+  box-sizing: border-box;
+}
+.modal-body{
+  overflow-y: auto;
+  overflow-x: hidden;         
+  max-height: calc(85vh - 56px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.modal-input {
-  width: 100%;
-  padding: 10px 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+.modal-body > *{
+  min-width: 0;                
+  max-width: 100%;
+  box-sizing: border-box;
 }
-
 .modal-actions {
   display: flex; justify-content: flex-end; gap: 10px;
   margin-top: 14px;
 }
-
+/* Filtros */
 .filtros-modelos{
   width: min(100% - 32px, var(--frame-w, 960px));
   margin: 8px auto 18px;
@@ -146,7 +156,7 @@
 
 .titulo-pagina{
   width: min(100% - 32px, var(--frame-w, 960px));
-  margin: 500px auto 12px;
+  margin: 120px auto 12px;
   text-align: center;      
 }
 
@@ -213,5 +223,94 @@
 }
 
 body.modal-open .paginador{
-  display: none; /* o visibility:hidden; */
+  display: none; 
+}
+
+/* ===== Input file del modal de modelos (estilo nativo) ===== */
+.modal-body .file {
+  display: block;
+  width: 100%;
+  font-size: 0.95rem;
+  /* Evita que ocupe toda la altura visual: */
+  padding: 0; 
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Botón nativo (estándar y WebKit) */
+.modal-body .file::file-selector-button,
+.modal-body .file::-webkit-file-upload-button {
+  min-width: 150px;        /* igual que tus otros botones */
+  padding: 10px 0;         /* misma altura visual */
+  border: none;
+  border-radius: 8px;
+  background: var(--pastel-indigo);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 12px;      
+  transition: filter .15s ease, transform .06s ease;
+}
+.modal-body .file:hover::file-selector-button,
+.modal-body .file:hover::-webkit-file-upload-button {
+  filter: brightness(1.1);
+}
+
+.modal-body .file:disabled {
+  background: var(--ui-disabled-bg);
+  color: var(--ui-disabled-text);
+  border-color: var(--ui-disabled-border);
+  cursor: not-allowed;
+}
+.modal-body .file:disabled::file-selector-button,
+.modal-body .file:disabled::-webkit-file-upload-button {
+  background: var(--ui-disabled-bg);
+  color: #fff;                 
+  cursor: not-allowed;
+  filter: none;
+  transform: none;
+}
+
+.nombre-modelo { 
+  margin-bottom: 4px !important;
+}
+
+.modal-actions .btn {
+  min-width: 150px;            
+  text-align: center;
+  padding: 10px 0;            
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: filter 0.15s ease, transform 0.06s ease;
+}
+
+
+.btn--secondary {
+  background: var(--pastel-indigo);
+  color: #fff;
+  border: none;
+}
+
+.btn--secondary:hover {
+  filter: brightness(1.1);
+}
+
+.btn--primary {
+  background: var(--pastel-azul);
+  color: #fff;
+  border: none;
+}
+
+.btn--primary:hover {
+  filter: brightness(1.1);
+}
+
+/* Espaciado entre botones */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 14px;
 }

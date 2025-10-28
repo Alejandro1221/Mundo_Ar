@@ -51,7 +51,6 @@ const BancoSonidos = () => {
     cargarDatos();
   }, []);
 
-  // CAMBIO: reset de página cuando cambian filtros o búsqueda
   useEffect(() => {
     setPagina(1);
   }, [categoriaSeleccionada, busqueda]);
@@ -118,9 +117,7 @@ const BancoSonidos = () => {
             <button className="btn btn--primary" onClick={() => setActiveModal("subir")}>
               Subir sonido
             </button>
-            <button className="btn btn--danger" onClick={() => setActiveModal("eliminar")}>
-              Eliminar categoría
-            </button>
+        
           </div>
 
           {/* Filtros */}
@@ -197,52 +194,6 @@ const BancoSonidos = () => {
             </>
           )}
 
-          {/* Modal: Eliminar categoría */}
-          {activeModal === "eliminar" && (
-            <>
-              <div className="modal-backdrop" onClick={() => setActiveModal(null)} />
-              <div
-                className="modal-window"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="modal-eliminar-titulo"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="modal-header">
-                  <h2 id="modal-eliminar-titulo">Eliminar categoría</h2>
-                  <button className="menu-close" onClick={() => setActiveModal(null)} aria-label="Cerrar">❌</button>
-                </div>
-                <div className="modal-body">
-                    <label htmlFor="categoriaEliminar">Elige la categoría a eliminar</label>
-                  <select
-                    className="modal-select"
-                    value={categoriaAEliminar}
-                    onChange={(e) => setCategoriaAEliminar(e.target.value)}
-                    aria-label="Selecciona una categoría a eliminar"
-                  >
-                    <option value="">— Selecciona categoría —</option>
-                    {categorias
-                      .filter((c) => c !== "Todos")
-                      .map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                  </select>
-                  <div className="modal-actions">
-                    <button className="btn btn--secondary" onClick={() => setActiveModal(null)}>
-                      Cancelar
-                    </button>
-                    <button
-                      className="btn btn--danger"
-                      onClick={async () => { await manejarEliminacionCategoria(); setActiveModal(null); }}
-                      disabled={!categoriaAEliminar}  
-                    >
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
           
           <div className="sonidos-scroll">
             <div className="lista-sonidos">

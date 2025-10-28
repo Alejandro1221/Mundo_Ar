@@ -207,6 +207,27 @@ const ModeloSonido = () => {
     }
   };
 
+  const cambiarAsignacionDeSonido = (modelo) => {
+    if (!sonidoSeleccionado) return;
+
+    // Pausar si estaba reproduciendo
+    if (audioRef.current) { audioRef.current.pause(); setReproduciendo(false); }
+
+    const nuevo = {
+      ...sonidoSeleccionado,
+      modeloAsociado: modelo.url,   // mover asociación
+    };
+
+    setSonidoSeleccionado(nuevo);
+
+    // Mantén trazabilidad en sessionStorage
+    sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(nuevo));
+    sessionStorage.setItem("modeloAsociadoParaSonido", modelo.url);
+    sessionStorage.setItem("modeloSeleccionadoParaSonido", JSON.stringify(modelo));
+
+    mostrarMensaje(`Sonido reasignado a "${modelo.nombre}".`, "success");
+  };
+
   const quitarSonidoAsignado = async () => {
     try {
       if (audioRef.current) { audioRef.current.pause(); }
@@ -324,7 +345,7 @@ return (
 
                     <div className="acciones-modelo">
                       <button className="btn btn--danger" onClick={() => eliminarModelo(modelo.url)}>
-                        🗑️ Eliminar
+                        Eliminar
                       </button>
 
                       {!sonidoSeleccionado && (
@@ -338,6 +359,16 @@ return (
                           }}
                         >
                           Asignar 🎵
+                        </button>
+                      )}
+
+                      {sonidoSeleccionado && sonidoSeleccionado.modeloAsociado !== modelo.url && (
+                        <button
+                          className="btn btn--secondary"
+                          onClick={() => cambiarAsignacionDeSonido(modelo)}
+                          title="Mover el sonido a este modelo"
+                        >
+                          Cambiar asignación
                         </button>
                       )}
                     </div>
@@ -359,7 +390,7 @@ return (
 
                         {/* Opcional: quita esta línea si no quieres mostrar “Quitar” */}
                         <button type="button" className="link-remove" onClick={quitarSonidoAsignado}>
-                          Quitar
+                          🗑️ 
                         </button>
                       </div>
                     ) : (

@@ -128,11 +128,10 @@ const SonidoItem = ({ sonido, setSonidos, modoSeleccion = false, onSeleccionar }
               <button className="menu-close" onClick={cerrarEdicion} aria-label="Cerrar">❌</button>
             </div>
             <div className="modal-body">
-              {/* ——— tu formulario tal cual ——— */}
               <div className="form-row">
                 <label>Nombre</label>
                 <input
-                  className="input"
+                  className="modal-input"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
                   placeholder="Nombre del sonido"
