@@ -5,7 +5,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../assets/styles/docente/clasificacionModelos.css";
 import Breadcrumbs from "../components/Breadcrumbs";
-
+import { esperarContextoJuego } from "../utils/esperarContextoJuego";
 
 const ClasificacionModelos = () => {
   const navigate = useNavigate();
@@ -43,24 +43,26 @@ const ClasificacionModelos = () => {
   };
 
 
-  useEffect(() => {
-    let alive = true;
+useEffect(() => {
+  let alive = true;
 
-    (async () => {
-      const idJuego = juegoId || sessionStorage.getItem("juegoId");
-      const idCasilla = casillaId || sessionStorage.getItem("casillaId");
+  esperarContextoJuego((idJuego, idCasilla) => {
+    if (!idJuego || !idCasilla) {
+      setMensaje({
+        texto: "Error: No se encontró el juego o la casilla (contexto inválido).",
+        tipo: "error",
+      });
+      navigate("/docente/configurar-casillas", { replace: true });
+      return;
+    }
+    sessionStorage.setItem("desdeDocente", "1");
+    cargarConfiguracion(() => alive);
+  });
 
-      if (!idJuego || !idCasilla) {
-        setMensaje({ texto: "Error: No se encontró el juego o la casilla.", tipo: "error" });
-        navigate("/docente/configurar-casillas", { replace: true });
-        return;
-      }
-
-      await cargarConfiguracion(() => alive);
-    })();
-
-    return () => { alive = false; };
-  }, []);
+  return () => {
+    alive = false;
+  };
+}, [navigate]);
 
   useEffect(() => {
     if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0 && grupos === null) {
@@ -92,7 +94,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
     const juegoRef = doc(db, "juegos", juegoId);
     const juegoSnap = await getDoc(juegoRef);
 
-    if (!isAlive()) return; // por si tarda la red
+    if (!isAlive()) return; 
 
     if (juegoSnap.exists()) {
       const idx = Number(casillaId);
@@ -488,6 +490,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
                 grupo: asignaciones[m.url] ?? asignaciones[m.id] ?? m.grupo ?? null,
               }));
 
+              sessionStorage.setItem("desdeDocente", "1");
               sessionStorage.setItem("modoVistaPrevia", "true");
               sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
