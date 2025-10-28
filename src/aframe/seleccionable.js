@@ -30,7 +30,6 @@ if (!AFRAME.components["seleccionable"]) {
       el.sceneEl.canvas.addEventListener("touchend", () => {
         startTouch = null;
 
-        // ✅ SOLO si existe verificarClasificacion
         if (typeof window.verificarClasificacion === "function") {
           window.verificarClasificacion(el);
         }

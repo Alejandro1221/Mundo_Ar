@@ -19,6 +19,7 @@ const ClasificacionModelos = () => {
   const [edits, setEdits] = useState({});
   const MAX_GRUPOS = 3;
   const MIN_GRUPOS = 2;
+  const MAX_MODELOS = 6;
 
   const normalizarGrupos = (grs) => {
     const base = Array.isArray(grs) && grs.length ? grs.slice(0, MAX_GRUPOS) : ["Grupo 1", "Grupo 2"];
@@ -68,11 +69,22 @@ const ClasificacionModelos = () => {
   }, [modelosSeleccionados, grupos]);
 
 
-  useEffect(() => {
-    if (!mensaje.texto) return;
-    const t = setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
-    return () => clearTimeout(t);
-  }, [mensaje]);
+useEffect(() => {
+  if (!mensaje.texto) return;
+  const t = setTimeout(() => setMensaje({ texto: "", tipo: "" }), 3000);
+  return () => clearTimeout(t);
+}, [mensaje]);
+
+useEffect(() => {
+  if (!Array.isArray(modelosSeleccionados)) return;
+  if (modelosSeleccionados.length > MAX_MODELOS) {
+    setModelosSeleccionados(modelosSeleccionados.slice(0, MAX_MODELOS));
+    setMensaje({
+      texto: `Máximo ${MAX_MODELOS} modelos. Se recortó la lista.`,
+      tipo: "error",
+    });
+  }
+}, [modelosSeleccionados]);
 
 
 const cargarConfiguracion = async (isAlive = () => true) => {
@@ -101,13 +113,23 @@ const cargarConfiguracion = async (isAlive = () => true) => {
         if (!isAlive()) return;
 
         setModelosSeleccionados(prev => {
-          const mapa = new Map(prev.map(m => [m.id || m.url, m]));
-          modelosGuardados.forEach(m => {
-            if (!m?.url) return;
-            mapa.set(m.id || m.url, m);
-          });
-          return Array.from(mapa.values());
+        const mapa = new Map(prev.map(m => [m.id || m.url, m]));
+        modelosGuardados.forEach(m => {
+          if (!m?.url) return;
+          mapa.set(m.id || m.url, m);
         });
+
+        const combinados = Array.from(mapa.values());
+
+        if (combinados.length > MAX_MODELOS) {
+          setMensaje({
+            texto: `Se permiten máximo ${MAX_MODELOS} modelos. Se usaron los primeros ${MAX_MODELOS}.`,
+            tipo: "error",
+          });
+        }
+
+        return combinados.slice(0, MAX_MODELOS);
+      });
 
         const topados = normalizarGrupos(gruposGuardados ?? ["Grupo 1", "Grupo 2"]);
         if (isAlive()) setGrupos(topados);
@@ -124,9 +146,16 @@ const cargarConfiguracion = async (isAlive = () => true) => {
   }
 };
 
-
-
   const guardarConfiguracion = async () => {
+    if (modelosSeleccionados.length > MAX_MODELOS) {
+      mostrarMensaje(`❌ Máximo ${MAX_MODELOS} modelos. Elimina algunos antes de guardar.`, "error");
+      return;
+    }
+
+    if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
+      mostrarMensaje(`❌ Debes tener al menos ${MIN_GRUPOS} grupos.`, "error");
+      return;
+    }
     if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
       mostrarMensaje(`❌ Debes tener al menos ${MIN_GRUPOS} grupos.`, "error");
       return;
@@ -342,26 +371,39 @@ const cargarConfiguracion = async (isAlive = () => true) => {
           <button
             type="button"
             className="btn btn--secondary"
-              onClick={() => {
-                sessionStorage.setItem("juegoId", juegoId);
-                sessionStorage.setItem("casillaId", casillaId);
-                sessionStorage.setItem("paginaAnterior", window.location.pathname);
+            onClick={() => {
+              sessionStorage.setItem("juegoId", juegoId);
+              sessionStorage.setItem("casillaId", casillaId);
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
 
-                sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
-                sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-                sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
-                sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
-                sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-                sessionStorage.setItem("seleccionandoModelos", "1");
+              // Guardar estado actual por si vuelves del banco
+              sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+              sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
+              sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
+              sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
+              sessionStorage.setItem("seleccionandoModelos", "1");
 
-                navigate("/docente/banco-modelos", {
-                  state: { desdePlantilla: true, juegoId, casillaId },
-                });
-              }}
+              navigate("/docente/banco-modelos", {
+                state: { desdePlantilla: true, juegoId, casillaId },
+              });
+            }}
+            disabled={modelosSeleccionados.length >= MAX_MODELOS}              
+            title={
+              modelosSeleccionados.length >= MAX_MODELOS
+                ? `Límite alcanzado (${MAX_MODELOS})`
+                : undefined
+            }                                                                  
           >
             Agregar modelos
           </button>
         </div>
+
+        {modelosSeleccionados.length >= MAX_MODELOS && (
+          <p style={{ color: "red", fontWeight: "bold" }}>
+            Límite alcanzado — no puedes agregar más modelos.
+          </p>
+        )}
 
         <div className="modelos-grid">
           {modelosSeleccionados.length > 0 ? (
@@ -467,6 +509,7 @@ const cargarConfiguracion = async (isAlive = () => true) => {
                 !Array.isArray(grupos) ||
                 grupos.length < MIN_GRUPOS ||
                 modelosSeleccionados.length === 0 ||
+                modelosSeleccionados.length > MAX_MODELOS ||
                 modelosSeleccionados.some(m =>!(asignaciones[m.url] ?? asignaciones[m.id] ?? m.grupo))
               }
             >
