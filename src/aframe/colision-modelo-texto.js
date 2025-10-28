@@ -49,10 +49,22 @@ if (!AFRAME.components["colision-modelo-texto"]) {
         const total = document.querySelectorAll("[modelo-meta]").length;
         const bloqueados = document.querySelectorAll(".bloqueado").length;
         if (bloqueados === total) {
+        if (!window._actividadTextoDone) {
+          window._actividadTextoDone = true;
+
           setTimeout(() => {
             mostrarMensajeFlotante("🎉 ¡Actividad completada!");
-          }, 1200);
+          }, 200);
+
+          setTimeout(() => {
+            window.dispatchEvent(
+              new CustomEvent("actividad-texto-completada", {
+                detail: { total, aciertos: bloqueados },
+              })
+            );
+          }, 250);
         }
+      }
       }
     },
   });

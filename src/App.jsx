@@ -5,7 +5,7 @@ import AppRoutes from "./routes/AppRoutes";
 function App() {
   return (
     <Router>
-      <AppRoutes /> {/* 🔹 Aquí se renderizan todas las rutas de tu app */}
+      <AppRoutes /> 
     </Router>
   );
 }

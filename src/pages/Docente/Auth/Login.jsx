@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../../services/firebaseConfig";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -13,6 +13,9 @@ const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // ✅ Evita mostrar el toast más de una vez
+  const toastShown = useRef(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -20,8 +23,13 @@ const Login = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
       console.log("Usuario autenticado:", userCredential.user);
-      toast.success("¡✅ Inicio de sesión exitoso!");
-      setTimeout(() => navigate("/docente/dashboard"), 1500);
+
+      if (!toastShown.current) {
+        toastShown.current = true;
+        toast.success("✅ ¡Inicio de sesión exitoso!");
+      }
+
+      setTimeout(() => navigate("/docente/dashboard", { replace: true }), 1500);
     } catch (error) {
       console.error("❌ Error durante el inicio de sesión:", error);
       let mensajeError = "Error al iniciar sesión.";
@@ -53,8 +61,13 @@ const Login = () => {
       const usuario = resultado.user;
 
       console.log("✅ Sesión con Google:", usuario);
-      toast.success("¡Inicio de sesión exitoso con Google!");
-      navigate("/docente/dashboard");
+
+      if (!toastShown.current) {
+        toastShown.current = true;
+        toast.success("¡Inicio de sesión exitoso con Google!");
+      }
+
+      navigate("/docente/dashboard", { replace: true });
     } catch (error) {
       console.error("❌ Error al iniciar sesión con Google:", error);
       setError("Ocurrió un error al iniciar sesión con Google.");
@@ -62,13 +75,16 @@ const Login = () => {
   };
 
   return (
-    <div className="auth-container" style={{
-      backgroundImage: `url(${fondoAutenticacion})`,
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      backgroundColor: "var(--pastel-azul)"
-    }}>
+    <div
+      className="auth-container"
+      style={{
+        backgroundImage: `url(${fondoAutenticacion})`,
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+        backgroundColor: "var(--pastel-azul)",
+      }}
+    >
       <div className="auth-box login-box">
         <h1>Ingreso Docente</h1>
         {error && <p className="error-message">{error}</p>}
@@ -81,12 +97,18 @@ const Login = () => {
             <Link to="/docente/recuperar">¿Olvidaste tu contraseña?</Link>
           </div>
 
-          <button type="submit" className="auth-button primary-btn">Ingresar</button>
+          <button type="submit" className="auth-button primary-btn">
+            Ingresar
+          </button>
         </form>
 
         <div className="button-group">
           <button type="button" className="auth-button google-signin-btn" onClick={iniciarSesionConGoogle}>
-            <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google icon" style={{ width: "20px", marginRight: "10px" }} />
+            <img
+              src="https://developers.google.com/identity/images/g-logo.png"
+              alt="Google icon"
+              style={{ width: "20px", marginRight: "10px" }}
+            />
             Iniciar sesión con Google
           </button>
         </div>
@@ -95,6 +117,7 @@ const Login = () => {
           <Link to="/register">Registrarse</Link>
         </div>
       </div>
+
       <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );

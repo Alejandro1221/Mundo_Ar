@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,useLocation } from "react-router-dom";
 import { useCasillas } from "../../hooks/useCasillas";
 import { db } from "../../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
@@ -10,9 +10,11 @@ import { ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../assets/styles/docente/configurarCasillas.css";
 
+
 const ConfigurarCasillas = () => {
   const { juegoId } = useParams(); 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [nombreJuego, setNombreJuego] = useState("");
   const [publico, setPublico] = useState(false);
@@ -50,32 +52,36 @@ const ConfigurarCasillas = () => {
     `/docente/configurar-casillas/${juegoId}/${slugRuta[plantilla] || plantilla}`;
   
 
-  useEffect(() => {
-      if (!juegoId) return navigate("/docente/dashboard");
-  
-      const cargarJuego = async () => {
-        try {
-          setLoadingJuego(true);
-          const ref = doc(db, "juegos", juegoId);
-          const snap = await getDoc(ref);
-          if (snap.exists()) {
-            const data = snap.data();
-            setNombreJuego(data?.nombre || "");
-            setPublico(Boolean(data?.publico));
-            // backups para Cancelar
-            setBackupNombre(data?.nombre || "");
-            setBackupPublico(Boolean(data?.publico));
-          }
-        } catch (e) {
-          notify({ message: "No se pudo cargar el juego", type: "error" });
-        } finally {
-          setLoadingJuego(false);
-        }
-      };
-  
-      cargarJuego();
-      cargarCasillas();
-    }, [juegoId, cargarCasillas, navigate]);
+useEffect(() => {
+  if (!juegoId) {
+    if (window.location.pathname !== "/docente/dashboard") {
+      navigate("/docente/dashboard", { replace: true });
+    }
+    return;
+  }
+
+  const cargarJuego = async () => {
+    try {
+      setLoadingJuego(true);
+      const ref = doc(db, "juegos", juegoId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data();
+        setNombreJuego(data?.nombre || "");
+        setPublico(Boolean(data?.publico));
+        setBackupNombre(data?.nombre || "");
+        setBackupPublico(Boolean(data?.publico));
+      }
+    } catch (e) {
+      notify({ message: "No se pudo cargar el juego", type: "error" });
+    } finally {
+      setLoadingJuego(false);
+    }
+};
+
+  cargarJuego();
+  cargarCasillas();
+}, [juegoId, cargarCasillas, navigate]);
   
 const startEdit = () => {
   setBackupNombre(nombreJuego);
@@ -121,7 +127,7 @@ const eliminarJuego = async () => {
   try {
     await eliminarJuegoPorId(juegoId);
     notify({ message: "Juego eliminado", type: "success" });
-    navigate("/docente/dashboard");
+    navigate("/docente/dashboard", { replace: true });
   } catch (e) {
     console.error(e);
     notify({
@@ -241,7 +247,7 @@ const eliminarJuego = async () => {
                       sessionStorage.setItem("casillaId", casillaSeleccionada);
                       
                       const ruta = rutaPlantilla(plantilla, juegoId);
-                      navigate(ruta);
+                      navigate(ruta, { state: { from: location.pathname } });
                     }}
                   >
                     Editar Plantilla

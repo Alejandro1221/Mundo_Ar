@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
 import { useAR } from "../../hooks/useAR";
@@ -11,6 +12,7 @@ import "../../aframe/seleccionable";
 const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   useAR();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // --- Estados principales ---
   const [modelos, setModelos] = useState([]);
@@ -27,21 +29,30 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   const juegoId = sessionStorage.getItem("juegoId");
   const casillaId = sessionStorage.getItem("casillaId");
 
+  const origen =
+    (location.state && location.state.from) ||
+    sessionStorage.getItem("paginaAnterior") ||
+    `/docente/configurar-casillas/${juegoId || ""}`;
+
   const MAX_MODELOS = 6;
   const GRID_COLS = 3;
   const GRID_ROWS = 2;
   const totalJugables = Math.min(modelos.length, MAX_MODELOS);
 
-  // Sincronizar modelo activo globalmente
   useEffect(() => {
     window.modeloActivoUrl = modeloActivo;
   }, [modeloActivo]);
 
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("modoVistaPrevia");
+    };
+  }, []);
 
-  // Cargar datos desde sesión o Firestore
+
+
   useEffect(() => {
     if (enVistaPrevia) {
-      // Datos de vista previa desde sessionStorage
       const modelosPrev = JSON.parse(sessionStorage.getItem("modelosSeleccionados") || "[]");
       const gruposGuardados = JSON.parse(sessionStorage.getItem("gruposSeleccionados") || "[]");
       const deducidos = [...new Set(modelosPrev.map(m => m.grupo).filter(Boolean))];
@@ -53,8 +64,6 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
       setCelebracion(celebracion);
       return;
     }
-
-    // Validación: si no hay IDs, regresar
     if (!juegoId || !casillaId) {
       const back = sessionStorage.getItem("paginaAnterior") || "/docente/dashboard";
       navigate(back, { replace: true });
@@ -195,7 +204,10 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
   // RENDERIZADO PRINCIPAL
   return (
     <div className="actividad-ra-container">
-      <HeaderActividad titulo="Clasifica los modelos en la categoria correspondiente" />
+      <HeaderActividad
+        titulo="Clasifica los modelos en la categoria correspondiente"
+        onBack={enVistaPrevia ? () => navigate(origen, { replace: true }) : undefined}
+      />
 
       {/* Escena de realidad aumentada */}
       <a-scene

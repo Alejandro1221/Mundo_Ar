@@ -1,20 +1,25 @@
-import React from "react";
 import "./HeaderActividad.css";
 
-const HeaderActividad = ({ titulo }) => {
-
+const HeaderActividad = ({ titulo, onBack }) => {
   const volver = () => {
+    if (onBack) {
+      onBack();
+      return;
+    }
+
     const modoVistaPrevia = sessionStorage.getItem("modoVistaPrevia");
     const paginaAnterior = sessionStorage.getItem("paginaAnterior");
 
     if (modoVistaPrevia && paginaAnterior) {
+      // Limpia datos temporales
       sessionStorage.removeItem("modoVistaPrevia");
       sessionStorage.removeItem("paginaAnterior");
 
       window.location.href = paginaAnterior;
-    } else {
-      window.location.href = "/estudiante/seleccionar-casilla";
+      return;
     }
+
+    window.location.href = "/estudiante/seleccionar-casilla";
   };
 
   return (

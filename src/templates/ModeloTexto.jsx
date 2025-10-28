@@ -20,6 +20,7 @@ const ModeloTexto = () => {
 
   const modelosKey = `modelosSeleccionados_${juegoId}_${casillaId}`;
   const celebracionKey = `celebracion_${juegoId}_${casillaId}`;
+  const MAX_MODELOS = 2;
 
 
   useEffect(() => {
@@ -33,23 +34,43 @@ const ModeloTexto = () => {
     }
   }, [juegoId, casillaId]);
 
+  useEffect(() => {
+  if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > MAX_MODELOS) {
+    const recortados = modelosSeleccionados.slice(0, MAX_MODELOS);
+    setModelosSeleccionados(recortados);
+    sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(recortados));
+    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(recortados));
+    mostrarMensaje(`Se recortó la lista a ${MAX_MODELOS} modelos.`, "info");
+  }
+}, [modelosSeleccionados.length]);
+
 
 const cargarConfiguracion = async () => {
   try {
     const key = `modelosSeleccionados_${juegoId}_${casillaId}`;
     const modelosGuardados = sessionStorage.getItem(key);
     const celebracionGuardada = sessionStorage.getItem("celebracionSeleccionada");
-    const celebracionPorCasilla = sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`); // ⬅️ NUEVO
+    const celebracionPorCasilla = sessionStorage.getItem(`celebracion_${juegoId}_${casillaId}`);
+
+    const aplicarLimite = (arr = []) => {
+      if (!Array.isArray(arr)) return [];
+      if (arr.length > MAX_MODELOS) {
+        mostrarMensaje(`Solo se permiten ${MAX_MODELOS} modelos. Se tomaron los primeros ${MAX_MODELOS}.`, "info");
+      }
+      return arr.slice(0, MAX_MODELOS);
+    };
 
     if (modelosGuardados) {
-      const nuevos = JSON.parse(modelosGuardados);
+      const nuevos = aplicarLimite(JSON.parse(modelosGuardados));
       setModelosSeleccionados(nuevos.map((m) => ({ ...m, texto: m.texto || "" })));
 
-      const origenCelebracion = celebracionPorCasilla || celebracionGuardada; // ⬅️ NUEVO
+      const origenCelebracion = celebracionPorCasilla || celebracionGuardada;
       if (origenCelebracion) {
         try { setCelebracion(JSON.parse(origenCelebracion)); } catch {}
       }
 
+      // Persistimos el recorte si se aplicó
+      sessionStorage.setItem(key, JSON.stringify(nuevos));
       cargadoDesdeSession.current = true;
       return;
     }
@@ -67,21 +88,15 @@ const cargarConfiguracion = async () => {
           ...modelo,
           texto: modelo.texto || "",
         }));
-
-        setModelosSeleccionados(modelosConTexto);
-        sessionStorage.setItem(key, JSON.stringify(modelosConTexto)); 
+        const limitados = aplicarLimite(modelosConTexto);
+        setModelosSeleccionados(limitados);
+        sessionStorage.setItem(key, JSON.stringify(limitados));
       }
 
-      if (casilla?.configuracion?.celebracion) { 
+      if (casilla?.configuracion?.celebracion) {
         setCelebracion(casilla.configuracion.celebracion);
-        sessionStorage.setItem(
-          `celebracion_${juegoId}_${casillaId}`,
-          JSON.stringify(casilla.configuracion.celebracion)
-        );
-        sessionStorage.setItem(
-          "celebracionSeleccionada",
-          JSON.stringify(casilla.configuracion.celebracion)
-        );
+        sessionStorage.setItem(`celebracion_${juegoId}_${casillaId}`, JSON.stringify(casilla.configuracion.celebracion));
+        sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(casilla.configuracion.celebracion));
       }
     }
   } catch (error) {
@@ -91,6 +106,10 @@ const cargarConfiguracion = async () => {
 
   // Guardar configuración en Firestore
   const guardarConfiguracion = async () => {
+    if (modelosSeleccionados.length > MAX_MODELOS) {
+      mostrarMensaje(`Máximo ${MAX_MODELOS} modelos. Elimina alguno para continuar.`, "error");
+      return;
+    }
     const faltanTextos = modelosSeleccionados.some(
       (modelo) => !modelo.texto?.trim()
     );
@@ -140,15 +159,12 @@ const cargarConfiguracion = async () => {
   };
 
   // Eliminar modelo
-  const eliminarModelo = (idModelo) => {
-  const nuevosModelos = modelosSeleccionados.filter((m) => m.id !== idModelo);
-  setModelosSeleccionados(nuevosModelos);
-
-  sessionStorage.setItem(
-    `modelosSeleccionados_${juegoId}_${casillaId}`,
-    JSON.stringify(nuevosModelos)
-  );
-};
+  const eliminarModelo = (idOrUrl) => {
+    const nuevos = modelosSeleccionados.filter(m => (m.id ?? m.url) !== idOrUrl);
+    setModelosSeleccionados(nuevos);
+    sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(nuevos));
+    sessionStorage.setItem("modelosSeleccionados", JSON.stringify(nuevos));
+  };
 
 return (
   <div className="modelo-texto-container">
@@ -163,11 +179,20 @@ return (
 
     <div className="modelos-config__bar">
       <h3>Modelos seleccionados</h3>
+
+      <span style={{ marginLeft: "auto", marginRight: 12, opacity: .8 }}>
+        {modelosSeleccionados.length}/{MAX_MODELOS}
+      </span>
+
       <button
         className="btn btn--secondary"
+        disabled={modelosSeleccionados.length >= MAX_MODELOS}
+        title={modelosSeleccionados.length >= MAX_MODELOS ? `Límite alcanzado (${MAX_MODELOS})` : ""}
         onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+          // 👇 pasa el límite al banco para que no deje elegir más de 2
+          sessionStorage.setItem("maxModelosPermitidos", String(MAX_MODELOS));
           navigate("/docente/banco-modelos", {
             state: { desdePlantilla: true, juegoId, casillaId },
           });
@@ -176,6 +201,13 @@ return (
         Agregar modelos
       </button>
     </div>
+
+    {modelosSeleccionados.length >= MAX_MODELOS && (
+          <p style={{ color: "red", fontWeight: "bold" }}>
+            Límite alcanzado — no puedes agregar más modelos.
+          </p>
+        )}
+
 
     <div className="modelos-grid">
       {modelosSeleccionados.length > 0 ? (
@@ -201,7 +233,7 @@ return (
               />
               <button
                 className="btn btn--danger"
-                onClick={() => eliminarModelo(modelo.id)}
+                onClick={() => eliminarModelo(modelo.id ?? modelo.url)}
               >
                 Eliminar
               </button>
@@ -266,7 +298,15 @@ return (
         Vista previa como estudiante
       </button>
 
-      <button className="btn btn--primary" onClick={guardarConfiguracion}>
+      <button
+        className="btn btn--primary"
+        onClick={guardarConfiguracion}
+        disabled={
+          modelosSeleccionados.length === 0 ||
+          modelosSeleccionados.length > MAX_MODELOS ||
+          modelosSeleccionados.some(m => !(m.texto ?? "").trim())
+        }
+      >
         Guardar configuración
       </button>
     </div>

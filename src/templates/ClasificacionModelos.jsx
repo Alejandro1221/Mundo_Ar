@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSeleccionModelos } from "../hooks/useSeleccionModelos";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../assets/styles/docente/clasificacionModelos.css";
 import Breadcrumbs from "../components/Breadcrumbs";
 
-
 const ClasificacionModelos = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [juegoId] = useState(sessionStorage.getItem("juegoId"));
   const [casillaId] = useState(sessionStorage.getItem("casillaId"));
   const { modelosSeleccionados, setModelosSeleccionados } = useSeleccionModelos(juegoId, casillaId);
@@ -21,52 +21,53 @@ const ClasificacionModelos = () => {
   const MIN_GRUPOS = 2;
   const MAX_MODELOS = 6;
 
-  const normalizarGrupos = (grs) => {
-    const base = Array.isArray(grs) && grs.length ? grs.slice(0, MAX_GRUPOS) : ["Grupo 1", "Grupo 2"];
-    const clean = [];
-    base.forEach((g, i) => {
-      const n = String(g || "").trim() || `Grupo ${i + 1}`;
-      if (!clean.includes(n)) clean.push(n);
-    });
-    while (clean.length < MIN_GRUPOS) clean.push(`Grupo ${clean.length + 1}`);
-    return clean.slice(0, MAX_GRUPOS);
-  };
+const normalizarGrupos = (grs) => {
+  const base = Array.isArray(grs) && grs.length ? grs.slice(0, MAX_GRUPOS) : ["Grupo 1", "Grupo 2"];
+  const clean = [];
+  base.forEach((g, i) => {
+    const n = String(g || "").trim() || `Grupo ${i + 1}`;
+    if (!clean.includes(n)) clean.push(n);
+  });
+  while (clean.length < MIN_GRUPOS) clean.push(`Grupo ${clean.length + 1}`);
+  return clean.slice(0, MAX_GRUPOS);
+};
 
 
-  const clampAsignaciones = (grs, asigs) => {
-    const set = new Set(grs || []);
-    const out = {};
-    Object.entries(asigs || {}).forEach(([k, v]) => {
-      if (set.has(v)) out[k] = v;
-    });
-    return out;
-  };
+
+const clampAsignaciones = (grs, asigs) => {
+  const set = new Set(grs || []);
+  const out = {};
+  Object.entries(asigs || {}).forEach(([k, v]) => {
+    if (set.has(v)) out[k] = v;
+  });
+  return out;
+};
 
 
-  useEffect(() => {
-    let alive = true;
+useEffect(() => {
+  let alive = true;
 
-    (async () => {
-      const idJuego = juegoId || sessionStorage.getItem("juegoId");
-      const idCasilla = casillaId || sessionStorage.getItem("casillaId");
+  (async () => {
+    const idJuego = juegoId || sessionStorage.getItem("juegoId");
+    const idCasilla = casillaId || sessionStorage.getItem("casillaId");
 
-      if (!idJuego || !idCasilla) {
-        setMensaje({ texto: "Error: No se encontró el juego o la casilla.", tipo: "error" });
-        navigate("/docente/configurar-casillas", { replace: true });
-        return;
-      }
-
-      await cargarConfiguracion(() => alive);
-    })();
-
-    return () => { alive = false; };
-  }, []);
-
-  useEffect(() => {
-    if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0 && grupos === null) {
-      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+    if (!idJuego || !idCasilla) {
+      setMensaje({ texto: "Error: No se encontró el juego o la casilla.", tipo: "error" });
+      navigate(`/docente/configurar-casillas/${idJuego ?? ""}`, { replace: true });
+      return;
     }
-  }, [modelosSeleccionados, grupos]);
+
+    await cargarConfiguracion(() => alive);
+  })();
+
+  return () => { alive = false; };
+}, []);
+
+useEffect(() => {
+  if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0 && grupos === null) {
+    setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+  }
+}, [modelosSeleccionados, grupos]);
 
 
 useEffect(() => {
@@ -79,12 +80,9 @@ useEffect(() => {
   if (!Array.isArray(modelosSeleccionados)) return;
   if (modelosSeleccionados.length > MAX_MODELOS) {
     setModelosSeleccionados(modelosSeleccionados.slice(0, MAX_MODELOS));
-    setMensaje({
-      texto: `Máximo ${MAX_MODELOS} modelos. Se recortó la lista.`,
-      tipo: "error",
-    });
+    setMensaje({ texto: `Máximo ${MAX_MODELOS} modelos. Se recortó la lista.`, tipo: "error" });
   }
-}, [modelosSeleccionados]);
+}, [modelosSeleccionados, MAX_MODELOS]);
 
 
 const cargarConfiguracion = async (isAlive = () => true) => {
@@ -149,11 +147,6 @@ const cargarConfiguracion = async (isAlive = () => true) => {
   const guardarConfiguracion = async () => {
     if (modelosSeleccionados.length > MAX_MODELOS) {
       mostrarMensaje(`❌ Máximo ${MAX_MODELOS} modelos. Elimina algunos antes de guardar.`, "error");
-      return;
-    }
-
-    if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
-      mostrarMensaje(`❌ Debes tener al menos ${MIN_GRUPOS} grupos.`, "error");
       return;
     }
     if (!Array.isArray(grupos) || grupos.length < MIN_GRUPOS) {
@@ -295,6 +288,14 @@ const cargarConfiguracion = async (isAlive = () => true) => {
     setAsignaciones(nuevas);
   };
 
+  const irAVistaPrevia = () => {
+  sessionStorage.setItem("modoVistaPrevia", "true");
+  sessionStorage.setItem("paginaAnterior", location.pathname);
+  navigate("/estudiante/vista-previa-clasificacion-modelos", {
+    state: { from: location.pathname },
+    replace: false,
+  });
+};
 
   return (
     <div className="docente-clasificacion-container">
@@ -374,9 +375,10 @@ const cargarConfiguracion = async (isAlive = () => true) => {
             onClick={() => {
               sessionStorage.setItem("juegoId", juegoId);
               sessionStorage.setItem("casillaId", casillaId);
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              //sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              sessionStorage.setItem("paginaAnterior", location.pathname);
 
-              // Guardar estado actual por si vuelves del banco
+              // Guardar estado actual si se vuelve desde banxco de modelos
               sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
               sessionStorage.setItem("gruposSeleccionados", JSON.stringify(grupos));
@@ -495,7 +497,9 @@ const cargarConfiguracion = async (isAlive = () => true) => {
               sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
               sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
 
-              navigate("/estudiante/vista-previa-clasificacion-modelos");
+              navigate("/estudiante/vista-previa-clasificacion-modelos", {
+                state: { from: location.pathname, juegoId, casillaId },
+              });
             }}
           >
             Vista previa como estudiante

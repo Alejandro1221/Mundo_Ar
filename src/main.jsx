@@ -7,11 +7,11 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { NotifyProvider } from "./components/NotifyProvider";  
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
+  //<StrictMode>
     <AuthProvider>
       <NotifyProvider>
         <App />
       </NotifyProvider>
     </AuthProvider>
-  </StrictMode>
+  //</StrictMode>
 );
