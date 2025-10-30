@@ -5,16 +5,21 @@ import Login from "../pages/Docente/Auth/Login";
 import DocenteRoutes from "./DocenteRoutes"; 
 import EstudianteRoutes from "./EstudianteRoutes";
 
+import FlowTracer from "../dev/FlowTracer";
+
 const AppRoutes = () => {
   return (
-    <Routes>
+    <>
+      <FlowTracer />
+
+      <Routes>
         <Route path="/" element={<Home />} /> 
         <Route path="/register" element={<Register />} /> 
         <Route path="/login" element={<Login />} /> 
         <Route path="/docente/*" element={<DocenteRoutes />} />
         <Route path="/estudiante/*" element={<EstudianteRoutes />} /> 
-       
-    </Routes>
+      </Routes>
+    </>
   );
 };
 

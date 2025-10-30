@@ -32,8 +32,6 @@ const normalizarGrupos = (grs) => {
   return clean.slice(0, MAX_GRUPOS);
 };
 
-
-
 const clampAsignaciones = (grs, asigs) => {
   const set = new Set(grs || []);
   const out = {};

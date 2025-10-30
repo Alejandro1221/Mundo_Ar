@@ -174,6 +174,8 @@ return (
               <button
                 className="icono-btn"
                 onClick={() => {
+                  sessionStorage.setItem("juegoId", juego.id);      
+                  sessionStorage.removeItem("casillaId");
                   sessionStorage.setItem("paginaAnterior", window.location.pathname);
                   navigate(`/docente/configurar-casillas/${juego.id}`);
                 }}
@@ -199,6 +201,8 @@ return (
       onCreated={(nuevo) => {
         setJuegos((prev) => [nuevo, ...prev]);
         setModalCrearOpen(false);
+        sessionStorage.setItem("juegoId", nuevo.id);          
+        sessionStorage.removeItem("casillaId");
         sessionStorage.setItem("paginaAnterior", window.location.pathname);
         navigate(`/docente/configurar-casillas/${nuevo.id}`);
       }}

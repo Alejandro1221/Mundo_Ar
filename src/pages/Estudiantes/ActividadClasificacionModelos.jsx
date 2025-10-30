@@ -201,12 +201,10 @@ const ActividadClasificacionModelos = ({ vistaPrevia = false }) => {
     return { cols, rows, spaceX, spaceY, topY, scale };
   };
 
-  // RENDERIZADO PRINCIPAL
   return (
     <div className="actividad-ra-container">
       <HeaderActividad
         titulo="Clasifica los modelos en la categoria correspondiente"
-        onBack={enVistaPrevia ? () => navigate(origen, { replace: true }) : undefined}
       />
 
       {/* Escena de realidad aumentada */}

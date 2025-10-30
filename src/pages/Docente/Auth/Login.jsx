@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../../services/firebaseConfig";
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -7,14 +7,22 @@ import 'react-toastify/dist/ReactToastify.css';
 import fondoAutenticacion from "../../../assets/images/autenticacion.png";
 import "../../../assets/styles/auth.css";
 
+const APP_SS_KEYS = ["juegoId", "casillaId", "modoVistaPrevia", "paginaAnterior"];
+function clearAppSession() {
+  for (const k of APP_SS_KEYS) sessionStorage.removeItem(k);
+}
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Evita mostrar el toast más de una vez
   const toastShown = useRef(false);
+
+  useEffect(() => {
+    clearAppSession();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -29,6 +37,7 @@ const Login = () => {
         toast.success("✅ ¡Inicio de sesión exitoso!");
       }
 
+      clearAppSession();
       setTimeout(() => navigate("/docente/dashboard", { replace: true }), 1500);
     } catch (error) {
       console.error("❌ Error durante el inicio de sesión:", error);

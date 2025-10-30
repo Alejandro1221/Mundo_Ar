@@ -1,27 +1,28 @@
+import React from "react";
 import "./HeaderActividad.css";
+import { stopARNow } from "../../hooks/arCleanup";
+import { useNavigate } from "react-router-dom";
 
-const HeaderActividad = ({ titulo, onBack }) => {
+const HeaderActividad = ({ titulo }) => {
+  const navigate = useNavigate();
+
   const volver = () => {
-    if (onBack) {
-      onBack();
-      return;
-    }
-
     const modoVistaPrevia = sessionStorage.getItem("modoVistaPrevia");
     const paginaAnterior = sessionStorage.getItem("paginaAnterior");
 
+    // 1. LIMPIAR AR PRIMERO
+    stopARNow();
+
     if (modoVistaPrevia && paginaAnterior) {
-      // Limpia datos temporales
       sessionStorage.removeItem("modoVistaPrevia");
       sessionStorage.removeItem("paginaAnterior");
 
-      window.location.href = paginaAnterior;
-      return;
+      // 2. VOLVER SIN RECARGAR
+      navigate(paginaAnterior, { replace: true });
+    } else {
+      navigate("/estudiante/seleccionar-casilla", { replace: true });
     }
-
-    window.location.href = "/estudiante/seleccionar-casilla";
   };
-
   return (
     <div className="barra-superior">
       <button className="btn-volver" onClick={volver}>
