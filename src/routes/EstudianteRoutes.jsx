@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import LoginEstudiante from "../pages/Estudiantes/Auth/LoginEstudiante";
 import DashboardEstudiante from "../pages/Estudiantes/DashboardEstudiante";
@@ -17,6 +18,9 @@ import VerificarCasilla from "../pages/Estudiantes/VerificarCasilla";
 import DesdeMarcador from "../pages/Estudiantes/DesdeMarcador";
 
 const EstudianteRoutes = () => {
+   useEffect(() => {
+    sessionStorage.setItem("rolActivo", "estudiante");
+  }, []);
   return (
     <Routes>
       <Route path="login" element={<LoginEstudiante />} /> 

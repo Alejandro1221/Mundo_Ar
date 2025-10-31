@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseConfig";
 import { resetAR } from "../../utils/resetAR";
+import { fixViewportOnce } from "../../utils/fixViewportOnce";
+
 
 const normalize = (s) =>
   String(s || "").trim().toLowerCase().replace(/[_\s]+/g, "-");

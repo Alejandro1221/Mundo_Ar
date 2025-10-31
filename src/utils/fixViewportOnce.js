@@ -32,6 +32,11 @@ export function fixViewportOnce() {
     // 4) Forzar reflow y disparar un resize
     void elBody.offsetHeight;
     window.scrollTo(0, 0);
-    setTimeout(() => window.dispatchEvent(new Event("resize")), 0);
+    setTimeout(() => {
+      window.dispatchEvent(new Event("resize"));
+      const scene = document.querySelector("a-scene")?.sceneEl;
+      scene?.resize?.();              
+      scene?.camera?.updateProjectionMatrix?.(); 
+}, 250);
   } catch {}
 }

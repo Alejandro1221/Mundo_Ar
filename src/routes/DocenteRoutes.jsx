@@ -1,5 +1,5 @@
+import React, { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-
 import RecuperarContrasena from "../pages/Docente/Auth/RecuperarContrasena";
 import DashboardDocente from "../pages/Docente/DashboardDocente";
 import CrearJuego from "../pages/Docente/CrearJuego";
@@ -15,6 +15,10 @@ import ModeloTexto from "../templates/ModeloTexto";
 import CasillaSorpresa from "../templates/CasillaSorpresa";
 
 export default function DocenteRoutes() {
+  useEffect(() => {
+    sessionStorage.setItem("rolActivo", "docente");
+  }, []);
+  
   return (
     <Routes>
       <Route path="recuperar" element={<RecuperarContrasena />} />

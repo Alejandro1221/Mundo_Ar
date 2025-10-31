@@ -1,41 +1,38 @@
 import React from "react";
 import "./HeaderActividad.css";
 import { stopARNow } from "../../hooks/arCleanup";
-import { fixViewportOnce } from "../../utils/fixViewportOnce"; // 👈 nuevo
-import { useNavigate } from "react-router-dom";
 
 const HeaderActividad = ({ titulo }) => {
-  const navigate = useNavigate();
+ const volver = () => {
+  try { stopARNow(); } catch {}
 
-  const volver = () => {
-    // 1) Limpieza completa de AR y estilos pegados por A-Frame/AR.js
-    try { stopARNow(); } catch {}
-    try { fixViewportOnce(); } catch {}     // 👈 IMPORTANTÍSIMO
+  const rol = sessionStorage.getItem("rolActivo") || "estudiante";
+  const modoVistaPrevia = sessionStorage.getItem("modoVistaPrevia");
+  const paginaAnterior  = sessionStorage.getItem("paginaAnterior");
+  const juegoId   = sessionStorage.getItem("juegoId");
 
-    // 2) Resolver destino
-    const modoVistaPrevia = sessionStorage.getItem("modoVistaPrevia");
-    const paginaAnterior  = sessionStorage.getItem("paginaAnterior");
-    const juegoId   = sessionStorage.getItem("juegoId");
-    const casillaId = sessionStorage.getItem("casillaId");
+  const hardGo = (path) => setTimeout(() => window.location.replace(path), 80);
 
-    // 3) Borrar flags efímeros
+  if (modoVistaPrevia && paginaAnterior) {
     sessionStorage.removeItem("modoVistaPrevia");
     sessionStorage.removeItem("paginaAnterior");
+    hardGo(paginaAnterior);
+    return;
+  }
 
-    // 4) Volver reemplazando historial (evita “dos/tres clics atrás”)
-    if (modoVistaPrevia && paginaAnterior) {
-      navigate(paginaAnterior, { replace: true });
-      return;
-    }
+  if (rol === "docente") {
+    hardGo(juegoId ? `/docente/configurar-casillas/${juegoId}` : `/docente/dashboard`);
+    return;
+  }
 
-    // 5) Fallbacks docentes/estudiante
-    if (juegoId) {
-      navigate(`/docente/configurar-casillas/${juegoId}`, { replace: true });
-      return;
-    }
+  if (rol === "estudiante") {
+    hardGo("/estudiante/seleccionar-casilla");
+    return;
+  }
 
-    navigate("/estudiante/seleccionar-casilla", { replace: true });
-  };
+  // fallback final
+  hardGo("/");
+};
 
   return (
     <div className="barra-superior">
