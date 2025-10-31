@@ -5,6 +5,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
 import "../assets/styles/docente/clasificacionModelos.css";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { fixViewportOnce } from "../utils/fixViewportOnce";
 
 const ClasificacionModelos = () => {
   const navigate = useNavigate();
@@ -41,6 +42,9 @@ const clampAsignaciones = (grs, asigs) => {
   return out;
 };
 
+useEffect(() => {
+  fixViewportOnce();   // limpia clases/estilos inline que dejó A-Frame/AR.js
+}, []);
 
 useEffect(() => {
   let alive = true;
@@ -481,22 +485,37 @@ const cargarConfiguracion = async (isAlive = () => true) => {
             type="button"
             className="btn btn--secondary"
             onClick={() => {
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              //Validar IDs base
+              if (!juegoId) {
+                console.error("Falta juegoId en sesión.");
+                return;
+              }
+
+              //Guardar contexto actual
+              sessionStorage.setItem("modoVistaPrevia", "true");
+              sessionStorage.setItem("paginaAnterior", location.pathname);
+
+              //Normalizar datos antes de vista previa
               const gruposNorm = normalizarGrupos(grupos);
               const modelosConGrupo = modelosSeleccionados.map((m) => ({
                 ...m,
                 grupo: asignaciones[m.url] ?? asignaciones[m.id] ?? m.grupo ?? null,
               }));
 
-              sessionStorage.setItem("modoVistaPrevia", "true");
-              sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosConGrupo));
+              //Guardar toda la configuración actual en sessionStorage
+              sessionStorage.setItem(
+                `modelosSeleccionados_${juegoId}_${casillaId || "sinCasilla"}`,
+                JSON.stringify(modelosConGrupo)
+              );
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConGrupo));
               sessionStorage.setItem("gruposSeleccionados", JSON.stringify(gruposNorm));
               sessionStorage.setItem("asignacionesModelos", JSON.stringify(asignaciones));
               sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
 
+              //Navegar a la vista previa del estudiante
               navigate("/estudiante/vista-previa-clasificacion-modelos", {
                 state: { from: location.pathname, juegoId, casillaId },
+                replace: true,
               });
             }}
           >

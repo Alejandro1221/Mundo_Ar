@@ -22,75 +22,40 @@ export default function DocenteRoutes() {
       <Route path="crear-juego" element={<CrearJuego />} />
       <Route path="banco-modelos" element={<BancoModelos />} />
       <Route path="banco-sonidos" element={<BancoSonidos />} />
-      <Route path="configurar-casillas/:juegoId" element={<ConfigurarCasillas />} />
 
-      <Route
-        path="configurar-casillas/:juegoId/plantilla-sonido-modelo"
-        element={<ModeloSonido />}
-      />
-      <Route
-        path="configurar-casillas/:juegoId/clasificacion-modelos"
-        element={<ClasificacionModelos />}
-      />
-      <Route
-        path="configurar-casillas/:juegoId/rompecabezas-modelo"
-        element={<RompecabezasModelo />}
-      />
-      <Route
-        path="configurar-casillas/:juegoId/modelo-texto"
-        element={<ModeloTexto />}
-      />
-      <Route
-        path="configurar-casillas/:juegoId/casilla-sorpresa"
-        element={<CasillaSorpresa />}
-      />
+      {/* Rutas de plantillas (más específicas) */}
+      <Route path="configurar-casillas/:juegoId/plantilla-sonido-modelo" element={<ModeloSonido />} />
+      <Route path="configurar-casillas/:juegoId/clasificacion-modelos" element={<ClasificacionModelos />} />
+      <Route path="configurar-casillas/:juegoId/rompecabezas-modelo" element={<RompecabezasModelo />} />
+      <Route path="configurar-casillas/:juegoId/modelo-texto" element={<ModeloTexto />} />
+      <Route path="configurar-casillas/:juegoId/casilla-sorpresa" element={<CasillaSorpresa />} />
 
+      {/* Alias que redirigen según juegoId en sessionStorage */}
       <Route
         path="plantilla-sonido-modelo"
-        element={
-          <Navigate
-            to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/plantilla-sonido-modelo`}
-            replace
-          />
-        }
+        element={<Navigate to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/plantilla-sonido-modelo`} replace />}
       />
       <Route
         path="clasificacion-modelos"
-        element={
-          <Navigate
-            to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/clasificacion-modelos`}
-            replace
-          />
-        }
+        element={<Navigate to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/clasificacion-modelos`} replace />}
       />
       <Route
         path="rompecabezas-modelo"
-        element={
-          <Navigate
-            to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/rompecabezas-modelo`}
-            replace
-          />
-        }
+        element={<Navigate to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/rompecabezas-modelo`} replace />}
       />
       <Route
         path="modelo-texto"
-        element={
-          <Navigate
-            to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/modelo-texto`}
-            replace
-          />
-        }
+        element={<Navigate to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/modelo-texto`} replace />}
       />
       <Route
         path="casilla-sorpresa"
-        element={
-          <Navigate
-            to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/casilla-sorpresa`}
-            replace
-          />
-        }
+        element={<Navigate to={`/docente/configurar-casillas/${sessionStorage.getItem("juegoId") || ""}/casilla-sorpresa`} replace />}
       />
 
+      {/* ÚNICA ruta genérica de configurar casillas (con casillaId opcional) */}
+      <Route path="configurar-casillas/:juegoId/:casillaId?" element={<ConfigurarCasillas />} />
+
+      {/* Fallback SIEMPRE al final */}
       <Route path="*" element={<Navigate to="/docente/dashboard" replace />} />
     </Routes>
   );

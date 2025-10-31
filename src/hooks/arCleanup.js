@@ -1,108 +1,101 @@
 // hooks/arCleanup.js
 export function stopARNow() {
-  try { console.log("stopARNow: Limpieza TOTAL de AR"); } catch {}
+  try { console.log("[AR] stopARNow → limpieza TOTAL"); } catch {}
 
-  // 0) Escena objetivo (la primera <a-scene> existente)
   const scene = document.querySelector("a-scene");
 
-  // 1) Cerrar sesión WebXR (si existe) y pausar escena
+  // 1) Cerrar sesión WebXR (si está activa) y pausar la escena
   try {
-    const sceneEl = scene && scene.sceneEl ? scene.sceneEl : null;
-    if (sceneEl && sceneEl.renderer && sceneEl.renderer.xr) {
-      const xr = sceneEl.renderer.xr;
-      const session = typeof xr.getSession === "function" ? xr.getSession() : null;
-      if (session && typeof session.end === "function") {
-        session.end().catch(() => {});
-      }
+    const xr = scene?.sceneEl?.renderer?.xr;
+    const session = (xr && typeof xr.getSession === "function") ? xr.getSession() : null;
+    if (session && typeof session.end === "function") {
+      session.end().catch(() => {});
     }
   } catch {}
-
   try { scene?.pause?.(); } catch {}
 
-  // 2) Detener streams de video usados por AR.js (sin pedir nuevos)
+  // 2) Detener y eliminar TODOS los <video> que puedan tener la cámara
   try {
-    // a) videos con clase típica de AR.js
-    document.querySelectorAll("video.arjs-video").forEach(v => {
-      try {
-        if (v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
-        v.removeAttribute("src");
-        v.srcObject = null;
-        v.load?.();
-        v.remove();
-      } catch {}
+    document.querySelectorAll("video.arjs-video, a-scene video, body > video, video").forEach(v => {
+      try { v.srcObject?.getTracks?.()?.forEach(t => t.stop()); } catch {}
+      try { v.removeAttribute?.("src"); v.srcObject = null; v.load?.(); } catch {}
+      try { v.remove?.(); } catch {}
     });
-
-    // b) cualquier <video> DENTRO de la escena (fallback seguro)
-    if (scene) {
-      scene.querySelectorAll("video").forEach(v => {
-        try {
-          if (v.srcObject) v.srcObject.getTracks().forEach(t => t.stop());
-          v.removeAttribute("src");
-          v.srcObject = null;
-          v.load?.();
-          v.remove();
-        } catch {}
-      });
-    }
   } catch {}
 
-  // 3) Liberar renderer/canvas solamente de la escena
+  // 3) Soltar renderer/canvas de A-Frame para liberar GPU/GL
   try {
-    if (scene && scene.sceneEl && scene.sceneEl.renderer) {
-      const r = scene.sceneEl.renderer;
-      try { r.dispose?.(); } catch {}
-      try { r.forceContextLoss?.(); } catch {}
-      try { r.getContext?.()?.getExtension?.("WEBGL_lose_context")?.loseContext?.(); } catch {}
-      try { r.domElement?.remove?.(); } catch {}
-    }
+    const r = scene?.sceneEl?.renderer;
+    try { r?.dispose?.(); } catch {}
+    try { r?.forceContextLoss?.(); } catch {}
+    try {
+      const gl = r?.getContext?.() || r?.domElement?.getContext?.("webgl") || r?.domElement?.getContext?.("webgl2");
+      gl?.getExtension?.("WEBGL_lose_context")?.loseContext?.();
+    } catch {}
+    try { r?.domElement?.remove?.(); } catch {}
 
-    // Eliminar canvas A-Frame dentro de la escena
-    if (scene) {
-      scene.querySelectorAll("canvas.a-canvas").forEach(c => {
-        try {
-          // extra: por si el contexto no se perdió arriba
-          const gl = c.getContext("webgl") || c.getContext("webgl2");
-          gl?.getExtension?.("WEBGL_lose_context")?.loseContext?.();
-        } catch {}
-        try { c.remove(); } catch {}
-      });
-    }
+    scene?.querySelectorAll("canvas.a-canvas, canvas").forEach(c => {
+      try {
+        const gl = c.getContext?.("webgl") || c.getContext?.("webgl2");
+        gl?.getExtension?.("WEBGL_lose_context")?.loseContext?.();
+      } catch {}
+      try { c.remove?.(); } catch {}
+    });
   } catch {}
 
-  // 4) Eliminar la escena (y dejar React que re-monte cuando corresponda)
+  // 4) Eliminar overlays/botones/loader de A-Frame/AR.js
+  try {
+    document.querySelectorAll(
+      ".a-enter-vr, .a-enter-ar, .a-orientation-modal, .a-loader-title, .a-hidden, .arjs-loader"
+    ).forEach(el => { try { el.remove(); } catch {} });
+  } catch {}
+
+  // 5) Quitar <style> inyectados por A-Frame
+  try { document.querySelectorAll("style.a-style").forEach(s => s.remove()); } catch {}
+
+  // 6) Eliminar la escena por completo (React la re-montará cuando toque)
   try { scene?.remove?.(); } catch {}
 
-  // 5) Quitar botones/overlays propios de A-Frame
+  // 7) Restaurar <html> y <body> (clases/estilos que distorsionan el viewport)
   try {
-    document.querySelectorAll(".a-enter-vr, .a-enter-ar, .a-orientation-modal, .a-loader-title, .a-hidden").forEach(el => {
-      try { el.remove(); } catch {}
+    const el = document.documentElement; // <html>
+    const bd = document.body;
+
+    [el, bd].forEach(n => {
+      // Clases típicas de A-Frame/AR.js
+      n.classList.remove(
+        "a-fullscreen", "a-body", "a-mobile", "a-touch", "a-no-mouse",
+        "a-orientation", "a-ios", "a-desktop", "modo-ar"
+      );
+
+      // Limpiar estilos inline peligrosos
+      [
+        "width","height","margin","marginLeft","marginTop","marginRight","marginBottom",
+        "padding","position","overflow","background","backgroundColor","transform"
+      ].forEach(k => { try { n.style[k] = ""; } catch {} });
+
+      // Por si quedó style="..."
+      try { n.removeAttribute("style"); } catch {}
     });
+
+    // Reset mínimos “seguros”
+    bd.style.overflow = "";   // vuelve a usar lo definido por tus CSS
+    bd.style.position = "";
   } catch {}
 
-  // 6) Eliminar SOLO estilos inyectados por A-Frame (clase a-style)
-  try {
-    document.querySelectorAll("style.a-style").forEach(s => {
-      try { s.remove(); } catch {}
-    });
-  } catch {}
-
-  // 7) Restaurar body (sin tocar estilos generales de la app)
-  try {
-    document.body.classList.remove("a-body", "a-mobile", "modo-ar");
-    document.body.style.overflow = "";
-    document.body.style.background = "";
-    document.body.style.margin = "";
-    document.body.style.padding = "";
-    document.body.style.height = "";
-    document.body.style.position = "";
-  } catch {}
-
-  // 8) Limpiar caché de Three (si disponible)
-  try { window.THREE?.Cache?.clear?.(); } catch {}
-
-  // 9) Limpiar globales que tú usas
+  // 8) Limpiar globales que tu código usa
   try {
     delete window.modeloActivoUrl;
     delete window.verificarClasificacion;
+  } catch {}
+
+  // 9) (Opcional) Limpiar caché de Three
+  try { window.THREE?.Cache?.clear?.(); } catch {}
+
+  // 10) Forzar reflow + resize para recalcular layout con el viewport real
+  try {
+    void document.body.offsetHeight; // reflow
+    setTimeout(() => window.dispatchEvent(new Event("resize")), 60);
+    setTimeout(() => window.scrollTo(0, 0), 80);
   } catch {}
 }

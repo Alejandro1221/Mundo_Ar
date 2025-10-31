@@ -22,8 +22,6 @@
 
 }
 
-*, *::before, *::after { box-sizing: border-box; }
-
 html, body {
   margin: 0;
   padding: 0;
@@ -204,3 +202,5 @@ textarea[disabled] {
   border-color: var(--ui-disabled-border);
   cursor: not-allowed;
 }
+
+
