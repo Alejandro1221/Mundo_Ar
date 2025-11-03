@@ -246,29 +246,46 @@ const CENTER_CUBOS  = isLandscape
            opacity="0"
         ></a-plane>
 
-        <a-entity id="zonas">
-          {Array.from({ length: grid.cols * grid.rows }).map((_, i) => (
-            <a-box
-              key={i}
-              className="zona"
-              zona-id={i}
-              position={zonasPos(i)}
-              width="0.27"
-              height="0.27"
-              depth="0.25"
-              material="
-                color: #4f6c77ff;
-                opacity: 0.15;
-                transparent: true;
-                blending: AdditiveBlending; 
-                depthTest: false;
-                depthWrite: false;
-                side: double;
-                "
-              ref={(el) => (zonasRef.current[i] = el)}
-            />
-          ))}
-        </a-entity>
+<a-entity id="zonas">
+  {Array.from({ length: grid.cols * grid.rows }).map((_, i) => (
+    <a-entity key={i} position={zonasPos(i)}>
+
+      {/* 1️⃣ Detector exacto: encaje con z más atrás */}
+      <a-box
+        className="zona"
+        zona-id={i}
+        width="0.25"
+        height="0.25"
+        depth="0.25"
+        position="0 0 -0.125"   // 💡 alineado con el plano trasero
+        material="opacity:0.001; transparent:true; depthTest:true; depthWrite:false;"
+        ref={(el) => (zonasRef.current[i] = el)}
+      />
+
+      {/* 2️⃣ Cara trasera visible */}
+      <a-plane
+        width="0.27" height="0.27"
+        position="0 0 -0.125"    // misma profundidad del detector
+        material="color:#5ec3eb; opacity:0.22; transparent:true; side:double; depthWrite:false;"
+      />
+
+      {/* 3️⃣ Marco (solo los bordes) */}
+      <a-box width="0.27" height="0.01" depth="0.001"
+             position="0 0.135 -0.126"
+             material="color:#5ec3eb; opacity:0.25; transparent:true; depthWrite:false;" />
+      <a-box width="0.27" height="0.01" depth="0.001"
+             position="0 -0.135 -0.126"
+             material="color:#5ec3eb; opacity:0.25; transparent:true; depthWrite:false;" />
+      <a-box width="0.01" height="0.27" depth="0.001"
+             position="-0.135 0 -0.126"
+             material="color:#5ec3eb; opacity:0.25; transparent:true; depthWrite:false;" />
+      <a-box width="0.01" height="0.27" depth="0.001"
+             position="0.135 0 -0.126"
+             material="color:#5ec3eb; opacity:0.25; transparent:true; depthWrite:false;" />
+    </a-entity>
+  ))}
+</a-entity>
+
 
         <a-text
           id="mensaje-exito"

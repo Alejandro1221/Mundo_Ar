@@ -99,18 +99,17 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
             />
           </div>
 
-          <div className="switch-container">
-            <label htmlFor="visibilidad" className="switch-label">
-              <span>{publico ? "Juego Público" : "Juego Privado"}</span>
-              <div className="switch">
-                <input
-                  id="visibilidad"
-                  type="checkbox"
-                  checked={publico}
-                  onChange={(e) => setPublico(e.target.checked)}
-                />
-                <span className="slider" />
-              </div>
+          <div className="switch-line">
+            <span className="switch-text">
+              {publico ? "Juego Público" : "Juego Privado"}
+            </span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={publico}
+                onChange={(e) => setPublico(e.target.checked)}
+              />
+              <span className="slider" />
             </label>
           </div>
           
@@ -119,7 +118,7 @@ export default function CrearJuego({ isOpen, onClose, onCreated }) {
               type="button"
               onClick={onClose}
               disabled={saving}
-              className="btn btn--secondary"
+              className="btn btn--danger"
             >
               Cancelar
             </button>

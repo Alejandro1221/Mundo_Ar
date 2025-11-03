@@ -1,0 +1,165 @@
+.modal-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(89,89,91,.28);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 998;
+}
+
+@keyframes cjModalIn {
+  from { opacity: 0; transform: translate(-50%,-48%) scale(.96); }
+  to   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+}
+.modal-window{
+  position: fixed;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%);
+  width: min(520px, calc(100vw - 32px));
+  background: var(--fondo-claro);
+  border-radius: var(--borde-suave);
+  border: 1px solid rgba(134,134,186,.18);
+  box-shadow: 0 18px 48px rgba(0,0,0,.22);
+  z-index: 999;
+  overflow: hidden;
+  animation: cjModalIn .18s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.modal-header{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px;
+  background: linear-gradient(180deg, rgba(99,206,224,.15), transparent);
+  border-bottom: 1px solid rgba(99,206,224,.25);
+}
+.modal-header h2{
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--texto-principal);
+  font-weight: 800;
+}
+
+/* Botón cerrar (X) */
+.modal-close{
+  appearance: none; border: 0;
+  background: #f3f4f6; color: #7b7e85;
+  width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center;
+  font-size: 18px; line-height: 1; cursor: pointer;
+  transition: background .15s ease, color .15s ease, transform .06s ease;
+}
+.modal-close:hover{ background: var(--pastel-rosa); color:#fff; }
+.modal-close:active{ transform: scale(.96); }
+
+/* Cuerpo */
+.modal-body{
+  padding: 26px 28px 22px;   /* aire extra para que los inputs no peguen al borde */
+  display: grid;
+  gap: 20px;
+}
+.form-row{ display: grid; gap: 8px; }
+.label{
+  font-weight: 700;
+  color: var(--texto-principal);
+  font-size: .95rem;
+}
+
+/* Input elegante */
+.input{
+  width: 95%; height: 44px;
+  border-radius: 12px; padding: 0 14px;
+  border: 1.5px solid rgba(134,134,186,.35);
+  background: #fff; color: var(--texto-principal);
+  outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.input::placeholder{ color:#9aa0a6; }
+.input:focus{
+  border-color: var(--pastel-azul);
+  box-shadow: 0 0 0 4px rgba(99,206,224,.20);
+}
+
+/* ===== SWITCH (escopado al modal) =====
+   Track siempre gris; solo cambia la bolita */
+.modal-window .switch-line{
+  display: grid;
+  grid-template-columns: 1fr auto; /* texto | switch */
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px;
+  border: 1px dashed rgba(134,134,186,.35);
+  border-radius: 14px;
+  background: #fff;
+}
+.modal-window .switch-text{
+  font-weight: 700;
+  color: var(--texto-principal);
+}
+
+.modal-window .switch{
+  position: relative;
+  width: 56px; height: 30px;
+  display: inline-block;
+}
+.modal-window .switch input{
+  position: absolute; opacity: 0; width: 0; height: 0;
+}
+
+/* Track fijo gris */
+.modal-window .slider{
+  position: absolute; inset: 0;
+  background: #e5e7eb;
+  border: 1px solid rgba(134,134,186,.35);
+  border-radius: 999px;
+}
+
+/* Knob (bolita) */
+.modal-window .slider::before{
+  content: "";
+  position: absolute;
+  top: 50%; left: 4px;
+  width: 22px; height: 22px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: var(--pastel-amarillo); 
+  box-shadow: 0 2px 6px rgba(0,0,0,.18);
+  transition: left .18s ease, background .18s ease;
+}
+
+.modal-window .switch input:checked + .slider::before{
+  left: calc(100% - 4px - 22px);
+  background: var(--pastel-azul);    
+}
+
+.modal-actions{
+  display: flex; justify-content: flex-end; gap: 12px;
+  padding: 8px 28px 24px;
+}
+
+/* Responsive */
+@media (max-width: 420px){
+  .modal-window{ width: calc(100vw - 20px); }
+  .modal-body{ padding: 20px 16px; }
+  .modal-actions{ padding: 8px 16px 18px; }
+}
+
+.modal-window .slider {
+  overflow: hidden; 
+}
+
+.modal-window .slider::before {
+  transform: translateY(-50%) !important;
+}
+
+.modal-window .switch input:checked + .slider::before {
+  left: calc(100% - 4px - 22px) !important; 
+  transform: translateY(-50%) !important;   
+  background: var(--pastel-azul);           
+}
+
+.modal-window .slider::before {
+  left: 4px;                                 
+  background: var(--pastel-amarillo);        
+}

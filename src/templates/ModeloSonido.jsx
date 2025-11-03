@@ -305,20 +305,22 @@ return (
           <button
             className="btn btn--secondary"
             disabled={modelosSeleccionados.length >= 3}
-            title={
-              modelosSeleccionados.length >= 3
-                ? "Has alcanzado el máximo (3/3)"
-                : `Puedes agregar hasta 3 (van ${modelosSeleccionados.length}/3)`
-            }
+            title={modelosSeleccionados.length >= 3 ? "Has alcanzado el máximo (3/3)" : `Puedes agregar hasta 3 (van ${modelosSeleccionados.length}/3)`}
             onClick={() => {
               if (modelosSeleccionados.length >= 3) {
                 mostrarMensaje("Has alcanzado el máximo de 3 modelos para esta plantilla.", "warning", "center");
                 return;
               }
-             navigate("/docente/banco-modelos", {
-              state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 },
-              replace: true, 
-            });
+              // 🔧 FIX: recordar a dónde volver
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
+              sessionStorage.setItem(`modelosSeleccionados_${juegoId}_${casillaId}`, JSON.stringify(modelosSeleccionados));
+              sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
+              sessionStorage.setItem("seleccionandoModelos", "1");
+
+              navigate("/docente/banco-modelos", {
+                state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 },
+                replace: true,
+              });
             }}
           >
             Agregar modelos

@@ -41,7 +41,7 @@ if (!AFRAME.components["touch-move"]) {
               el.setAttribute("position", {
                 x: posZona.x,
                 y: posZona.y,
-                z: posZona.z,
+                z: posZona.z + 0.03,
               });
               el.removeAttribute("touch-move");
               encajada = true;
