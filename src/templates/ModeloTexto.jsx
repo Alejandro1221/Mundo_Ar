@@ -22,11 +22,10 @@ const ModeloTexto = () => {
   const celebracionKey = `celebracion_${juegoId}_${casillaId}`;
   const MAX_MODELOS = 2;
 
-
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
-      navigate("/docente/dashboard");
+      navigate(`/docente/configurar-casillas/${juegoId || ""}`, { replace: true });
     } else {
       sessionStorage.setItem("juegoId", juegoId);
       sessionStorage.setItem("casillaId", casillaId);
@@ -191,10 +190,10 @@ return (
         onClick={() => {
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados));
-          // 👇 pasa el límite al banco para que no deje elegir más de 2
           sessionStorage.setItem("maxModelosPermitidos", String(MAX_MODELOS));
           navigate("/docente/banco-modelos", {
             state: { desdePlantilla: true, juegoId, casillaId },
+            replace: true, 
           });
         }}
       >
@@ -292,7 +291,10 @@ return (
           sessionStorage.setItem("paginaAnterior", window.location.pathname);
           sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosConTexto));
           sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-          navigate("/estudiante/vista-previa-modelo-texto");
+          navigate("/estudiante/vista-previa-modelo-texto", {
+            state: { from: window.location.pathname, juegoId, casillaId },
+            replace: true,
+          });
         }}
       >
         Vista previa como estudiante

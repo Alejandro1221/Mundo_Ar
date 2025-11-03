@@ -119,3 +119,7 @@ a-box[cubo-rompecabezas].activo {
     transform: translate(-50%, -50%) scale(1);
   }
 }
+
+.no-raycast {
+  pointer-events: none !important;
+}

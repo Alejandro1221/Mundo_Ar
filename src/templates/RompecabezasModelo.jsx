@@ -57,7 +57,7 @@ const RompecabezasModelo = () => {
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
-      navigate("/docente/configurar-casillas");
+      navigate(`/docente/configurar-casillas/${juegoId || ""}`, { replace: true });
     }
   }, [juegoId, casillaId, navigate]);
 
@@ -70,7 +70,7 @@ const RompecabezasModelo = () => {
     if (!previewUrl) return;
     const img = new Image();
     img.onload = () => {
-      const isLandscape = img.naturalWidth >= img.naturalHeight; // empates cuentan como horizontal
+      const isLandscape = img.naturalWidth >= img.naturalHeight; 
       setGrid(isLandscape ? { cols: 3, rows: 2 } : { cols: 2, rows: 3 });
     };
     img.src = previewUrl;
@@ -248,7 +248,10 @@ return (
             sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
             sessionStorage.setItem("gridRompecabezas", JSON.stringify(grid));
 
-            navigate("/estudiante/vista-previa-rompecabezas");
+            navigate("/estudiante/vista-previa-rompecabezas", {
+              state: { from: window.location.pathname, juegoId, casillaId },
+              replace: true,
+            });
           }}
         >
           Vista previa como estudiante

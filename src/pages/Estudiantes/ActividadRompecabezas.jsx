@@ -253,12 +253,18 @@ const CENTER_CUBOS  = isLandscape
               className="zona"
               zona-id={i}
               position={zonasPos(i)}
-              // zonas un poco más grandes para “capturar” mejor
               width="0.27"
               height="0.27"
-              depth="0.35"
-              color="#ffffff"
-              opacity="0.08"
+              depth="0.25"
+              material="
+                color: #4f6c77ff;
+                opacity: 0.15;
+                transparent: true;
+                blending: AdditiveBlending; 
+                depthTest: false;
+                depthWrite: false;
+                side: double;
+                "
               ref={(el) => (zonasRef.current[i] = el)}
             />
           ))}
@@ -325,9 +331,8 @@ const CENTER_CUBOS  = isLandscape
                       src: #imagen-rompecabezas;
                       repeat: ${repeatX.toFixed(4)} ${repeatY.toFixed(4)};
                       offset: ${offset};
-                      color: #FFFFFF;                 /* mantiene color original */
-                      metalness: 0;                   /* sin brillo metálico */
-                      roughness: 1;                   /* superficie mate, fiel a la imagen */
+                      color: #FFFFFF;              
+                      metalness: 0;                 
                       transparent: false;
                       opacity: 1;
                       emissive: ${cuboActivoIndex.current === fichaId ? '#FFD700' : '#000000'};

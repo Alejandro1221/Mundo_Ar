@@ -41,7 +41,7 @@ const ModeloSonido = () => {
   useEffect(() => {
     if (!juegoId || !casillaId) {
       alert("Error: No se encontró el juego o la casilla.");
-      navigate("/docente/configurar-casillas");
+      navigate(`/docente/configurar-casillas/${juegoId || ""}`, { replace: true });
     } else {
       cargarConfiguracionExistente();
     }
@@ -315,8 +315,10 @@ return (
                 mostrarMensaje("Has alcanzado el máximo de 3 modelos para esta plantilla.", "warning", "center");
                 return;
               }
-              sessionStorage.setItem("paginaAnterior", window.location.pathname);
-              navigate("/docente/banco-modelos", { state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 } });
+             navigate("/docente/banco-modelos", {
+              state: { desdePlantilla: true, juegoId, casillaId, selectionLimit: 3 },
+              replace: true, 
+            });
             }}
           >
             Agregar modelos
@@ -450,11 +452,15 @@ return (
           <button
             className="btn btn--secondary"
             onClick={() => {
+              sessionStorage.setItem("paginaAnterior", window.location.pathname);
               sessionStorage.setItem("modoVistaPrevia", "true");
               sessionStorage.setItem("modelosSeleccionados", JSON.stringify(modelosSeleccionados)); 
               sessionStorage.setItem("sonidoSeleccionado", JSON.stringify(sonidoSeleccionado));
               sessionStorage.setItem("celebracionSeleccionada", JSON.stringify(celebracion));
-              navigate("/estudiante/vista-previa-modelo-sonido");
+              navigate("/estudiante/vista-previa-modelo-sonido", {
+                state: { from: window.location.pathname, juegoId, casillaId },
+                replace: true,
+              });
             }}
           >
             Vista previa como estudiante

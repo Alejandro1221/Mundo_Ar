@@ -1,10 +1,8 @@
-// hooks/arCleanup.js
 export function stopARNow() {
   try { console.log("[AR] stopARNow → limpieza TOTAL"); } catch {}
 
   const scene = document.querySelector("a-scene");
 
-  // 1) Cerrar sesión WebXR (si está activa) y pausar la escena
   try {
     const xr = scene?.sceneEl?.renderer?.xr;
     const session = (xr && typeof xr.getSession === "function") ? xr.getSession() : null;
@@ -14,7 +12,6 @@ export function stopARNow() {
   } catch {}
   try { scene?.pause?.(); } catch {}
 
-  // 2) Detener y eliminar TODOS los <video> que puedan tener la cámara
   try {
     document.querySelectorAll("video.arjs-video, a-scene video, body > video, video").forEach(v => {
       try { v.srcObject?.getTracks?.()?.forEach(t => t.stop()); } catch {}
@@ -23,7 +20,6 @@ export function stopARNow() {
     });
   } catch {}
 
-  // 3) Soltar renderer/canvas de A-Frame para liberar GPU/GL
   try {
     const r = scene?.sceneEl?.renderer;
     try { r?.dispose?.(); } catch {}
@@ -43,22 +39,18 @@ export function stopARNow() {
     });
   } catch {}
 
-  // 4) Eliminar overlays/botones/loader de A-Frame/AR.js
   try {
     document.querySelectorAll(
       ".a-enter-vr, .a-enter-ar, .a-orientation-modal, .a-loader-title, .a-hidden, .arjs-loader"
     ).forEach(el => { try { el.remove(); } catch {} });
   } catch {}
 
-  // 5) Quitar <style> inyectados por A-Frame
   try { document.querySelectorAll("style.a-style").forEach(s => s.remove()); } catch {}
 
-  // 6) Eliminar la escena por completo (React la re-montará cuando toque)
   try { scene?.remove?.(); } catch {}
 
-  // 7) Restaurar <html> y <body> (clases/estilos que distorsionan el viewport)
   try {
-    const el = document.documentElement; // <html>
+    const el = document.documentElement; 
     const bd = document.body;
 
     [el, bd].forEach(n => {
@@ -79,7 +71,7 @@ export function stopARNow() {
     });
 
     // Reset mínimos “seguros”
-    bd.style.overflow = "";   // vuelve a usar lo definido por tus CSS
+    bd.style.overflow = "";   
     bd.style.position = "";
   } catch {}
 

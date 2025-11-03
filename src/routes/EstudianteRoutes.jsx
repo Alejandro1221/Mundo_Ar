@@ -45,6 +45,7 @@ const EstudianteRoutes = () => {
 
       <Route path="verificar-casilla" element={<VerificarCasilla />} />           
       <Route path="desde-marcador" element={<DesdeMarcador />} /> 
+
     </Routes>
   );
 };

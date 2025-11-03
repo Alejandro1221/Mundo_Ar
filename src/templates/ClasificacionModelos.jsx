@@ -70,10 +70,12 @@ const ClasificacionModelos = () => {
   }, []);
 
   useEffect(() => {
-    if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > 0 && grupos === null) {
-      setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+    if (grupos !== null) return; 
+    if (modelosSeleccionados?.length > 0) {
+      return;
     }
-  }, [modelosSeleccionados, grupos]);
+    setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+  }, [modelosSeleccionados]);
 
   useEffect(() => {
     if (!mensaje.texto) return;
@@ -100,7 +102,9 @@ const ClasificacionModelos = () => {
       if (juegoSnap.exists()) {
         const idx = Number(casillaId);
         if (!Number.isInteger(idx) || idx < 0 || idx >= 30) {
-          if (isAlive()) setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+          if (isAlive() && grupos === null) {
+            setGrupos(normalizarGrupos(["Grupo 1", "Grupo 2"]));
+          }
           return;
         }
 

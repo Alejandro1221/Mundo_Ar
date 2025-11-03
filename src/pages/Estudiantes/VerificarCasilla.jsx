@@ -5,7 +5,7 @@ import { stopARNow } from "../../hooks/arCleanup";
 import "../../assets/styles/estudiante/verificarCasilla.css";
 
 const VerificarCasilla = () => {
-  useAR(); // su cleanup ya llama stopARNow en unmount
+  useAR(); 
   const navigate = useNavigate();
   const casillaId = parseInt(sessionStorage.getItem("casillaId"), 10);
   const juegoId = sessionStorage.getItem("juegoId");

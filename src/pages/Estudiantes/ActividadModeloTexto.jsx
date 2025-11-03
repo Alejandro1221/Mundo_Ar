@@ -15,16 +15,21 @@ const ActividadModeloTexto = ({ vistaPrevia = false }) => {
   const casillaId = sessionStorage.getItem("casillaId");
   const juegoId = sessionStorage.getItem("juegoId");
   const [modelos, setModelos] = useState([]);
+  const [perm, setPerm] = useState([]);
 
   const [modeloActivoIndex, setModeloActivoIndex] = useState(0);
   const [celebracion, setCelebracion] = useState({ tipo: "mensaje", opciones: {} });
 
 useEffect(() => {
-  const establecerModeloActivo = (modelos) => {
-    setModelos(modelos);
-    if (modelos.length > 0) {
+  const establecerModeloActivo = (lista) => {
+    setModelos(lista);
+    if (lista.length > 0) {
       setModeloActivoIndex(0);
-      window.modeloActivoUrl = modelos[0].url; 
+      window.modeloActivoUrl = lista[0].url;
+      const n = lista.length;
+      setPerm(Array.from({ length: n }, (_, i) => n - 1 - i));
+    } else {
+    setPerm([]);
     }
   };
 
@@ -128,7 +133,8 @@ useEffect(() => {
             seleccionable-texto
             data-modelo-url={modelo.url}
             arrastrable-modelo={`index: ${i}`}
-            colision-modelo-texto={`textoId: texto-${i}`}
+            //colision-modelo-texto={`textoId: texto-${i}`}
+            colision-modelo-texto={`textoId: texto-${(perm.length === modelos.length ? perm.indexOf(i) : i)}`}
             activo={i === modeloActivoIndex ? "true" : "false"}
           > {i === modeloActivoIndex && (
             <a-ring
@@ -146,7 +152,9 @@ useEffect(() => {
 
         {/* Tarjetas de texto */}
         {modelos.map((modelo, i) => {
-          const texto = modelo.texto.trim();
+          //const texto = modelo.texto.trim();
+          const textoIndex = perm[i] ?? i; 
+          const texto = (modelos[textoIndex]?.texto || "").trim();
           const posX = -0.3 + i * 0.6;
 
           return (
