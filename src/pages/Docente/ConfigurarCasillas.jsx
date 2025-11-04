@@ -293,19 +293,30 @@ const eliminarJuego = async () => {
                   <option value="casilla-sorpresa">Casilla Sorpresa</option>
                 </select>
                 <div className="configurar-casillas-container__modal-buttons">
-                  <button className="cancelar-btn"  onClick={() => setModalVisible(false)}>Cancelar</button>
-                  <button className="guardar-btn" onClick={() => {
-                    sessionStorage.removeItem("modelosSeleccionados");
-                    sessionStorage.removeItem("sonidoSeleccionado");
-                    sessionStorage.removeItem("modeloAsociadoParaSonido");
-                    sessionStorage.removeItem(`modelosSeleccionados_${juegoId}_${casillaSeleccionada}`);
-                    sessionStorage.removeItem("gruposSeleccionados");
-                    sessionStorage.removeItem("asignacionesModelos");
-                    sessionStorage.removeItem("celebracionSeleccionada");
-                    guardarCambios();
-                  }}>
+                  <button 
+                    className="btn btn--danger" 
+                    onClick={() => setModalVisible(false)}
+                  >
+                    Cancelar
+                  </button>
+
+                  <button 
+                    className="btn btn--success"
+                    onClick={() => {
+                      sessionStorage.removeItem("modelosSeleccionados");
+                      sessionStorage.removeItem("sonidoSeleccionado");
+                      sessionStorage.removeItem("modeloAsociadoParaSonido");
+                      sessionStorage.removeItem(`modelosSeleccionados_${juegoId}_${casillaSeleccionada}`);
+                      sessionStorage.removeItem("gruposSeleccionados");
+                      sessionStorage.removeItem("asignacionesModelos");
+                      sessionStorage.removeItem("celebracionSeleccionada");
+                      guardarCambios();
+                    }}
+                  >
                     Guardar
                   </button>
+
+
                 </div>
               </>
             )}
