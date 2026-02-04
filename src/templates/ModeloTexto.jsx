@@ -23,15 +23,29 @@ const ModeloTexto = () => {
   const MAX_MODELOS = 2;
 
   useEffect(() => {
-    if (!juegoId || !casillaId) {
-      alert("Error: No se encontró el juego o la casilla.");
-      navigate(`/docente/configurar-casillas/${juegoId || ""}`, { replace: true });
-    } else {
-      sessionStorage.setItem("juegoId", juegoId);
-      sessionStorage.setItem("casillaId", casillaId);
-      cargarConfiguracion();
+    // 1) Arreglar paginaAnterior si quedó apuntando al alias
+    const pa = sessionStorage.getItem("paginaAnterior");
+    if (!pa || pa === "/docente/modelo-texto") {
+      sessionStorage.setItem("paginaAnterior", `/docente/configurar-casillas/${juegoId}`);
     }
-  }, [juegoId, casillaId]);
+
+    // 2) Ya usamos la paginaAnterior corregida
+    const paginaAnterior = sessionStorage.getItem("paginaAnterior");
+
+    const casillaValida = casillaId !== null && casillaId !== undefined; // acepta "0"
+    if (!juegoId || !casillaValida) {
+      if (paginaAnterior) {
+        navigate(paginaAnterior, { replace: true });
+        return;
+      }
+
+      navigate(`/docente/configurar-casillas/${juegoId || ""}`, { replace: true });
+      return;
+    }
+
+    cargarConfiguracion();
+  }, [juegoId, casillaId, navigate]);
+
 
   useEffect(() => {
   if (Array.isArray(modelosSeleccionados) && modelosSeleccionados.length > MAX_MODELOS) {
@@ -193,7 +207,7 @@ return (
           sessionStorage.setItem("maxModelosPermitidos", String(MAX_MODELOS));
           navigate("/docente/banco-modelos", {
             state: { desdePlantilla: true, juegoId, casillaId },
-            replace: true, 
+            
           });
         }}
       >

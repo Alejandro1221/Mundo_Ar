@@ -293,16 +293,13 @@ const eliminarJuego = async () => {
                   <option value="casilla-sorpresa">Casilla Sorpresa</option>
                 </select>
                 <div className="configurar-casillas-container__modal-buttons">
-                  <button 
-                    className="btn btn--danger" 
-                    onClick={() => setModalVisible(false)}
-                  >
-                    Cancelar
-                  </button>
-
-                  <button 
-                    className="btn btn--success"
-                    onClick={() => {
+                  <button className="cancelar-btn"  onClick={() => setModalVisible(false)}>Cancelar</button>
+                  <button
+                    type="button"
+                    className="guardar-btn"
+                    disabled={!plantillaSeleccionada}
+                    onClick={async () => {
+                      // Limpiezas que ya haces
                       sessionStorage.removeItem("modelosSeleccionados");
                       sessionStorage.removeItem("sonidoSeleccionado");
                       sessionStorage.removeItem("modeloAsociadoParaSonido");
@@ -310,13 +307,22 @@ const eliminarJuego = async () => {
                       sessionStorage.removeItem("gruposSeleccionados");
                       sessionStorage.removeItem("asignacionesModelos");
                       sessionStorage.removeItem("celebracionSeleccionada");
-                      guardarCambios();
+
+                      // Guarda primero
+                      await guardarCambios();
+
+                      // Guarda contexto (igual que editar)
+                      sessionStorage.setItem("paginaAnterior", window.location.pathname);
+                      sessionStorage.setItem("juegoId", juegoId);
+                      sessionStorage.setItem("casillaId", casillaSeleccionada);
+
+                      // Ir a la plantilla creada
+                      const ruta = rutaPlantilla(plantillaSeleccionada, juegoId);
+                      navigate(ruta, { state: { from: location.pathname } });
                     }}
                   >
                     Guardar
                   </button>
-
-
                 </div>
               </>
             )}
