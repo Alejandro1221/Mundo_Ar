@@ -1,12 +1,27 @@
-# React + Vite
+MundoAR 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mundo AR es una aplicación web educativa basada en Realidad Aumentada (AR), diseñada como proyecto académico con el objetivo de reforzar el aprendizaje de contenidos específicos en las áreas de matemáticas y ciencias naturales en estudiantes con autismo leve en los grados de educación básica primaria 3ro y  4to.
 
-Currently, two official plugins are available:
+La plataforma integra recursos interactivos en 3D y actividades didácticas que permiten a los estudiantes aprender de manera dinámica, mientras que los docentes cuentan con herramientas para gestionar y personalizar las actividades educativas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+Tecnologías utilizadas
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **React.js** – Desarrollo de la interfaz web.
+- **Firebase** – Autenticación y gestión de datos.
+- **A-Frame** – Integración de experiencias en Realidad Aumentada.
+- **HTML, CSS y JavaScript** – Estructura y estilos de la aplicación.
+
+Metodología de desarrollo
+
+El desarrollo de Mundo AR se llevó a cabo utilizando la metodología ágil SCRUM, lo que permitió una retroalimentación continua con los actores involucrados, incluyendo docentes y estudiantes. Esta metodología facilitó la organización de funcionalidades y la adaptación del sistema a los requerimientos educativos identificados.
+
+
+Escalabilidad y mejoras futuras
+
+Mundo AR es un proyecto escalable que permite la incorporación de futuras mejoras, tales como:
+- Inclusión de nuevas plantillas de actividades.
+- Ampliación de contenidos educativos.
+- Adaptación a distintos niveles educativos.
+- Optimización de la experiencia de usuario y accesibilidad.
+
